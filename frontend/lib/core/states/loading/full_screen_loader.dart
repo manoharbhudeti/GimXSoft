@@ -94,3 +94,4 @@ class FullScreenLoader extends StatelessWidget {
     );
   }
 }
+

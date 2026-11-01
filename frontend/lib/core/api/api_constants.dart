@@ -20,8 +20,15 @@ class ApiConstants {
   static const String subscriptions = '/memberships/subscriptions';
   static const String subscribe = '/memberships/subscribe';
 
-  // Leads & CRM
-  static const String leads = '/leads';
+  // WhatsApp Messaging API
+  static const String whatsAppMetrics = '/whatsapp/metrics';
+  static const String whatsAppConversations = '/whatsapp/conversations';
+  static const String whatsAppHistory = '/whatsapp/history';
+  static const String whatsAppSend = '/whatsapp/send';
+  static const String whatsAppBroadcast = '/whatsapp/broadcast';
+  static const String whatsAppTemplates = '/whatsapp/templates';
+  static const String whatsAppTriggers = '/whatsapp/triggers';
+  static const String whatsAppToggleTrigger = '/whatsapp/triggers/toggle';
 
   // Attendance
   static const String attendanceToday = '/attendance/today-summary';

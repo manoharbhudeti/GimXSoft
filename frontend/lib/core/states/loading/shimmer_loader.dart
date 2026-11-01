@@ -78,3 +78,4 @@ class _ShimmerLoaderState extends State<ShimmerLoader>
     );
   }
 }
+

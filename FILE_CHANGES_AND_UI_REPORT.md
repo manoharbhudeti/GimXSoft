@@ -62,7 +62,7 @@ Below is the structured file manifest detailing every created and modified file 
 | `Entities/User.cs` | Created | Models `User` entity with `UserRole` enum (`GymOwner`, `BranchManager`, `Receptionist`, `Trainer`, `Accountant`), password hash, refresh token storage, and branch association. |
 | `Entities/Member.cs` | Created | Models `Member` entity with `MemberStatus` enum (`Active`, `Inactive`, `Suspended`, `Pending`), emergency contact, medical notes, joining date, and trainer links. |
 | `Entities/MembershipPlan.cs` | Created | Models `MembershipPlan` (pricing, duration, tier, benefits JSON) and `MemberSubscription` (start/end dates, frozen flags, auto-renew, balance). |
-| `Entities/Lead.cs` | Created | Models `Lead` entity with `LeadStatus` enum (`New`, `Contacted`, `Interested`, `TrialScheduled`, `TrialCompleted`, `Converted`, `Lost`), lead source, follow-up dates, and `LeadActivity` audit trails. |
+| `Entities/WhatsAppMessage.cs` | Created | Models `WhatsAppMessage` (member links, direction: Outbound/Inbound, message type: Direct/Template/SystemTrigger/Broadcast, status: Sent/Delivered/Read/Failed, WhatsApp Message ID, timestamp), `WhatsAppTemplate` (Meta-approved templates with parameters), and `WhatsAppTriggerRule` (event triggers, enabled status, template bindings). |
 | `Entities/AttendanceAndPayment.cs` | Created | Models `AttendanceRecord` (check-in/check-out timestamps, method: QR, manual, RFID, branch) and `PaymentTransaction` (amount, method: Cash, UPI, Card, BankWire, status: Completed, Pending, Refunded, invoice number). |
 | `Entities/TrainerAndWorkout.cs` | Created | Models `TrainerProfile` (specialties, hourly rate, bio, rating), `TrainerSession`, `WorkoutPlan`, and `AuditLog` entity for immutable administrative traceability. |
 
@@ -73,7 +73,7 @@ Below is the structured file manifest detailing every created and modified file 
 | `DTOs/DashboardDTOs.cs` | Created | `DashboardMetricsDto`, `MonthlyRevenuePoint`, `MemberAcquisitionPoint`, `AttendanceTrendPoint`, `MembershipDistributionPoint`, `ActivityFeedItem`, and `PendingFollowUpDto`. |
 | `DTOs/MemberDTOs.cs` | Created | `MemberDto`, `MemberDetailDto`, `CreateMemberRequest`, `UpdateMemberRequest`, `MemberSubscriptionSummaryDto`, and `MemberAttendanceSummaryDto`. |
 | `DTOs/MembershipDTOs.cs` | Created | `MembershipPlanDto`, `CreateMembershipPlanRequest`, `MemberSubscriptionDto`, `AssignSubscriptionRequest`, `FreezeSubscriptionRequest`. |
-| `DTOs/LeadDTOs.cs` | Created | `LeadDto`, `CreateLeadRequest`, `UpdateLeadStageRequest`, `LeadActivityDto`, and `AddLeadNoteRequest`. |
+| `DTOs/WhatsAppDTOs.cs` | Created | `SendWhatsAppMessageRequest`, `SendBroadcastRequest`, `WhatsAppMessageDto`, `WhatsAppConversationSummaryDto`, `WhatsAppTemplateDto`, `WhatsAppMetricsDto`, `WhatsAppTriggerRuleDto`, and `ToggleTriggerRequest`. |
 | `DTOs/AttendanceDTOs.cs` | Created | `AttendanceRecordDto`, `CheckInRequest`, `CheckOutRequest`, and `AttendanceDailySummaryDto`. |
 | `DTOs/PaymentDTOs.cs` | Created | `PaymentTransactionDto`, `CollectPaymentRequest`, `ProcessRefundRequest`, `InvoiceDto`, and `RevenueSummaryDto`. |
 | `DTOs/TrainerAndWorkoutDTOs.cs` | Created | `TrainerProfileDto`, `CreateTrainerRequest`, `WorkoutPlanDto`, `CreateWorkoutPlanRequest`, and `ExercisePrescriptionDto`. |
@@ -86,7 +86,7 @@ Below is the structured file manifest detailing every created and modified file 
 | `Controllers/DashboardController.cs` | Created | Aggregates real-time KPIs, FL Chart points, expirations, and activities: `GET /api/dashboard/metrics`. |
 | `Controllers/MembersController.cs` | Created | Full CRUD member lifecycle: `GET /api/members`, `GET /api/members/{id}`, `POST /api/members`, `PUT /api/members/{id}`, `DELETE /api/members/{id}`. |
 | `Controllers/MembershipsController.cs` | Created | Plan catalog & subscriptions: `GET /api/memberships/plans`, `POST /api/memberships/plans`, `POST /api/memberships/assign`, `POST /api/memberships/freeze/{id}`. |
-| `Controllers/LeadsController.cs` | Created | 7-stage CRM Kanban pipeline: `GET /api/leads`, `POST /api/leads`, `PUT /api/leads/{id}/stage`, `POST /api/leads/{id}/notes`. |
+| `Controllers/WhatsAppController.cs` | Created | WhatsApp Business Cloud API hub: `GET /api/whatsapp/metrics`, `GET /api/whatsapp/conversations`, `GET /api/whatsapp/history/{memberId}`, `POST /api/whatsapp/send`, `POST /api/whatsapp/broadcast`, `GET /api/whatsapp/templates`, `GET /api/whatsapp/triggers`, `POST /api/whatsapp/triggers/toggle`, `GET/POST /api/whatsapp/webhook`. |
 | `Controllers/AttendanceController.cs` | Created | Reception desk terminal: `GET /api/attendance/today`, `POST /api/attendance/check-in` (with anti-duplicate check), `POST /api/attendance/check-out`. |
 | `Controllers/PaymentsController.cs` | Created | Financial transaction ledger: `GET /api/payments`, `POST /api/payments/collect`, `GET /api/payments/{id}/invoice`, `POST /api/payments/{id}/refund`. |
 | `Controllers/TrainersController.cs` | Created | Trainer rosters and coaching sessions: `GET /api/trainers`, `POST /api/trainers`, `GET /api/trainers/{id}/sessions`. |
@@ -166,13 +166,12 @@ Below is the structured file manifest detailing every created and modified file 
 | `members/add_member_dialog.dart` | Created | Multi-section modal dialog for onboarding new members with form validation (Name, Phone, Email, Plan, Trainer, Medical Notes). |
 | `members/member_detail_dialog.dart` | Created | Full-featured 4-tab member profile dialog: **Overview** (Personal info & stats), **Subscriptions** (Active & past plans), **Attendance** (Check-in log), and **Payments** (Invoice transaction history). |
 
-##### 4. Leads & CRM Kanban
+##### 4. WhatsApp Customer Messaging API Hub
 | File Path | Action | Description |
 | :--- | :--- | :--- |
-| `leads/lead_models.dart` | Created | Models lead entities, interaction logs, and pipeline stages. |
-| `leads/leads_provider.dart` | Created | Manages CRM pipeline stages, lead additions, stage progression, and follow-up updates. |
-| `leads/leads_kanban_view.dart` | Created | Visual 7-column Kanban board (*New*, *Contacted*, *Interested*, *Trial Scheduled*, *Trial Completed*, *Converted*, *Lost*) featuring card drag/progression, lead source tags, and follow-up indicators. |
-| `leads/add_lead_dialog.dart` | Created | Lead intake modal with source attribution (Walk-in, Website, Referral, Social Media) and interest notes. |
+| `whatsapp/whatsapp_models.dart` | Created | Data models for WhatsApp messages, conversations, Meta-approved templates, automated trigger rules, broadcast audience requests, and delivery metrics. |
+| `whatsapp/whatsapp_provider.dart` | Created | Riverpod state providers managing real-time chat stream (`whatsAppMessagesProvider`), member conversations list, active templates, automation trigger toggles, broadcast campaigns, and delivery KPI metrics. |
+| `whatsapp/whatsapp_messaging_view.dart` | Created | Enterprise WhatsApp Customer Messaging workspace: <br>• **KPI Header**: Real-time delivery rate %, read rate %, messages sent today, Meta Cloud API connection badge.<br>• **Tab 1: Member Live Chat**: Left conversation list with unread counters and last message timestamps; Right interactive chat stream with authentic WhatsApp dark green bubbles, timestamp, delivery status ticks (`Sent`, `Delivered`, `Read` with WhatsApp blue ticks), quick-template picker dropdown, and instant message composer.<br>• **Tab 2: Broadcast Campaigns**: Target audience selection (*All Active Members*, *Expiring in 7 Days*, *Pending Payment Dues*), pre-approved template selector, campaign name, preview bubble, and bulk blast execution.<br>• **Tab 3: Automated Triggers & Templates**: Active toggle cards for event-driven automation (New Member Welcome Onboarding, Payment Invoice Receipt, Expiration Renewal Reminder, Workout Streak Inactivity Check-in) and Meta-approved template cards with placeholder tags. |
 
 ##### 5. Memberships & Plans
 | File Path | Action | Description |
@@ -357,7 +356,7 @@ The application layout dynamically responds across 4 primary screen form factors
 - **Monthly Revenue Line Chart**: Interactive FL Chart curved line graph displaying 6-month historical billing totals and transaction volumes.
 - **Weekday Attendance Trends**: FL Chart multi-column bar graph mapping check-in volume from Monday through Sunday.
 - **Upcoming Expirations Table**: Direct alerts for memberships expiring within 7 days, complete with one-click "Renew" action.
-- **Live Activity Feed**: Real-time event log with color-coded categories (*Member*, *Payment*, *Attendance*, *Lead*, *Trainer*).
+- **Live Activity Feed**: Real-time event log with color-coded categories (*Member*, *Payment*, *Attendance*, *WhatsApp*, *Trainer*).
 
 ### 3. Member Lifecycle Management (`members_view.dart`)
 - Dynamic search bar with real-time text query filtering across Name, Email, and Phone.
@@ -369,11 +368,25 @@ The application layout dynamically responds across 4 primary screen form factors
   - *Attendance*: Log of member check-ins with branch location.
   - *Payments*: History of member invoices and transactions.
 
-### 4. Leads & CRM Kanban Pipeline (`leads_kanban_view.dart`)
-- 7-Column visual Kanban: *New*, *Contacted*, *Interested*, *Trial Scheduled*, *Trial Completed*, *Converted*, *Lost*.
-- Individual lead cards featuring prospect name, phone, lead source chip (*Walk-in*, *Website*, *Social*), and scheduled follow-up dates.
-- One-click stage progression buttons that update the backend and log an immutable audit trail.
-- **Add Lead Modal**: Quick-entry modal for front-desk reception staff.
+### 4. WhatsApp Customer Messaging API Hub (`whatsapp_messaging_view.dart`)
+- **Direct Member Chat**:
+  - Two-pane modern messaging layout with left member search and conversation threads.
+  - Authentic chat bubbles (Emerald WhatsApp dark/green accents in dark mode, clean light green in light mode) with timestamps and delivery tick status icons (`Sent` single tick, `Delivered` double tick, `Read` double blue tick).
+  - Quick-template injection dropdown (`welcome_onboarding`, `payment_invoice_receipt`, `membership_renewal_reminder`, `workout_streak_inactivity`) with instant variable substitution.
+  - Multi-line message input with instant send button and keyboard submission.
+- **Broadcast Campaigns**:
+  - Audience segmentation filters (*All Active Members*, *Expiring within 7 Days*, *Pending Payment Overdue*).
+  - Campaign composer with dynamic member count preview, template parameter mapping, and single-click delivery blast.
+- **Automated Event Triggers & Meta Templates**:
+  - Event-driven background triggers automatically dispatch WhatsApp messages on key lifecycle events:
+    1. **Member Onboarding**: Dispatches welcome message and assigned personal trainer contact upon membership activation.
+    2. **Invoice Payment**: Automatically sends PDF receipt links and payment confirmation when invoice is paid.
+    3. **Renewal Reminders**: Scheduled notifications sent to members whose plans expire within 7 days.
+    4. **Inactivity Re-engagement**: Automated friendly check-in when a member has not checked in for 7 consecutive days.
+  - Interactive switches allowing administrators to toggle each automated trigger rule on or off in real time.
+- **Meta Cloud API Webhook Integration**:
+  - Endpoint `GET /api/whatsapp/webhook` for Meta challenge handshake verification.
+  - Endpoint `POST /api/whatsapp/webhook` for receiving asynchronous delivery receipts and incoming member replies.
 
 ### 5. Memberships & Plans (`memberships_view.dart`)
 - **Plan Catalog Cards**: Tier presentation (*Basic*, *Transformation*, *Annual Elite*, *Personal Training Duo*) highlighting duration, pricing in dollars, and feature checklists.
@@ -456,14 +469,16 @@ Both backend and frontend services are currently hosted and running locally:
 | **Backend Cryptography** | `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified BCrypt password hashing & salt verification |
 | **Backend Financial Math** | `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified `decimal(18,2)` multi-item transaction precision |
 | **Frontend Design System** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified DesignTokens and Color palette integrity |
-| **Frontend Status Badges** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified dynamic rendering across all membership & lead states |
+| **Frontend Status Badges** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified dynamic rendering across all membership & payment states |
 | **Frontend Glass Engine** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified `BackdropFilter` glass decoration and borders |
 | **Frontend Metric Cards** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified title, value, icon, and +/- trend rendering |
+| **WhatsApp Customer Messaging** | `whatsapp_messaging_test.dart` | 3 | ✅ **PASSED** | Verified metrics bar, tab navigation, template chip rendering, message delivery tick formatting |
 | **RFC 9457 & Error Mapping** | `feedback_system_test.dart` | 4 | ✅ **PASSED** | DioException to AppError, timeouts, 401/403, sanitized 500s |
 | **Toast & Loading States** | `feedback_system_test.dart` | 3 | ✅ **PASSED** | Toast queueing, max 3 limit, full screen progress, connectivity |
 | **Feedback UI & Error Views** | `feedback_system_test.dart` | 6 | ✅ **PASSED** | Empty states, SearchEmptyState, NetworkError, ServerError |
 | **Static Code Analysis** | `dart analyze` | - | ✅ **0 Errors** | Clean Dart analysis across entire frontend repository |
 | **Backend Build & Tests** | `dotnet test` | 5 | ✅ **PASSED** | 5/5 passed including RFC 9457 middleware & data sanitization |
+| **Frontend Test Suite** | `flutter test` | 20 | ✅ **PASSED** | 20/20 unit & widget tests passed across all modules |
 
 ---
 

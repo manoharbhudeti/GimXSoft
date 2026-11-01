@@ -5,7 +5,7 @@ import '../../features/auth/auth_provider.dart';
 import '../../features/auth/login_view.dart';
 import '../../features/branches/branches_view.dart';
 import '../../features/dashboard/dashboard_view.dart';
-import '../../features/leads/leads_kanban_view.dart';
+import '../../features/whatsapp/whatsapp_messaging_view.dart';
 import '../../features/members/members_view.dart';
 import '../../features/memberships/memberships_view.dart';
 import '../../features/payments/payments_view.dart';
@@ -50,8 +50,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => const NoTransitionPage(child: MembersView()),
           ),
           GoRoute(
-            path: '/leads',
-            pageBuilder: (context, state) => const NoTransitionPage(child: LeadsKanbanView()),
+            path: '/whatsapp',
+            pageBuilder: (context, state) => const NoTransitionPage(child: WhatsAppMessagingView()),
           ),
           GoRoute(
             path: '/memberships',

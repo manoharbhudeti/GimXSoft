@@ -12,6 +12,8 @@ public record DashboardMetricsDto(
     double MembershipRenewalRate,
     int NewLeadsThisMonth,
     double LeadConversionRate,
+    int WhatsAppSentToday,
+    double WhatsAppDeliveryRate,
     List<MonthlyRevenueItemDto> MonthlyRevenueChart,
     List<MemberAcquisitionItemDto> MemberAcquisitionChart,
     List<AttendanceTrendItemDto> AttendanceTrendsChart,

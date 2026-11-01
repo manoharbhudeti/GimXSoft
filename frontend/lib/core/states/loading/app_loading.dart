@@ -67,3 +67,4 @@ class BackgroundSyncNotifier extends Notifier<bool> {
   void startSync() => state = true;
   void finishSync() => state = false;
 }
+

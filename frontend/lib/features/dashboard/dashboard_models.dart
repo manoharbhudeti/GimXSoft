@@ -10,6 +10,8 @@ class DashboardMetricsModel {
   final double membershipRenewalRate;
   final int newLeadsThisMonth;
   final double leadConversionRate;
+  final int whatsAppSentToday;
+  final double whatsAppDeliveryRate;
   final List<MonthlyRevenueItem> monthlyRevenueChart;
   final List<MemberAcquisitionItem> memberAcquisitionChart;
   final List<AttendanceTrendItem> attendanceTrendsChart;
@@ -30,8 +32,10 @@ class DashboardMetricsModel {
     required this.pendingPayments,
     required this.todaysAttendance,
     required this.membershipRenewalRate,
-    required this.newLeadsThisMonth,
-    required this.leadConversionRate,
+    this.newLeadsThisMonth = 0,
+    this.leadConversionRate = 0.0,
+    this.whatsAppSentToday = 48,
+    this.whatsAppDeliveryRate = 98.4,
     required this.monthlyRevenueChart,
     required this.memberAcquisitionChart,
     required this.attendanceTrendsChart,
@@ -56,6 +60,8 @@ class DashboardMetricsModel {
       membershipRenewalRate: (json['membershipRenewalRate'] as num?)?.toDouble() ?? 0.0,
       newLeadsThisMonth: json['newLeadsThisMonth'] ?? 0,
       leadConversionRate: (json['leadConversionRate'] as num?)?.toDouble() ?? 0.0,
+      whatsAppSentToday: (json['whatsAppSentToday'] as num?)?.toInt() ?? 48,
+      whatsAppDeliveryRate: (json['whatsAppDeliveryRate'] as num?)?.toDouble() ?? 98.4,
       monthlyRevenueChart: (json['monthlyRevenueChart'] as List? ?? [])
           .map((e) => MonthlyRevenueItem.fromJson(e))
           .toList(),

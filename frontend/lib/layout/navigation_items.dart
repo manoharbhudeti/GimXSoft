@@ -26,9 +26,10 @@ const List<NavigationItem> kNavigationItems = [
     icon: Icons.people_alt_rounded,
   ),
   NavigationItem(
-    title: 'Leads & CRM',
-    path: '/leads',
-    icon: Icons.view_kanban_rounded,
+    title: 'WhatsApp Messaging',
+    path: '/whatsapp',
+    icon: Icons.chat_rounded,
+    badgeCount: 2,
   ),
   NavigationItem(
     title: 'Memberships',

@@ -28,6 +28,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<TrainerSession> TrainerSessions => Set<TrainerSession>();
     public DbSet<WorkoutPlan> WorkoutPlans => Set<WorkoutPlan>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<WhatsAppMessage> WhatsAppMessages => Set<WhatsAppMessage>();
+    public DbSet<WhatsAppTemplate> WhatsAppTemplates => Set<WhatsAppTemplate>();
+    public DbSet<WhatsAppTriggerRule> WhatsAppTriggerRules => Set<WhatsAppTriggerRule>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,6 +50,9 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<TrainerSession>().HasQueryFilter(ts => !_tenantService!.TenantId.HasValue || ts.TenantId == _tenantService.TenantId.Value);
         modelBuilder.Entity<WorkoutPlan>().HasQueryFilter(wp => !_tenantService!.TenantId.HasValue || wp.TenantId == _tenantService.TenantId.Value);
         modelBuilder.Entity<AuditLog>().HasQueryFilter(al => !_tenantService!.TenantId.HasValue || al.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WhatsAppMessage>().HasQueryFilter(wm => !_tenantService!.TenantId.HasValue || wm.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WhatsAppTemplate>().HasQueryFilter(wt => !_tenantService!.TenantId.HasValue || wt.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WhatsAppTriggerRule>().HasQueryFilter(wtr => !_tenantService!.TenantId.HasValue || wtr.TenantId == _tenantService.TenantId.Value);
 
         // Relationships & Constraints
         modelBuilder.Entity<Tenant>()

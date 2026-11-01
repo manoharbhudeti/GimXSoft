@@ -78,41 +78,6 @@ class DashboardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorState(BuildContext context, WidgetRef ref, String error, bool isDark) {
-    return Center(
-      child: GlassCard(
-        padding: const EdgeInsets.all(DesignTokens.space32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.cloud_off_rounded, size: 40, color: AppColors.error),
-            const SizedBox(height: DesignTokens.space16),
-            Text(
-              'Failed to load dashboard metrics',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary(isDark),
-              ),
-            ),
-            const SizedBox(height: DesignTokens.space8),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: AppColors.textSecondary(isDark)),
-            ),
-            const SizedBox(height: DesignTokens.space20),
-            AppButton(
-              text: 'Retry',
-              icon: Icons.refresh,
-              onPressed: () => ref.invalidate(dashboardMetricsProvider),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildDashboardContent(
     BuildContext context,
     WidgetRef ref,
@@ -262,27 +227,27 @@ class DashboardView extends ConsumerWidget {
                   SizedBox(
                     width: cardWidth,
                     child: MetricStatCard(
-                      title: 'New Leads This Month',
-                      value: '${metrics.newLeadsThisMonth > 0 ? metrics.newLeadsThisMonth : 14}',
-                      subtitle: 'Pipeline inquiries',
-                      icon: Icons.view_kanban_rounded,
-                      iconColor: AppColors.accentOrange,
-                      trendPercentage: 16.5,
+                      title: 'WhatsApp Messages Sent',
+                      value: '${metrics.whatsAppSentToday}',
+                      subtitle: 'Receipts, reminders & alerts',
+                      icon: Icons.mark_chat_read_rounded,
+                      iconColor: const Color(0xFF25D366),
+                      trendPercentage: 24.0,
                       isPositiveTrend: true,
-                      onTap: () => context.go('/leads'),
+                      onTap: () => context.go('/whatsapp'),
                     ),
                   ),
                   SizedBox(
                     width: cardWidth,
                     child: MetricStatCard(
-                      title: 'Lead Conversion Rate',
-                      value: '${metrics.leadConversionRate.toStringAsFixed(1)}%',
-                      subtitle: 'Inquiries to memberships',
-                      icon: Icons.pie_chart_rounded,
-                      iconColor: AppColors.accentRose,
-                      trendPercentage: 2.1,
+                      title: 'WhatsApp Delivery SLA',
+                      value: '${metrics.whatsAppDeliveryRate.toStringAsFixed(1)}%',
+                      subtitle: 'Verified Meta Cloud Delivery',
+                      icon: Icons.done_all_rounded,
+                      iconColor: const Color(0xFF25D366),
+                      trendPercentage: 1.2,
                       isPositiveTrend: true,
-                      onTap: () => context.go('/leads'),
+                      onTap: () => context.go('/whatsapp'),
                     ),
                   ),
                   SizedBox(

@@ -255,3 +255,4 @@ class AppError {
   @override
   String toString() => 'AppError[$type] ($errorCode): $message';
 }
+

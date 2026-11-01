@@ -655,6 +655,210 @@ public static class DbInitializer
         };
         context.WorkoutPlans.Add(workoutPlan1);
 
+        // 13. Seed WhatsApp Templates & Trigger Rules
+        var tmplWelcome = new WhatsAppTemplate
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "welcome_onboarding",
+            Category = "UTILITY",
+            Header = "Welcome to Titan Fitness!",
+            Body = "Welcome to Titan Fitness & Performance Club, {{1}}! Your {{2}} membership is active. Your assigned personal trainer is {{3}}. Let's build your fitness journey together.",
+            Footer = "Titan Fitness Reception Desk",
+            MetaStatus = "APPROVED",
+            CreatedAt = DateTime.UtcNow.AddMonths(-3)
+        };
+
+        var tmplRenewal = new WhatsAppTemplate
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "membership_renewal_reminder",
+            Category = "UTILITY",
+            Header = "Membership Renewal Notice",
+            Body = "Hi {{1}}, your {{2}} membership at Titan Fitness expires on {{3}}. Renew before expiry to maintain your locked-in rate without re-enrollment fees.",
+            Footer = "Tap below to renew or reply here",
+            MetaStatus = "APPROVED",
+            CreatedAt = DateTime.UtcNow.AddMonths(-3)
+        };
+
+        var tmplPayment = new WhatsAppTemplate
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "payment_invoice_receipt",
+            Category = "UTILITY",
+            Header = "Payment Receipt",
+            Body = "Hi {{1}}, we received your payment of ${{2}} for invoice {{3}}. Thank you for your continued dedication to your fitness goals.",
+            Footer = "Download your official tax invoice anytime",
+            MetaStatus = "APPROVED",
+            CreatedAt = DateTime.UtcNow.AddMonths(-3)
+        };
+
+        var tmplInactivity = new WhatsAppTemplate
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "workout_streak_inactivity",
+            Category = "MARKETING",
+            Header = "We Miss You at the Gym!",
+            Body = "Hey {{1}}, we noticed you haven't checked in for workout sessions this week. Consistency creates results! Need to adjust your routine or book coach time? Reply to chat with our front desk.",
+            Footer = "Titan Fitness Wellness Team",
+            MetaStatus = "APPROVED",
+            CreatedAt = DateTime.UtcNow.AddMonths(-2)
+        };
+
+        context.WhatsAppTemplates.AddRange(tmplWelcome, tmplRenewal, tmplPayment, tmplInactivity);
+
+        // WhatsApp Trigger Rules
+        context.WhatsAppTriggerRules.AddRange(
+            new WhatsAppTriggerRule { Id = Guid.NewGuid(), TenantId = tenant.Id, TriggerEvent = "OnPaymentCompleted", TemplateName = "payment_invoice_receipt", IsEnabled = true },
+            new WhatsAppTriggerRule { Id = Guid.NewGuid(), TenantId = tenant.Id, TriggerEvent = "OnMembershipExpiring", TemplateName = "membership_renewal_reminder", IsEnabled = true },
+            new WhatsAppTriggerRule { Id = Guid.NewGuid(), TenantId = tenant.Id, TriggerEvent = "OnMemberJoined", TemplateName = "welcome_onboarding", IsEnabled = true },
+            new WhatsAppTriggerRule { Id = Guid.NewGuid(), TenantId = tenant.Id, TriggerEvent = "OnInactivity", TemplateName = "workout_streak_inactivity", IsEnabled = true }
+        );
+
+        // 14. Seed WhatsApp Conversational Messages with Members
+        context.WhatsAppMessages.AddRange(
+            // Conversation with James Wilson (member1)
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member1.Id,
+                RecipientPhone = member1.Phone,
+                RecipientName = $"{member1.FirstName} {member1.LastName}",
+                Direction = WhatsAppDirection.Outbound,
+                MessageType = WhatsAppMessageType.Template,
+                TemplateName = "welcome_onboarding",
+                MessageContent = $"Welcome to Titan Fitness & Performance Club, James! Your Annual Elite Pro membership is active. Your assigned personal trainer is David Vance.",
+                Status = WhatsAppMessageStatus.Read,
+                SentAt = DateTime.UtcNow.AddDays(-10),
+                DeliveredAt = DateTime.UtcNow.AddDays(-10).AddSeconds(2),
+                ReadAt = DateTime.UtcNow.AddDays(-10).AddMinutes(5)
+            },
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member1.Id,
+                RecipientPhone = member1.Phone,
+                RecipientName = $"{member1.FirstName} {member1.LastName}",
+                Direction = WhatsAppDirection.Inbound,
+                MessageType = WhatsAppMessageType.Text,
+                MessageContent = "Thank you! What time does the sauna and steam room close on weekdays?",
+                Status = WhatsAppMessageStatus.Read,
+                SentAt = DateTime.UtcNow.AddDays(-9),
+                DeliveredAt = DateTime.UtcNow.AddDays(-9),
+                ReadAt = DateTime.UtcNow.AddDays(-9).AddMinutes(1)
+            },
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member1.Id,
+                RecipientPhone = member1.Phone,
+                RecipientName = $"{member1.FirstName} {member1.LastName}",
+                Direction = WhatsAppDirection.Outbound,
+                MessageType = WhatsAppMessageType.Text,
+                MessageContent = "Hi James, the spa amenities remain open until 10:30 PM Monday through Friday, and 8:00 PM on weekends. Let us know if you need locker reservations!",
+                Status = WhatsAppMessageStatus.Read,
+                SentAt = DateTime.UtcNow.AddDays(-9).AddMinutes(3),
+                DeliveredAt = DateTime.UtcNow.AddDays(-9).AddMinutes(3).AddSeconds(2),
+                ReadAt = DateTime.UtcNow.AddDays(-9).AddMinutes(4)
+            },
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member1.Id,
+                RecipientPhone = member1.Phone,
+                RecipientName = $"{member1.FirstName} {member1.LastName}",
+                Direction = WhatsAppDirection.Outbound,
+                MessageType = WhatsAppMessageType.Template,
+                TemplateName = "payment_invoice_receipt",
+                MessageContent = "Hi James, we received your payment of $749.00 for invoice INV-2026-0001. Thank you for your continued dedication to your fitness goals.",
+                Status = WhatsAppMessageStatus.Read,
+                SentAt = DateTime.UtcNow.AddDays(-2),
+                DeliveredAt = DateTime.UtcNow.AddDays(-2).AddSeconds(1),
+                ReadAt = DateTime.UtcNow.AddDays(-2).AddMinutes(12)
+            },
+
+            // Conversation with Sophia Chen (member2)
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member2.Id,
+                RecipientPhone = member2.Phone,
+                RecipientName = $"{member2.FirstName} {member2.LastName}",
+                Direction = WhatsAppDirection.Outbound,
+                MessageType = WhatsAppMessageType.Template,
+                TemplateName = "membership_renewal_reminder",
+                MessageContent = "Hi Sophia, your Quarterly Transformation membership at Titan Fitness expires in 5 days. Renew before Nov 6 to maintain your locked-in rate without re-enrollment fees.",
+                Status = WhatsAppMessageStatus.Delivered,
+                SentAt = DateTime.UtcNow.AddHours(-4),
+                DeliveredAt = DateTime.UtcNow.AddHours(-4).AddSeconds(3),
+                ReadAt = null
+            },
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member2.Id,
+                RecipientPhone = member2.Phone,
+                RecipientName = $"{member2.FirstName} {member2.LastName}",
+                Direction = WhatsAppDirection.Inbound,
+                MessageType = WhatsAppMessageType.Text,
+                MessageContent = "Can I renew with UPI online or do I have to pay at the desk?",
+                Status = WhatsAppMessageStatus.Read,
+                SentAt = DateTime.UtcNow.AddHours(-2),
+                DeliveredAt = DateTime.UtcNow.AddHours(-2),
+                ReadAt = DateTime.UtcNow.AddHours(-2).AddMinutes(1)
+            },
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member2.Id,
+                RecipientPhone = member2.Phone,
+                RecipientName = $"{member2.FirstName} {member2.LastName}",
+                Direction = WhatsAppDirection.Outbound,
+                MessageType = WhatsAppMessageType.Text,
+                MessageContent = "You can pay via UPI directly from your member portal or at the front desk using our QR terminal. We have already generated your renewal invoice!",
+                Status = WhatsAppMessageStatus.Delivered,
+                SentAt = DateTime.UtcNow.AddHours(-1),
+                DeliveredAt = DateTime.UtcNow.AddHours(-1).AddSeconds(2),
+                ReadAt = null
+            },
+
+            // Conversation with Liam O'Connor (member3)
+            new WhatsAppMessage
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenant.Id,
+                BranchId = branchDowntown.Id,
+                MemberId = member3.Id,
+                RecipientPhone = member3.Phone,
+                RecipientName = $"{member3.FirstName} {member3.LastName}",
+                Direction = WhatsAppDirection.Outbound,
+                MessageType = WhatsAppMessageType.Template,
+                TemplateName = "payment_invoice_receipt",
+                MessageContent = "Hi Liam, payment of $79.00 received for monthly membership dues. Receipt #INV-2026-0003 is confirmed.",
+                Status = WhatsAppMessageStatus.Read,
+                SentAt = DateTime.UtcNow.AddDays(-1),
+                DeliveredAt = DateTime.UtcNow.AddDays(-1).AddSeconds(1),
+                ReadAt = DateTime.UtcNow.AddDays(-1).AddMinutes(2)
+            }
+        );
+
         await context.SaveChangesAsync();
     }
 }
