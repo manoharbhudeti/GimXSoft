@@ -459,6 +459,52 @@ Both backend and frontend services are currently hosted and running locally:
 | **Frontend Status Badges** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified dynamic rendering across all membership & lead states |
 | **Frontend Glass Engine** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified `BackdropFilter` glass decoration and borders |
 | **Frontend Metric Cards** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified title, value, icon, and +/- trend rendering |
-| **Static Code Analysis** | `dart analyze` | - | ✅ **0 Errors** | Clean Dart analysis across all 45+ frontend files |
-| **Backend Build Check** | `dotnet build` | - | ✅ **0 Errors** | Clean build with zero warnings across all controllers and DTOs |
+| **RFC 9457 & Error Mapping** | `feedback_system_test.dart` | 4 | ✅ **PASSED** | DioException to AppError, timeouts, 401/403, sanitized 500s |
+| **Toast & Loading States** | `feedback_system_test.dart` | 3 | ✅ **PASSED** | Toast queueing, max 3 limit, full screen progress, connectivity |
+| **Feedback UI & Error Views** | `feedback_system_test.dart` | 6 | ✅ **PASSED** | Empty states, SearchEmptyState, NetworkError, ServerError |
+| **Static Code Analysis** | `dart analyze` | - | ✅ **0 Errors** | Clean Dart analysis across entire frontend repository |
+| **Backend Build & Tests** | `dotnet test` | 5 | ✅ **PASSED** | 5/5 passed including RFC 9457 middleware & data sanitization |
+
+---
+
+## 7. Global Application Feedback Architecture
+
+### 7.1 Architecture Tree (`frontend/lib/core/states/`)
+```
+frontend/lib/core/states/
+├── loading/
+│   ├── app_loading.dart            # GlobalLoadingNotifier & background sync state
+│   ├── full_screen_loader.dart     # Glassmorphic modal overlay with progress & blur
+│   ├── inline_loader.dart          # Circular accent spinner for widgets
+│   ├── button_loader.dart          # Compact spinner embedded in AppButton
+│   ├── skeleton_loader.dart        # Shimmering table rows, metric tiles, and cards
+│   ├── shimmer_loader.dart         # Reduced-motion aware gradient shader animation
+│   └── progress_loader.dart        # Linear & circular progress bars with percentages
+├── errors/
+│   ├── app_error.dart              # Unified AppError with RFC 9457 parser & status code mapper
+│   ├── error_boundary.dart         # Flutter widget error catcher preventing app crashes
+│   ├── network_error.dart          # Offline/Timeout glassmorphic view with Retry button
+│   ├── server_error.dart           # 5xx server failure view with Correlation ID copying
+│   ├── unauthorized_error.dart     # 401 session expired & 403 access restricted views
+│   └── not_found_error.dart        # 404 resource not found view with Go Back action
+├── empty_states/
+│   ├── app_empty_state.dart        # Reusable base empty state with icon, actions & themes
+│   ├── search_empty_state.dart     # "No matching results for query" with Clear action
+│   └── no_data_state.dart          # Presets for Members, Leads, Attendance, Payments, etc.
+├── success/
+│   ├── app_toast.dart              # Toast stack (Success, Error, Warning, Info, Undo)
+│   ├── success_dialog.dart         # Celebration modal for high-impact milestones
+│   └── confirmation_dialog.dart    # Confirmation & destructive action modal with loading
+├── network/
+│   ├── connectivity_service.dart   # Live heartbeat ping monitor & offline state detector
+│   ├── network_interceptor.dart    # Dio interceptor with token refresh mutex & safe retries
+│   └── api_error_handler.dart      # Standardized exception parser
+└── feedback/
+    ├── app_feedback_manager.dart   # Global feedback coordinator
+    └── app_state_handler.dart      # AsyncValue extensions (buildStateWidget, buildTableState)
+```
+
+### 7.2 Safe Idempotent Retries & Security Isolation
+- **Non-Idempotent Protection**: Operations such as `POST /api/payments/collect`, refunds, member creations, and checkout actions are strictly excluded from automated retries, eliminating duplicate charges and double ledger records.
+- **Sensitive Data Masking**: All 500-level internal exceptions are logged with full stack traces on the ASP.NET Core server, while the client receives RFC 9457 Problem Details containing safe user-facing text and a traceable Correlation ID (`TraceIdentifier`). SQL queries and credentials are never transmitted over the wire.
 
