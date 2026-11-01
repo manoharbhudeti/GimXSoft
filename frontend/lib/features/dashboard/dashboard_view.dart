@@ -9,6 +9,7 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/metric_card.dart';
 import '../../core/widgets/skeleton_loader.dart';
+import '../../core/states/feedback/app_state_handler.dart';
 import '../auth/auth_provider.dart';
 import 'dashboard_models.dart';
 import 'dashboard_provider.dart';
@@ -24,10 +25,11 @@ class DashboardView extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: metricsAsync.when(
-        loading: () => _buildLoadingState(isDark),
-        error: (err, stack) => _buildErrorState(context, ref, err.toString(), isDark),
-        data: (metrics) => _buildDashboardContent(context, ref, metrics, authState, isDark),
+      body: metricsAsync.buildStateWidget(
+        context,
+        loadingWidget: _buildLoadingState(isDark),
+        onRetry: () => ref.invalidate(dashboardMetricsProvider),
+        onData: (metrics) => _buildDashboardContent(context, ref, metrics, authState, isDark),
       ),
     );
   }

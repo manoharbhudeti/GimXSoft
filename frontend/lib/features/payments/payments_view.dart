@@ -9,6 +9,8 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/metric_card.dart';
 import '../../core/widgets/skeleton_loader.dart';
 import '../../core/widgets/status_badge.dart';
+import '../../core/states/empty_states/no_data_state.dart';
+import '../../core/states/feedback/app_state_handler.dart';
 import 'collect_payment_dialog.dart';
 import 'invoice_preview_dialog.dart';
 import 'payments_provider.dart';
@@ -166,19 +168,14 @@ class PaymentsView extends ConsumerWidget {
             ),
             const SizedBox(height: DesignTokens.space16),
 
-            paymentsAsync.when(
-              loading: () => SkeletonLoader(width: double.infinity, height: 260),
-              error: (err, _) => Center(child: Text('Error loading transactions: $err')),
-              data: (payments) {
-                if (payments.isEmpty) {
-                  return GlassCard(
-                    padding: const EdgeInsets.all(DesignTokens.space32),
-                    child: Center(
-                      child: Text('No transactions recorded yet.', style: TextStyle(color: AppColors.textMuted(isDark))),
-                    ),
-                  );
-                }
-
+            paymentsAsync.buildTableState(
+              context,
+              onRetry: () => ref.invalidate(paymentsListProvider),
+              isEmpty: (payments) => payments.isEmpty,
+              emptyWidget: NoDataState.payments(
+                onCollectPayment: () => CollectPaymentDialog.show(context),
+              ),
+              onData: (payments) {
                 return GlassCard(
                   padding: EdgeInsets.zero,
                   child: SingleChildScrollView(

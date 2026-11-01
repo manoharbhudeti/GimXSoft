@@ -9,6 +9,9 @@ import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/skeleton_loader.dart';
 import '../../core/widgets/status_badge.dart';
+import '../../core/states/empty_states/no_data_state.dart';
+import '../../core/states/empty_states/search_empty_state.dart';
+import '../../core/states/feedback/app_state_handler.dart';
 import 'add_member_dialog.dart';
 import 'member_detail_dialog.dart';
 import 'members_provider.dart';
@@ -21,6 +24,7 @@ class MembersView extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final membersAsync = ref.watch(membersListProvider);
     final statusFilter = ref.watch(memberStatusFilterProvider);
+    final searchQuery = ref.watch(memberSearchQueryProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -108,33 +112,22 @@ class MembersView extends ConsumerWidget {
             const SizedBox(height: DesignTokens.space20),
 
             // 3. Member Table Content
-            membersAsync.when(
-              loading: () => Column(
-                children: List.generate(
-                  5,
-                  (index) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: SkeletonLoader(width: double.infinity, height: 60),
-                  ),
-                ),
-              ),
-              error: (err, _) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Text('Error loading members: $err', style: const TextStyle(color: AppColors.error)),
-                ),
-              ),
-              data: (members) {
-                if (members.isEmpty) {
-                  return EmptyStateWidget(
-                    icon: Icons.person_off_outlined,
-                    title: 'No Members Found',
-                    description: 'Try adjusting your search criteria or register a new gym member.',
-                    actionText: 'Register Member',
-                    onAction: () => AddMemberDialog.show(context),
-                  );
-                }
-
+            membersAsync.buildTableState(
+              context,
+              onRetry: () => ref.invalidate(membersListProvider),
+              isEmpty: (members) => members.isEmpty,
+              emptyWidget: (searchQuery.isNotEmpty || statusFilter != null)
+                  ? SearchEmptyState(
+                      searchQuery: searchQuery,
+                      onClear: () {
+                        ref.read(memberSearchQueryProvider.notifier).set('');
+                        ref.read(memberStatusFilterProvider.notifier).set(null);
+                      },
+                    )
+                  : NoDataState.members(
+                      onAddMember: () => AddMemberDialog.show(context),
+                    ),
+              onData: (members) {
                 return GlassCard(
                   padding: EdgeInsets.zero,
                   child: SingleChildScrollView(

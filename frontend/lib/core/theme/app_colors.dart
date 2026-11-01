@@ -16,6 +16,13 @@ class AppColors {
   static const Color accentRose = Color(0xFFF43F5E);
   static const Color accentOrange = Color(0xFFF97316);
 
+  // Modern SaaS color aliases
+  static const Color rose = accentRose;
+  static const Color amber = warning;
+  static const Color emerald = success;
+  static const Color cyan = accentCyan;
+  static const Color violet = primary;
+
   // Status Indicators
   static const Color success = Color(0xFF10B981);
   static const Color warning = Color(0xFFF59E0B);

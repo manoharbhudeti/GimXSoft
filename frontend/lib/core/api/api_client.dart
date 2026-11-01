@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_constants.dart';
+import '../states/network/network_interceptor.dart';
 
 final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient();
@@ -9,9 +10,6 @@ final apiClientProvider = Provider<ApiClient>((ref) {
 
 class ApiClient {
   late final Dio dio;
-  String? _accessToken;
-  String? _tenantId;
-  String? _branchId;
 
   ApiClient() {
     dio = Dio(
@@ -26,50 +24,27 @@ class ApiClient {
       ),
     );
 
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          if (_accessToken == null) {
-            final prefs = await SharedPreferences.getInstance();
-            _accessToken = prefs.getString('access_token');
-            _tenantId = prefs.getString('tenant_id');
-            _branchId = prefs.getString('branch_id');
-          }
-
-          if (_accessToken != null) {
-            options.headers['Authorization'] = 'Bearer $_accessToken';
-          }
-          if (_tenantId != null) {
-            options.headers['X-Tenant-Id'] = _tenantId;
-          }
-          if (_branchId != null) {
-            options.headers['X-Branch-Id'] = _branchId;
-          }
-
-          return handler.next(options);
-        },
-        onError: (DioException error, handler) {
-          // Format user-friendly error message
-          return handler.next(error);
-        },
-      ),
-    );
+    // Attach our robust NetworkInterceptor (handles headers, token refresh mutex, safe idempotent retry, RFC 9457 errors)
+    dio.interceptors.add(NetworkInterceptor(dio: dio));
   }
 
-  void updateCredentials({String? token, String? tenantId, String? branchId}) {
-    _accessToken = token;
-    _tenantId = tenantId;
-    _branchId = branchId;
+  Future<void> updateCredentials({String? token, String? tenantId, String? branchId}) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (token != null) await prefs.setString('access_token', token);
+    if (tenantId != null) await prefs.setString('tenant_id', tenantId);
+    if (branchId != null) await prefs.setString('branch_id', branchId);
   }
 
-  void setBranchId(String? branchId) {
-    _branchId = branchId;
+  Future<void> setBranchId(String? branchId) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (branchId != null) {
+      await prefs.setString('branch_id', branchId);
+    } else {
+      await prefs.remove('branch_id');
+    }
   }
 
   Future<void> clearCredentials() async {
-    _accessToken = null;
-    _tenantId = null;
-    _branchId = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('access_token');
     await prefs.remove('refresh_token');
@@ -79,4 +54,3 @@ class ApiClient {
     await prefs.remove('tenant_data');
   }
 }
-

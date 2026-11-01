@@ -8,6 +8,7 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/metric_card.dart';
 import '../../core/widgets/skeleton_loader.dart';
 import '../../core/widgets/status_badge.dart';
+import '../../core/states/success/app_toast.dart';
 import 'attendance_provider.dart';
 
 class AttendanceTerminalView extends ConsumerStatefulWidget {
@@ -48,6 +49,9 @@ class _AttendanceTerminalViewState extends ConsumerState<AttendanceTerminalView>
       _lastMessage = res.message;
       if (res.success) {
         _codeController.clear();
+        ref.read(toastProvider.notifier).success('Check-In Recorded', message: res.message);
+      } else {
+        ref.read(toastProvider.notifier).warning('Check-In Notice', message: res.message);
       }
     });
 

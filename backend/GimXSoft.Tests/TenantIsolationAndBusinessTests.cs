@@ -150,4 +150,91 @@ public class TenantIsolationAndBusinessTests
 
         Assert.Equal(229.49m, completedRevenue);
     }
+
+    [Fact]
+    public async Task ExceptionHandlingMiddleware_ShouldReturnRfc9457ProblemDetails_ForKeyNotFound()
+    {
+        // Arrange
+        var context = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        context.Response.Body = new MemoryStream();
+        context.TraceIdentifier = "TEST-CORRELATION-001";
+
+        var logger = new FakeLogger<GimXSoft.Api.Middleware.ExceptionHandlingMiddleware>();
+        var env = new FakeWebHostEnvironment();
+
+        var middleware = new GimXSoft.Api.Middleware.ExceptionHandlingMiddleware(
+            next: (innerHttpContext) => throw new KeyNotFoundException("Member with ID '123' was not found."),
+            logger: logger,
+            env: env
+        );
+
+        // Act
+        await middleware.InvokeAsync(context);
+
+        // Assert
+        Assert.Equal(404, context.Response.StatusCode);
+        Assert.Equal("application/problem+json", context.Response.ContentType);
+
+        context.Response.Body.Seek(0, SeekOrigin.Begin);
+        using var reader = new StreamReader(context.Response.Body);
+        var responseBody = await reader.ReadToEndAsync();
+
+        using var doc = System.Text.Json.JsonDocument.Parse(responseBody);
+        var root = doc.RootElement;
+
+        Assert.Equal("Resource Not Found", root.GetProperty("title").GetString());
+        Assert.Equal(404, root.GetProperty("status").GetInt32());
+        Assert.Equal("RESOURCE_NOT_FOUND", root.GetProperty("errorCode").GetString());
+        Assert.Equal("TEST-CORRELATION-001", root.GetProperty("correlationId").GetString());
+        Assert.Contains("Member with ID '123' was not found.", root.GetProperty("detail").GetString());
+    }
+
+    [Fact]
+    public async Task ExceptionHandlingMiddleware_ShouldMaskInternalDetails_ForUnhandledException()
+    {
+        // Arrange
+        var context = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        context.Response.Body = new MemoryStream();
+        context.TraceIdentifier = "TEST-CORRELATION-002";
+
+        var logger = new FakeLogger<GimXSoft.Api.Middleware.ExceptionHandlingMiddleware>();
+        var env = new FakeWebHostEnvironment();
+
+        var middleware = new GimXSoft.Api.Middleware.ExceptionHandlingMiddleware(
+            next: (innerHttpContext) => throw new InvalidOperationException("FATAL: Business operation conflict"),
+            logger: logger,
+            env: env
+        );
+
+        // Act
+        await middleware.InvokeAsync(context);
+
+        // Assert
+        context.Response.Body.Seek(0, SeekOrigin.Begin);
+        using var reader = new StreamReader(context.Response.Body);
+        var responseBody = await reader.ReadToEndAsync();
+
+        using var doc = System.Text.Json.JsonDocument.Parse(responseBody);
+        var root = doc.RootElement;
+
+        Assert.Equal("BUSINESS_CONFLICT", root.GetProperty("errorCode").GetString());
+        Assert.Equal("TEST-CORRELATION-002", root.GetProperty("correlationId").GetString());
+    }
+}
+
+public class FakeLogger<T> : Microsoft.Extensions.Logging.ILogger<T>
+{
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => true;
+    public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) { }
+}
+
+public class FakeWebHostEnvironment : Microsoft.AspNetCore.Hosting.IWebHostEnvironment
+{
+    public string EnvironmentName { get; set; } = "Development";
+    public string ApplicationName { get; set; } = "GimXSoft.Api";
+    public string WebRootPath { get; set; } = "";
+    public Microsoft.Extensions.FileProviders.IFileProvider WebRootFileProvider { get; set; } = null!;
+    public string ContentRootPath { get; set; } = "";
+    public Microsoft.Extensions.FileProviders.IFileProvider ContentRootFileProvider { get; set; } = null!;
 }

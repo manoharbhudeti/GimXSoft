@@ -15,6 +15,13 @@ class DesignTokens {
   static const double space40 = 40.0;
   static const double space48 = 48.0;
 
+  // Semantic spacing aliases
+  static const double spacingXs = space4;
+  static const double spacingSm = space8;
+  static const double spacingMd = space16;
+  static const double spacingLg = space24;
+  static const double spacingXl = space32;
+
   // Corner Radii
   static const double radiusXs = 4.0;
   static const double radiusSm = 6.0;

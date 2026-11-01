@@ -7,6 +7,7 @@ import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/glass_card.dart';
+import '../../core/states/success/app_toast.dart';
 import '../members/member_models.dart';
 import 'payments_provider.dart';
 
@@ -86,11 +87,14 @@ class _CollectPaymentDialogState extends ConsumerState<CollectPaymentDialog> {
     if (mounted) {
       Navigator.of(context).pop();
       if (ok) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Payment transaction recorded successfully!'),
-            backgroundColor: AppColors.success,
-          ),
+        ref.read(toastProvider.notifier).success(
+          'Payment Collected',
+          message: 'Transaction recorded and invoice generated.',
+        );
+      } else {
+        ref.read(toastProvider.notifier).error(
+          'Collection Failed',
+          message: 'Could not record payment. Please check inputs and retry.',
         );
       }
     }

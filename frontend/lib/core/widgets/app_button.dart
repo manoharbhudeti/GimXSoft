@@ -3,7 +3,10 @@ import '../theme/app_colors.dart';
 import '../theme/design_tokens.dart';
 
 enum ButtonVariant { primary, secondary, outline, ghost, danger }
+typedef AppButtonVariant = ButtonVariant;
+
 enum ButtonSize { sm, md, lg }
+typedef AppButtonSize = ButtonSize;
 
 class AppButton extends StatefulWidget {
   final String text;
@@ -17,7 +20,8 @@ class AppButton extends StatefulWidget {
 
   const AppButton({
     super.key,
-    required this.text,
+    String? text,
+    String? label,
     this.onPressed,
     this.variant = ButtonVariant.primary,
     this.size = ButtonSize.md,
@@ -25,7 +29,7 @@ class AppButton extends StatefulWidget {
     this.trailingIcon,
     this.isLoading = false,
     this.isFullWidth = false,
-  });
+  }) : text = text ?? label ?? '';
 
   @override
   State<AppButton> createState() => _AppButtonState();
@@ -160,4 +164,3 @@ class _AppButtonState extends State<AppButton> {
     );
   }
 }
-
