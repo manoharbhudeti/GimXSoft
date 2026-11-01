@@ -79,3 +79,4 @@ public record ToggleTriggerRequest(
     string TriggerEvent,
     bool IsEnabled
 );
+

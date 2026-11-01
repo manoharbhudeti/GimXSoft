@@ -82,3 +82,4 @@ public class WhatsAppTriggerRule
 
     public Tenant? Tenant { get; set; }
 }
+
