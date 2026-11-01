@@ -1,0 +1,96 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../features/attendance/attendance_terminal_view.dart';
+import '../../features/auth/auth_provider.dart';
+import '../../features/auth/login_view.dart';
+import '../../features/branches/branches_view.dart';
+import '../../features/dashboard/dashboard_view.dart';
+import '../../features/leads/leads_kanban_view.dart';
+import '../../features/members/members_view.dart';
+import '../../features/memberships/memberships_view.dart';
+import '../../features/payments/payments_view.dart';
+import '../../features/reports/reports_view.dart';
+import '../../features/settings/settings_view.dart';
+import '../../features/staff/staff_view.dart';
+import '../../features/trainers/trainers_view.dart';
+import '../../features/workouts/workouts_view.dart';
+import '../../layout/app_shell.dart';
+
+final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authProvider);
+
+  return GoRouter(
+    initialLocation: '/dashboard',
+    redirect: (context, state) {
+      final isAuth = authState.isAuthenticated;
+      final isLoggingIn = state.matchedLocation == '/login';
+
+      if (!isAuth && !isLoggingIn) {
+        return '/login';
+      }
+      if (isAuth && isLoggingIn) {
+        return '/dashboard';
+      }
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginView(),
+      ),
+      ShellRoute(
+        builder: (context, state, child) => AppShell(child: child),
+        routes: [
+          GoRoute(
+            path: '/dashboard',
+            pageBuilder: (context, state) => const NoTransitionPage(child: DashboardView()),
+          ),
+          GoRoute(
+            path: '/members',
+            pageBuilder: (context, state) => const NoTransitionPage(child: MembersView()),
+          ),
+          GoRoute(
+            path: '/leads',
+            pageBuilder: (context, state) => const NoTransitionPage(child: LeadsKanbanView()),
+          ),
+          GoRoute(
+            path: '/memberships',
+            pageBuilder: (context, state) => const NoTransitionPage(child: MembershipsView()),
+          ),
+          GoRoute(
+            path: '/attendance',
+            pageBuilder: (context, state) => const NoTransitionPage(child: AttendanceTerminalView()),
+          ),
+          GoRoute(
+            path: '/payments',
+            pageBuilder: (context, state) => const NoTransitionPage(child: PaymentsView()),
+          ),
+          GoRoute(
+            path: '/trainers',
+            pageBuilder: (context, state) => const NoTransitionPage(child: TrainersView()),
+          ),
+          GoRoute(
+            path: '/workouts',
+            pageBuilder: (context, state) => const NoTransitionPage(child: WorkoutsView()),
+          ),
+          GoRoute(
+            path: '/staff',
+            pageBuilder: (context, state) => const NoTransitionPage(child: StaffView()),
+          ),
+          GoRoute(
+            path: '/reports',
+            pageBuilder: (context, state) => const NoTransitionPage(child: ReportsView()),
+          ),
+          GoRoute(
+            path: '/branches',
+            pageBuilder: (context, state) => const NoTransitionPage(child: BranchesView()),
+          ),
+          GoRoute(
+            path: '/settings',
+            pageBuilder: (context, state) => const NoTransitionPage(child: SettingsView()),
+          ),
+        ],
+      ),
+    ],
+  );
+});

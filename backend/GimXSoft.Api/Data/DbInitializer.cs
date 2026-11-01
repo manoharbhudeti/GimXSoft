@@ -1,0 +1,661 @@
+using GimXSoft.Api.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace GimXSoft.Api.Data;
+
+public static class DbInitializer
+{
+    public static async Task SeedAsync(ApplicationDbContext context)
+    {
+        await context.Database.EnsureCreatedAsync();
+
+        if (await context.Tenants.IgnoreQueryFilters().AnyAsync())
+        {
+            return; // Already seeded
+        }
+
+        // 1. Create Demo Tenant
+        var tenant = new Tenant
+        {
+            Id = Guid.NewGuid(),
+            Name = "Titan Fitness & Performance Club",
+            Slug = "titan-fitness",
+            LogoUrl = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=128&q=80",
+            SubscriptionPlan = "Enterprise Pro",
+            SubscriptionStatus = "Active",
+            MaxBranches = 10,
+            MaxMembers = 5000,
+            CreatedAt = DateTime.UtcNow.AddMonths(-12)
+        };
+        context.Tenants.Add(tenant);
+
+        // 2. Create Branches
+        var branchDowntown = new Branch
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Downtown Flagship Club",
+            Code = "DT-01",
+            Address = "100 Central Avenue, Suite 400",
+            City = "Metropolis",
+            Phone = "+1 (555) 234-5678",
+            Email = "downtown@titanfit.com",
+            CreatedAt = DateTime.UtcNow.AddMonths(-12)
+        };
+
+        var branchWestside = new Branch
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Westside Health & Wellness",
+            Code = "WS-02",
+            Address = "450 Sunset Boulevard",
+            City = "Westland",
+            Phone = "+1 (555) 987-6543",
+            Email = "westside@titanfit.com",
+            CreatedAt = DateTime.UtcNow.AddMonths(-8)
+        };
+        context.Branches.AddRange(branchDowntown, branchWestside);
+
+        // 3. Create Users / Staff
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!");
+
+        var owner = new User
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = null, // All branches
+            FullName = "Alexander Morgan",
+            Email = "admin@titanfit.com",
+            PasswordHash = passwordHash,
+            Role = UserRole.GymOwner,
+            Phone = "+1 (555) 100-0001",
+            AvatarUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&q=80",
+            CreatedAt = DateTime.UtcNow.AddMonths(-12)
+        };
+
+        var manager = new User
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            FullName = "Sarah Jenkins",
+            Email = "sarah.manager@titanfit.com",
+            PasswordHash = passwordHash,
+            Role = UserRole.BranchManager,
+            Phone = "+1 (555) 100-0002",
+            AvatarUrl = "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&q=80",
+            CreatedAt = DateTime.UtcNow.AddMonths(-10)
+        };
+
+        var receptionist = new User
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            FullName = "Marcus Reid",
+            Email = "marcus.desk@titanfit.com",
+            PasswordHash = passwordHash,
+            Role = UserRole.Receptionist,
+            Phone = "+1 (555) 100-0003",
+            AvatarUrl = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80",
+            CreatedAt = DateTime.UtcNow.AddMonths(-6)
+        };
+
+        var trainer1 = new User
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            FullName = "David Kovacs",
+            Email = "david.trainer@titanfit.com",
+            PasswordHash = passwordHash,
+            Role = UserRole.Trainer,
+            Phone = "+1 (555) 100-0004",
+            AvatarUrl = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80",
+            CreatedAt = DateTime.UtcNow.AddMonths(-8)
+        };
+
+        var trainer2 = new User
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchWestside.Id,
+            FullName = "Elena Rostova",
+            Email = "elena.trainer@titanfit.com",
+            PasswordHash = passwordHash,
+            Role = UserRole.Trainer,
+            Phone = "+1 (555) 100-0005",
+            AvatarUrl = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&q=80",
+            CreatedAt = DateTime.UtcNow.AddMonths(-7)
+        };
+
+        context.Users.AddRange(owner, manager, receptionist, trainer1, trainer2);
+
+        // 4. Create Trainer Profiles
+        var trainerProfile1 = new TrainerProfile
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            UserId = trainer1.Id,
+            Bio = "Former national powerlifting champion. Specializes in barbell mechanics, progressive overload, and athletic hypertrophy.",
+            SpecializationsJson = "[\"Powerlifting\", \"Strength & Conditioning\", \"Hypertrophy\", \"Olympic Lifting\"]",
+            CertificationsJson = "[\"CSCS Certified\", \"USAW Level 2\", \"Precision Nutrition L1\"]",
+            HourlyRate = 65.00m
+        };
+
+        var trainerProfile2 = new TrainerProfile
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            UserId = trainer2.Id,
+            Bio = "Functional mobility and endurance expert. Passionate about posture correction, metabolic conditioning, and calisthenics.",
+            SpecializationsJson = "[\"Mobility & Flexibility\", \"HIIT Conditioning\", \"Pilates Core\", \"Rehabilitation\"]",
+            CertificationsJson = "[\"ACE Certified Personal Trainer\", \"FMS Functional Movement Specialist\"]",
+            HourlyRate = 60.00m
+        };
+        context.TrainerProfiles.AddRange(trainerProfile1, trainerProfile2);
+
+        // 5. Create Membership Plans
+        var planMonthly = new MembershipPlan
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Monthly Pro Pass",
+            Description = "Standard monthly membership with complete gym floor access and locker access.",
+            DurationDays = 30,
+            Price = 79.00m,
+            RegistrationFee = 25.00m,
+            BenefitsJson = "[\"Unlimited Gym Floor Access\", \"Cardio & Free Weight Zones\", \"Standard Locker Access\", \"Mobile App Access\"]",
+            IsPersonalTraining = false,
+            IncludedSessions = 0
+        };
+
+        var planQuarterly = new MembershipPlan
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Quarterly Transformation",
+            Description = "Our most popular 3-month commitment plan with complimentary body composition scans.",
+            DurationDays = 90,
+            Price = 219.00m,
+            RegistrationFee = 0.00m,
+            BenefitsJson = "[\"Full Access All Zones\", \"Free InBody Composition Scan\", \"1 Complimentary Trainer Session\", \"10% Smoothie Bar Discount\"]",
+            IsPersonalTraining = false,
+            IncludedSessions = 1
+        };
+
+        var planAnnual = new MembershipPlan
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Annual Elite All-Access",
+            Description = "Premium 365-day access across all branches, sauna, steam room, and guest passes.",
+            DurationDays = 365,
+            Price = 749.00m,
+            RegistrationFee = 0.00m,
+            BenefitsJson = "[\"Multi-Branch All-Access\", \"Sauna & Steam Lounge Access\", \"5 Guest Passes per year\", \"Priority Class Booking\", \"Free Titan Swag Kit\"]",
+            IsPersonalTraining = false,
+            IncludedSessions = 3
+        };
+
+        var planPT = new MembershipPlan
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Personal Training 10-Pack",
+            Description = "Dedicated one-on-one personal coaching pack with custom nutrition & workout plan.",
+            DurationDays = 60,
+            Price = 550.00m,
+            RegistrationFee = 0.00m,
+            BenefitsJson = "[\"10 One-on-One 60m Sessions\", \"Custom Workout Plan\", \"Weekly Macro Target Reviews\", \"Direct Trainer Messaging\"]",
+            IsPersonalTraining = true,
+            IncludedSessions = 10
+        };
+        context.MembershipPlans.AddRange(planMonthly, planQuarterly, planAnnual, planPT);
+
+        // 6. Create Members
+        var member1 = new Member
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberCode = "GIX-1001",
+            FirstName = "James",
+            LastName = "Wilson",
+            Email = "james.wilson@example.com",
+            Phone = "+1 (555) 301-8841",
+            Gender = "Male",
+            DateOfBirth = new DateTime(1992, 4, 15),
+            Address = "742 Evergreen Terrace, Metropolis",
+            EmergencyContactName = "Emily Wilson",
+            EmergencyContactPhone = "+1 (555) 301-8842",
+            JoiningDate = DateTime.UtcNow.AddMonths(-6),
+            AssignedTrainerId = trainer1.Id,
+            Status = MemberStatus.Active,
+            MedicalNotes = "Previous right shoulder impingement in 2023. Cleared for all pressing movements."
+        };
+
+        var member2 = new Member
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberCode = "GIX-1002",
+            FirstName = "Sophia",
+            LastName = "Chen",
+            Email = "sophia.chen@example.com",
+            Phone = "+1 (555) 442-9901",
+            Gender = "Female",
+            DateOfBirth = new DateTime(1996, 8, 22),
+            Address = "128 Beacon Hill Ave, Metropolis",
+            EmergencyContactName = "Kevin Chen",
+            EmergencyContactPhone = "+1 (555) 442-9902",
+            JoiningDate = DateTime.UtcNow.AddMonths(-3),
+            AssignedTrainerId = trainer1.Id,
+            Status = MemberStatus.Active,
+            MedicalNotes = "None reported. Excellent cardiovascular endurance."
+        };
+
+        var member3 = new Member
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberCode = "GIX-1003",
+            FirstName = "Liam",
+            LastName = "O'Connor",
+            Email = "liam.oconnor@example.com",
+            Phone = "+1 (555) 773-1245",
+            Gender = "Male",
+            DateOfBirth = new DateTime(1988, 11, 3),
+            Address = "55 Marina Blvd, Apt 4B, Metropolis",
+            EmergencyContactName = "Clara O'Connor",
+            EmergencyContactPhone = "+1 (555) 773-1246",
+            JoiningDate = DateTime.UtcNow.AddMonths(-10),
+            AssignedTrainerId = null,
+            Status = MemberStatus.Active,
+            MedicalNotes = "Asthma (carries emergency inhaler in gym bag)."
+        };
+
+        var member4 = new Member
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchWestside.Id,
+            MemberCode = "GIX-1004",
+            FirstName = "Olivia",
+            LastName = "Martinez",
+            Email = "olivia.m@example.com",
+            Phone = "+1 (555) 882-6632",
+            Gender = "Female",
+            DateOfBirth = new DateTime(1994, 2, 19),
+            Address = "901 Palm Canyon Rd, Westland",
+            EmergencyContactName = "Carlos Martinez",
+            EmergencyContactPhone = "+1 (555) 882-6633",
+            JoiningDate = DateTime.UtcNow.AddMonths(-1),
+            AssignedTrainerId = trainer2.Id,
+            Status = MemberStatus.Active,
+            MedicalNotes = null
+        };
+
+        var member5 = new Member
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberCode = "GIX-1005",
+            FirstName = "Ethan",
+            LastName = "Ramirez",
+            Email = "ethan.r@example.com",
+            Phone = "+1 (555) 661-4409",
+            Gender = "Male",
+            DateOfBirth = new DateTime(1990, 6, 30),
+            Address = "310 Hudson St, Metropolis",
+            EmergencyContactName = "Maria Ramirez",
+            EmergencyContactPhone = "+1 (555) 661-4410",
+            JoiningDate = DateTime.UtcNow.AddMonths(-8),
+            AssignedTrainerId = null,
+            Status = MemberStatus.Expired,
+            MedicalNotes = null
+        };
+
+        var member6 = new Member
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchWestside.Id,
+            MemberCode = "GIX-1006",
+            FirstName = "Ava",
+            LastName = "Patel",
+            Email = "ava.patel@example.com",
+            Phone = "+1 (555) 554-3321",
+            Gender = "Female",
+            DateOfBirth = new DateTime(1998, 9, 12),
+            Address = "88 Olympic Way, Westland",
+            EmergencyContactName = "Raj Patel",
+            EmergencyContactPhone = "+1 (555) 554-3322",
+            JoiningDate = DateTime.UtcNow.AddMonths(-2),
+            AssignedTrainerId = trainer2.Id,
+            Status = MemberStatus.Frozen,
+            MedicalNotes = "Temporary travel freeze until next month."
+        };
+
+        context.Members.AddRange(member1, member2, member3, member4, member5, member6);
+
+        // 7. Member Subscriptions
+        var sub1 = new MemberSubscription
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            MemberId = member1.Id,
+            MembershipPlanId = planAnnual.Id,
+            StartDate = DateTime.UtcNow.AddMonths(-6),
+            EndDate = DateTime.UtcNow.AddMonths(6),
+            PricePaid = 749.00m,
+            DiscountAmount = 0.00m,
+            Status = SubscriptionStatus.Active,
+            Notes = "Paid in full via Card"
+        };
+
+        var sub2 = new MemberSubscription
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            MemberId = member2.Id,
+            MembershipPlanId = planQuarterly.Id,
+            StartDate = DateTime.UtcNow.AddMonths(-1),
+            EndDate = DateTime.UtcNow.AddMonths(2),
+            PricePaid = 219.00m,
+            DiscountAmount = 0.00m,
+            Status = SubscriptionStatus.Active,
+            Notes = "Quarterly transformation enrollment"
+        };
+
+        var sub3 = new MemberSubscription
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            MemberId = member3.Id,
+            MembershipPlanId = planMonthly.Id,
+            StartDate = DateTime.UtcNow.AddDays(-15),
+            EndDate = DateTime.UtcNow.AddDays(15),
+            PricePaid = 79.00m,
+            DiscountAmount = 0.00m,
+            Status = SubscriptionStatus.Active,
+            Notes = "Monthly auto-renew"
+        };
+
+        var sub4 = new MemberSubscription
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            MemberId = member4.Id,
+            MembershipPlanId = planPT.Id,
+            StartDate = DateTime.UtcNow.AddDays(-10),
+            EndDate = DateTime.UtcNow.AddDays(50),
+            PricePaid = 550.00m,
+            DiscountAmount = 0.00m,
+            Status = SubscriptionStatus.Active,
+            Notes = "10 sessions with Elena"
+        };
+
+        context.MemberSubscriptions.AddRange(sub1, sub2, sub3, sub4);
+
+        // 8. Financial Transactions
+        var tx1 = new PaymentTransaction
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberId = member1.Id,
+            SubscriptionId = sub1.Id,
+            InvoiceNumber = "INV-2026-0001",
+            Amount = 749.00m,
+            PaymentMethod = PaymentMethod.Card,
+            Status = PaymentStatus.Completed,
+            TransactionReference = "CH_982347101",
+            Notes = "Annual Elite All-Access Membership",
+            CreatedAt = DateTime.UtcNow.AddMonths(-6)
+        };
+
+        var tx2 = new PaymentTransaction
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberId = member2.Id,
+            SubscriptionId = sub2.Id,
+            InvoiceNumber = "INV-2026-0002",
+            Amount = 219.00m,
+            PaymentMethod = PaymentMethod.UPI,
+            Status = PaymentStatus.Completed,
+            TransactionReference = "UPI_TXN_77412984",
+            Notes = "Quarterly Plan Payment",
+            CreatedAt = DateTime.UtcNow.AddMonths(-1)
+        };
+
+        var tx3 = new PaymentTransaction
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberId = member3.Id,
+            SubscriptionId = sub3.Id,
+            InvoiceNumber = "INV-2026-0003",
+            Amount = 79.00m,
+            PaymentMethod = PaymentMethod.Cash,
+            Status = PaymentStatus.Completed,
+            TransactionReference = "CSH_REC_4401",
+            Notes = "Monthly Renewal Desk Cash Collection",
+            CreatedAt = DateTime.UtcNow.AddDays(-15)
+        };
+
+        var tx4 = new PaymentTransaction
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchWestside.Id,
+            MemberId = member4.Id,
+            SubscriptionId = sub4.Id,
+            InvoiceNumber = "INV-2026-0004",
+            Amount = 550.00m,
+            PaymentMethod = PaymentMethod.BankTransfer,
+            Status = PaymentStatus.Completed,
+            TransactionReference = "WIRE_88931201",
+            Notes = "Personal Training 10-Pack",
+            CreatedAt = DateTime.UtcNow.AddDays(-10)
+        };
+
+        var tx5 = new PaymentTransaction
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberId = member2.Id,
+            SubscriptionId = null,
+            InvoiceNumber = "INV-2026-0005",
+            Amount = 45.00m,
+            PaymentMethod = PaymentMethod.Card,
+            Status = PaymentStatus.Completed,
+            TransactionReference = "CH_88239019",
+            Notes = "Titan Whey Protein Tub + Shaker Bottle",
+            CreatedAt = DateTime.UtcNow.AddDays(-2)
+        };
+
+        context.PaymentTransactions.AddRange(tx1, tx2, tx3, tx4, tx5);
+
+        // 9. Attendance Records
+        var today = DateTime.UtcNow.Date;
+        var att1 = new AttendanceRecord
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberId = member1.Id,
+            CheckInTime = today.AddHours(7).AddMinutes(15),
+            CheckOutTime = today.AddHours(8).AddMinutes(45),
+            Method = AttendanceMethod.QR,
+            Notes = "Morning workout"
+        };
+
+        var att2 = new AttendanceRecord
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            MemberId = member2.Id,
+            CheckInTime = today.AddHours(8).AddMinutes(30),
+            CheckOutTime = null, // currently working out
+            Method = AttendanceMethod.Manual,
+            Notes = "Front desk check-in"
+        };
+
+        var att3 = new AttendanceRecord
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchWestside.Id,
+            MemberId = member4.Id,
+            CheckInTime = today.AddHours(9).AddMinutes(0),
+            CheckOutTime = today.AddHours(10).AddMinutes(15),
+            Method = AttendanceMethod.Manual,
+            Notes = "PT session with Elena"
+        };
+
+        context.AttendanceRecords.AddRange(att1, att2, att3);
+
+        // 10. CRM Leads
+        var lead1 = new Lead
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            FullName = "Lucas Vance",
+            Email = "lucas.vance@example.com",
+            Phone = "+1 (555) 712-4491",
+            Source = LeadSource.Website,
+            Stage = LeadStage.TrialScheduled,
+            AssignedStaffId = manager.Id,
+            Notes = "Interested in hypertrophy coaching and evening access.",
+            NextFollowUpDate = DateTime.UtcNow.AddDays(1),
+            EstimatedValue = 749.00m,
+            CreatedAt = DateTime.UtcNow.AddDays(-4)
+        };
+
+        var lead2 = new Lead
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            FullName = "Elena Morris",
+            Email = "elena.m@example.com",
+            Phone = "+1 (555) 890-1122",
+            Source = LeadSource.WalkIn,
+            Stage = LeadStage.Interested,
+            AssignedStaffId = receptionist.Id,
+            Notes = "Walked in for a club tour during lunch break. Very positive.",
+            NextFollowUpDate = DateTime.UtcNow.AddDays(2),
+            EstimatedValue = 219.00m,
+            CreatedAt = DateTime.UtcNow.AddDays(-2)
+        };
+
+        var lead3 = new Lead
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchWestside.Id,
+            FullName = "Brandon Scott",
+            Email = "bscott@example.com",
+            Phone = "+1 (555) 441-2299",
+            Source = LeadSource.SocialMedia,
+            Stage = LeadStage.New,
+            AssignedStaffId = null,
+            Notes = "Filled Instagram lead form for 3-day guest trial.",
+            NextFollowUpDate = DateTime.UtcNow.AddHours(4),
+            EstimatedValue = 79.00m,
+            CreatedAt = DateTime.UtcNow.AddHours(-3)
+        };
+
+        var lead4 = new Lead
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            FullName = "Zoe Campbell",
+            Email = "zoe.c@example.com",
+            Phone = "+1 (555) 332-9018",
+            Source = LeadSource.Referral,
+            Stage = LeadStage.Converted,
+            AssignedStaffId = manager.Id,
+            Notes = "Referred by James Wilson. Signed up for Quarterly Plan!",
+            NextFollowUpDate = null,
+            EstimatedValue = 219.00m,
+            CreatedAt = DateTime.UtcNow.AddDays(-10)
+        };
+
+        context.Leads.AddRange(lead1, lead2, lead3, lead4);
+
+        // 11. Lead Activities
+        var act1 = new LeadActivity
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            LeadId = lead1.Id,
+            StaffId = manager.Id,
+            ActivityType = "Call",
+            Description = "Spoke with Lucas. Scheduled complimentary training trial for tomorrow 6 PM.",
+            CreatedAt = DateTime.UtcNow.AddDays(-1)
+        };
+
+        var act2 = new LeadActivity
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            LeadId = lead2.Id,
+            StaffId = receptionist.Id,
+            ActivityType = "Tour",
+            Description = "Completed 15-minute facility walkthrough including spa & free weights.",
+            CreatedAt = DateTime.UtcNow.AddDays(-2)
+        };
+        context.LeadActivities.AddRange(act1, act2);
+
+        // 12. Workout Plan
+        var workoutPlan1 = new WorkoutPlan
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            MemberId = member1.Id,
+            TrainerId = trainer1.Id,
+            Title = "Upper/Lower Hypertrophy Split 4-Day",
+            Goal = "Lean Muscle Hypertrophy & Barbell Strength",
+            StartDate = DateTime.UtcNow.AddMonths(-1),
+            EndDate = DateTime.UtcNow.AddMonths(2),
+            Notes = "Focus on 2-second eccentric phase. Keep rest to 90 seconds on compound lifts.",
+            ExercisesJson = @"[
+                {
+                    ""day"": ""Day 1: Upper Body Power"",
+                    ""exercises"": [
+                        {""name"": ""Barbell Bench Press"", ""sets"": 4, ""reps"": ""6-8"", ""rest"": ""120s""},
+                        {""name"": ""Bent-Over Barbell Row"", ""sets"": 4, ""reps"": ""8-10"", ""rest"": ""90s""},
+                        {""name"": ""Standing Overhead Press"", ""sets"": 3, ""reps"": ""8-10"", ""rest"": ""90s""},
+                        {""name"": ""Incline Dumbbell Curl"", ""sets"": 3, ""reps"": ""12"", ""rest"": ""60s""}
+                    ]
+                },
+                {
+                    ""day"": ""Day 2: Lower Body Power"",
+                    ""exercises"": [
+                        {""name"": ""Barbell Back Squat"", ""sets"": 4, ""reps"": ""6-8"", ""rest"": ""120s""},
+                        {""name"": ""Romanian Deadlift"", ""sets"": 3, ""reps"": ""8-10"", ""rest"": ""90s""},
+                        {""name"": ""Leg Press"", ""sets"": 3, ""reps"": ""12"", ""rest"": ""90s""},
+                        {""name"": ""Standing Calf Raise"", ""sets"": 4, ""reps"": ""15"", ""rest"": ""60s""}
+                    ]
+                }
+            ]"
+        };
+        context.WorkoutPlans.Add(workoutPlan1);
+
+        await context.SaveChangesAsync();
+    }
+}
+

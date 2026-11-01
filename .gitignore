@@ -1,0 +1,33 @@
+# Visual Studio / .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# SQLite databases & temp journals
+*.db
+*.db-shm
+*.db-wal
+
+# Flutter / Dart
+frontend/.dart_tool/
+frontend/.packages
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/build/
+.dart_tool/
+build/
+
+# IDE / Editor configuration
+.idea/
+.vscode/
+*.swp
+*.swo
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
