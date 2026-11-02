@@ -482,7 +482,7 @@ Both backend and frontend services are currently hosted and running locally:
 | **WhatsApp Customer Messaging API** | `whatsapp_messaging_test.dart` | 3 | ✅ **PASSED** | Verified metrics bar, template chips, and delivery tick formatting |
 | **Static Code Analysis** | `dart analyze` | - | ✅ **0 Errors** | Clean Dart analysis across entire frontend repository |
 | **Backend Test Suite** | `dotnet test` | 8 | ✅ **PASSED** | 8/8 unit & integration tests passed in net9.0 |
-| **Frontend Test Suite** | `flutter test` | 26 | ✅ **PASSED** | 26/26 unit & widget tests passed across all modules |
+| **Frontend Test Suite** | `flutter test` | 30 | ✅ **PASSED** | 30/30 unit, widget, and 3D interaction tests passed across all modules |
 
 ---
 
@@ -526,4 +526,66 @@ frontend/lib/core/states/
 ### 7.2 Safe Idempotent Retries & Security Isolation
 - **Non-Idempotent Protection**: Operations such as `POST /api/payments/collect`, refunds, member creations, and checkout actions are strictly excluded from automated retries, eliminating duplicate charges and double ledger records.
 - **Sensitive Data Masking**: All 500-level internal exceptions are logged with full stack traces on the ASP.NET Core server, while the client receives RFC 9457 Problem Details containing safe user-facing text and a traceable Correlation ID (`TraceIdentifier`). SQL queries and credentials are never transmitted over the wire.
+
+---
+
+## 8. 3D & Interactive UI Elements Architecture
+
+### 8.1 3D Perspective Projection Mathematics
+The GIMXSOFT frontend features custom, hardware-accelerated 3D spatial micro-interactions engineered in `frontend/lib/core/widgets/interactive_3d_card.dart`.
+
+Using 4D homogeneous matrix transformations:
+```dart
+final matrix = Matrix4.identity();
+matrix.setEntry(3, 2, 0.0012); // Focal perspective foreshortening
+matrix.rotateX(-_tiltOffset.dy * maxTiltAngle); // Pitch: rotation around X axis
+matrix.rotateY(_tiltOffset.dx * maxTiltAngle);  // Yaw: rotation around Y axis
+```
+Where normalized pointer displacement is computed continuously in mouse space:
+$$\Delta x = \left(\frac{x_{\text{pointer}}}{W_{\text{card}}} \times 2\right) - 1.0, \quad \Delta y = \left(\frac{y_{\text{pointer}}}{H_{\text{card}}} \times 2\right) - 1.0$$
+Clamped to $[-1.0, 1.0]$ with spring-back physics damping on `PointerExitEvent` via a 280ms `Curves.easeOutCubic` animation controller.
+
+### 8.2 Dynamic Specular Glare (Holographic Light Reflection)
+Simulates real optical glass refraction by projecting an animated, cursor-following radial gradient sheen:
+```dart
+RadialGradient(
+  center: Alignment(_tiltOffset.dx * 0.85, _tiltOffset.dy * 0.85),
+  radius: 0.95,
+  colors: [
+    specularColor.withOpacity(isDark ? 0.14 : 0.08),
+    specularColor.withOpacity(0.0),
+  ],
+  stops: const [0.0, 1.0],
+)
+```
+Combined with a 1.5px top-edge linear light refraction rim that glints when the card is tilted towards the light source.
+
+### 8.3 Multi-Layer Stereoscopic Parallax (`ParallaxLayer`)
+Descendant widgets inside `Interactive3DCard` can declare independent Z-depth displacement using `Interactive3DCardScope`:
+```dart
+ParallaxLayer(
+  depth: 14.0, // Pixels of translation relative to 3D surface
+  child: FloatingBadge(),
+)
+```
+This causes floating icons, difficulty tags, and action buttons to shift at different visual speeds, providing a physical, holographic stereoscopic depth effect.
+
+### 8.4 Tactile 3D Button Keycap Architecture (`AppButton`)
+- **Actuation Physics**: On `onTapDown`, primary and danger buttons depress by `+2.0px` on the Y-axis (`translate(0, 2)`), while bottom ledge shadows compress from `4.0px` to `1.0px`, giving a satisfying mechanical switch feedback.
+- **Sculpted 3D Bevel Base**: Buttons feature an underlying solid bevel ledge (`#3730A3` for primary, `#991B1B` for danger) creating a physical keycap silhouette.
+- **Top Specular Highlight Rim**: A 1.0px translucent white rim along the top edge simulates overhead studio lighting.
+
+### 8.5 Production SaaS Modules Enhanced with 3D
+1. **Interactive 3D Command Deck (`dashboard_view.dart`)**:
+   - 5 floating action tiles: New Member (`#4F46E5`), Check-In Scan (`#10B981`), WhatsApp Desk (`#25D366`), Weekly Workouts (`#F59E0B`), and Fitness Metrics (`#8B5CF6`).
+   - Features real-time cursor tilt, dynamic glowing neon aura, and parallax icons.
+2. **High-Level Metric Cards (`metric_card.dart`)**:
+   - Upgraded to 3D interactive cards with parallax floating icon badges and embossed trend pills.
+3. **Master Fitness Progress Holo-Card (`fitness_progress_view.dart`)**:
+   - Executive 3D card featuring a 3D Parallax Avatar with an animated multi-color sweep gradient status ring.
+4. **Workout Exercise Catalogue (`workout_library_view.dart`)**:
+   - Exercise cards respond to cursor hovering with 3D perspective elevation and floating difficulty level badges.
+5. **Weekly Routine Scheduler (`workout_scheduler_view.dart`)**:
+   - 7-day routine cards featuring raised active workout styling and recessed debossed rest-day visuals.
+
 

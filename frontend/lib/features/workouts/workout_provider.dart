@@ -100,3 +100,4 @@ class WorkoutActionService {
 final workoutActionProvider = Provider<WorkoutActionService>((ref) {
   return WorkoutActionService(ref);
 });
+

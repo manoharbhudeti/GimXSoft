@@ -8,6 +8,7 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/status_badge.dart';
+import '../../core/widgets/interactive_3d_card.dart';
 import 'workout_provider.dart';
 
 class WorkoutLibraryView extends ConsumerStatefulWidget {
@@ -310,6 +311,8 @@ class _WorkoutLibraryViewState extends ConsumerState<WorkoutLibraryView>
                               itemBuilder: (context, index) {
                                 final ex = filtered[index];
                                 return GlassCard(
+                                  enable3d: true,
+                                  glowColor: AppColors.primary,
                                   padding: const EdgeInsets.all(DesignTokens.space16),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,18 +321,24 @@ class _WorkoutLibraryViewState extends ConsumerState<WorkoutLibraryView>
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
-                                            child: Text(
-                                              ex.name,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w700,
-                                                color: AppColors.textPrimary(isDark),
+                                            child: ParallaxLayer(
+                                              depth: 8.0,
+                                              child: Text(
+                                                ex.name,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppColors.textPrimary(isDark),
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          StatusBadge(status: ex.difficultyLevel, isPill: true),
+                                          ParallaxLayer(
+                                            depth: 12.0,
+                                            child: StatusBadge(status: ex.difficultyLevel, isPill: true),
+                                          ),
                                         ],
                                       ),
                                       const SizedBox(height: 6),

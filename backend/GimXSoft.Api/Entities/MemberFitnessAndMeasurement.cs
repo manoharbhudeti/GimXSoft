@@ -181,3 +181,4 @@ public class MemberProgressReview
     public Member? Member { get; set; }
     public User? Trainer { get; set; }
 }
+

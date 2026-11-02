@@ -162,3 +162,4 @@ public class ExercisesController : ControllerBase
         return Ok(new { success = true, id });
     }
 }
+

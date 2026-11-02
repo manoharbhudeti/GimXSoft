@@ -9,6 +9,7 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/metric_card.dart';
 import '../../core/widgets/skeleton_loader.dart';
+import '../../core/widgets/interactive_3d_card.dart';
 import '../../core/states/feedback/app_state_handler.dart';
 import '../auth/auth_provider.dart';
 import 'dashboard_models.dart';
@@ -160,7 +161,11 @@ class DashboardView extends ConsumerWidget {
           ),
           const SizedBox(height: DesignTokens.space24),
 
-          // 2. High-Level Metric Stat Cards Grid
+          // 2. Interactive 3D Quick Action Command Deck
+          _build3DQuickActionDeck(context, isDark),
+          const SizedBox(height: DesignTokens.space24),
+
+          // 3. High-Level Metric Stat Cards Grid
           LayoutBuilder(
             builder: (context, constraints) {
               final cardWidth = constraints.maxWidth > 1100
@@ -345,6 +350,140 @@ class DashboardView extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _build3DQuickActionDeck(BuildContext context, bool isDark) {
+    final actions = [
+      (
+        title: 'New Member',
+        subtitle: 'Intake & profile',
+        icon: Icons.person_add_alt_1_rounded,
+        color: AppColors.primary,
+        route: '/members',
+      ),
+      (
+        title: 'Scan Check-In',
+        subtitle: 'Turnstile reception',
+        icon: Icons.qr_code_scanner_rounded,
+        color: const Color(0xFF10B981),
+        route: '/attendance',
+      ),
+      (
+        title: 'WhatsApp Desk',
+        subtitle: 'Direct chat & alerts',
+        icon: Icons.mark_chat_read_rounded,
+        color: const Color(0xFF25D366),
+        route: '/whatsapp',
+      ),
+      (
+        title: 'Weekly Workouts',
+        subtitle: 'Routine dispatcher',
+        icon: Icons.calendar_month_rounded,
+        color: const Color(0xFFF59E0B),
+        route: '/workouts/scheduler',
+      ),
+      (
+        title: 'Fitness Metrics',
+        subtitle: 'BMI & body delta',
+        icon: Icons.monitor_weight_rounded,
+        color: const Color(0xFF8B5CF6),
+        route: '/fitness-progress',
+      ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width;
+        if (constraints.maxWidth >= 1100) {
+          width = (constraints.maxWidth - (actions.length - 1) * 14) / actions.length;
+        } else if (constraints.maxWidth >= 700) {
+          width = (constraints.maxWidth - 14) / 2;
+        } else {
+          width = constraints.maxWidth;
+        }
+
+        return Wrap(
+          spacing: 14,
+          runSpacing: 14,
+          children: actions.map((act) {
+            return SizedBox(
+              width: width,
+              child: Interactive3DCard(
+                onTap: () => context.go(act.route),
+                glowColor: act.color,
+                maxTiltAngle: 0.12,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    ParallaxLayer(
+                      depth: 14.0,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: act.color.withOpacity(isDark ? 0.20 : 0.12),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: act.color.withOpacity(0.35),
+                            width: 1.2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: act.color.withOpacity(0.20),
+                              blurRadius: 8.0,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(act.icon, color: act.color, size: 20),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ParallaxLayer(
+                            depth: 6.0,
+                            child: Text(
+                              act.title,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary(isDark),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            act.subtitle,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textMuted(isDark),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    ParallaxLayer(
+                      depth: 10.0,
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 13,
+                        color: act.color.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 

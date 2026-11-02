@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/design_tokens.dart';
+import 'interactive_3d_card.dart';
 
 class GlassCard extends StatefulWidget {
   final Widget child;
@@ -12,8 +13,10 @@ class GlassCard extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Color? backgroundColor;
   final Color? borderColor;
+  final Color? glowColor;
   final VoidCallback? onTap;
   final bool enableHover;
+  final bool enable3d;
   final double blur;
 
   const GlassCard({
@@ -26,8 +29,10 @@ class GlassCard extends StatefulWidget {
     this.borderRadius,
     this.backgroundColor,
     this.borderColor,
+    this.glowColor,
     this.onTap,
     this.enableHover = false,
+    this.enable3d = false,
     this.blur = DesignTokens.blurStandard,
   });
 
@@ -40,6 +45,22 @@ class _GlassCardState extends State<GlassCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.enable3d) {
+      return Interactive3DCard(
+        width: widget.width,
+        height: widget.height,
+        margin: widget.margin,
+        padding: widget.padding,
+        borderRadius: widget.borderRadius,
+        backgroundColor: widget.backgroundColor,
+        borderColor: widget.borderColor,
+        glowColor: widget.glowColor,
+        onTap: widget.onTap,
+        blur: widget.blur,
+        child: widget.child,
+      );
+    }
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final r = widget.borderRadius ?? DesignTokens.borderLg;
 
@@ -81,7 +102,7 @@ class _GlassCardState extends State<GlassCard> {
                     borderRadius: r,
                     border: Border.all(
                       color: _isHovered && widget.enableHover
-                          ? AppColors.primary.withOpacity(0.5)
+                          ? (widget.glowColor ?? AppColors.primary).withOpacity(0.5)
                           : defaultBorder,
                       width: 1.0,
                     ),
@@ -96,4 +117,3 @@ class _GlassCardState extends State<GlassCard> {
     );
   }
 }
-

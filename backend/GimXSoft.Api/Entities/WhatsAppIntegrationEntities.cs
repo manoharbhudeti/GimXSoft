@@ -138,3 +138,4 @@ public class ScheduledMessage
     public Tenant? Tenant { get; set; }
     public Member? Member { get; set; }
 }
+

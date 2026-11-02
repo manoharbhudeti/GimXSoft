@@ -12,6 +12,7 @@ import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/metric_card.dart';
 import '../../core/widgets/status_badge.dart';
+import '../../core/widgets/interactive_3d_card.dart';
 import '../members/members_provider.dart';
 import 'measurement_models.dart';
 import 'measurement_provider.dart';
@@ -357,8 +358,10 @@ class _FitnessProgressViewState extends ConsumerState<FitnessProgressView>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Reusable Master Progress Card
-          GlassCard(
+          // Reusable Master Progress Card (3D Holographic Perspective)
+          Interactive3DCard(
+            glowColor: AppColors.primary,
+            maxTiltAngle: 0.08,
             padding: const EdgeInsets.all(DesignTokens.space24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,12 +369,36 @@ class _FitnessProgressViewState extends ConsumerState<FitnessProgressView>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 32,
-                      backgroundColor: AppColors.primary.withOpacity(0.2),
-                      child: Text(
-                        card.memberName.isNotEmpty ? card.memberName[0] : 'M',
-                        style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.primary),
+                    ParallaxLayer(
+                      depth: 16.0,
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const SweepGradient(
+                            colors: [
+                              AppColors.primary,
+                              AppColors.secondary,
+                              AppColors.accentCyan,
+                              AppColors.primary,
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.4),
+                              blurRadius: 12,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 32,
+                          backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                          child: Text(
+                            card.memberName.isNotEmpty ? card.memberName[0] : 'M',
+                            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.primary),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: DesignTokens.space20),
@@ -379,17 +406,20 @@ class _FitnessProgressViewState extends ConsumerState<FitnessProgressView>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                card.memberName,
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary(isDark)),
-                              ),
-                              const SizedBox(width: 10),
-                              StatusBadge(status: card.memberCode, isPill: true),
-                              const SizedBox(width: 8),
-                              StatusBadge(status: card.fitnessLevel, isPill: true),
-                            ],
+                          ParallaxLayer(
+                            depth: 8.0,
+                            child: Row(
+                              children: [
+                                Text(
+                                  card.memberName,
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary(isDark)),
+                                ),
+                                const SizedBox(width: 10),
+                                StatusBadge(status: card.memberCode, isPill: true),
+                                const SizedBox(width: 8),
+                                StatusBadge(status: card.fitnessLevel, isPill: true),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -399,20 +429,28 @@ class _FitnessProgressViewState extends ConsumerState<FitnessProgressView>
                         ],
                       ),
                     ),
-                    AppButton(
-                      text: 'Record Measurement',
-                      icon: Icons.add_rounded,
-                      variant: ButtonVariant.primary,
-                      onPressed: () => _showRecordMeasurementDialog(card.memberId, 178.0),
-                    ),
-                    const SizedBox(width: 8),
-                    AppButton(
-                      text: 'Share / Print',
-                      icon: Icons.print_rounded,
-                      variant: ButtonVariant.outline,
-                      onPressed: () {
-                        ref.read(toastProvider.notifier).success('Report Ready', message: 'Fitness progress summary prepared for export.');
-                      },
+                    ParallaxLayer(
+                      depth: 12.0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AppButton(
+                            text: 'Record Measurement',
+                            icon: Icons.add_rounded,
+                            variant: ButtonVariant.primary,
+                            onPressed: () => _showRecordMeasurementDialog(card.memberId, 178.0),
+                          ),
+                          const SizedBox(width: 8),
+                          AppButton(
+                            text: 'Share / Print',
+                            icon: Icons.print_rounded,
+                            variant: ButtonVariant.outline,
+                            onPressed: () {
+                              ref.read(toastProvider.notifier).success('Report Ready', message: 'Fitness progress summary prepared for export.');
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

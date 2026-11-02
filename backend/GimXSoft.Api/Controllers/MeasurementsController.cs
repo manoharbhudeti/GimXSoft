@@ -422,3 +422,4 @@ public class MeasurementsController : ControllerBase
         return Ok(new { success = true, stage = request.StageName, isCompleted = request.IsCompleted });
     }
 }
+

@@ -9,6 +9,7 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/status_badge.dart';
+import '../../core/widgets/interactive_3d_card.dart';
 import '../members/members_provider.dart';
 import 'workout_models.dart';
 import 'workout_provider.dart';
@@ -221,6 +222,8 @@ class _WorkoutSchedulerViewState extends ConsumerState<WorkoutSchedulerView> {
                     itemBuilder: (context, index) {
                       final item = sorted[index];
                       return GlassCard(
+                        enable3d: true,
+                        glowColor: item.isRestDay ? Colors.teal : AppColors.primary,
                         padding: const EdgeInsets.all(DesignTokens.space16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,25 +231,31 @@ class _WorkoutSchedulerViewState extends ConsumerState<WorkoutSchedulerView> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      item.isRestDay ? Icons.hotel_rounded : Icons.fitness_center_rounded,
-                                      color: item.isRestDay ? Colors.teal : AppColors.primary,
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      item.dayOfWeek,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.textPrimary(isDark),
+                                ParallaxLayer(
+                                  depth: 10.0,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        item.isRestDay ? Icons.hotel_rounded : Icons.fitness_center_rounded,
+                                        color: item.isRestDay ? Colors.teal : AppColors.primary,
+                                        size: 20,
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        item.dayOfWeek,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.textPrimary(isDark),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                StatusBadge(status: item.isRestDay ? 'Rest Day' : 'Active Workout', isPill: true),
+                                ParallaxLayer(
+                                  depth: 12.0,
+                                  child: StatusBadge(status: item.isRestDay ? 'Rest Day' : 'Active Workout', isPill: true),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 10),
