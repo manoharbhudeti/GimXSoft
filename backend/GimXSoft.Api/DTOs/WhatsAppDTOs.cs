@@ -80,3 +80,78 @@ public record ToggleTriggerRequest(
     bool IsEnabled
 );
 
+public record WhatsAppIntegrationDto(
+    Guid Id,
+    string WabaId,
+    string PhoneNumberId,
+    string DisplayPhoneNumber,
+    string BusinessPortfolioName,
+    string ConnectionStatus,
+    string HealthStatus,
+    decimal CostPerUtilityMessage,
+    decimal CostPerMarketingMessage,
+    string TimeZoneId,
+    DateTime? LastSyncedAt,
+    string WebhookUrl,
+    string WebhookVerifyToken
+);
+
+public record UpdateWhatsAppConfigRequest(
+    string WabaId,
+    string PhoneNumberId,
+    string DisplayPhoneNumber,
+    string BusinessPortfolioName,
+    string AccessToken,
+    string TimeZoneId
+);
+
+public record WhatsAppConsentDto(
+    Guid Id,
+    Guid MemberId,
+    string Phone,
+    bool HasConsented,
+    string ConsentSource,
+    DateTime ConsentedAt,
+    DateTime? RevokedAt,
+    string AllowedCategoriesJson
+);
+
+public record RecordConsentRequest(
+    Guid MemberId,
+    string Phone,
+    bool HasConsented,
+    string? ConsentSource,
+    List<string>? AllowedCategories
+);
+
+public record ScheduledMessageDto(
+    Guid Id,
+    Guid? MemberId,
+    string RecipientPhone,
+    string RecipientName,
+    string? TemplateName,
+    string MessageContent,
+    DateTime ScheduledForUtc,
+    string Status,
+    string TriggerType,
+    DateTime CreatedAt,
+    DateTime? ProcessedAt,
+    string? FailureReason
+);
+
+public record CreateScheduledMessageRequest(
+    Guid? MemberId,
+    string RecipientPhone,
+    string? RecipientName,
+    string? TemplateName,
+    string MessageContent,
+    DateTime ScheduledForUtc,
+    string TriggerType
+);
+
+public record OptOutRequest(
+    string Phone,
+    string? Reason
+);
+
+

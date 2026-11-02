@@ -19,6 +19,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // 2. Add Services
 builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IWhatsAppCloudApiClient, WhatsAppCloudApiClient>();
+builder.Services.AddHostedService<WhatsAppSchedulerBackgroundService>();
 
 // 3. Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");

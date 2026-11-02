@@ -5,6 +5,7 @@ import '../../features/auth/auth_provider.dart';
 import '../../features/auth/login_view.dart';
 import '../../features/branches/branches_view.dart';
 import '../../features/dashboard/dashboard_view.dart';
+import '../../features/measurements/fitness_progress_view.dart';
 import '../../features/whatsapp/whatsapp_messaging_view.dart';
 import '../../features/members/members_view.dart';
 import '../../features/memberships/memberships_view.dart';
@@ -13,7 +14,8 @@ import '../../features/reports/reports_view.dart';
 import '../../features/settings/settings_view.dart';
 import '../../features/staff/staff_view.dart';
 import '../../features/trainers/trainers_view.dart';
-import '../../features/workouts/workouts_view.dart';
+import '../../features/workouts/workout_library_view.dart';
+import '../../features/workouts/workout_scheduler_view.dart';
 import '../../layout/app_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -71,7 +73,19 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/workouts',
-            pageBuilder: (context, state) => const NoTransitionPage(child: WorkoutsView()),
+            pageBuilder: (context, state) => const NoTransitionPage(child: WorkoutLibraryView()),
+          ),
+          GoRoute(
+            path: '/workout-library',
+            pageBuilder: (context, state) => const NoTransitionPage(child: WorkoutLibraryView()),
+          ),
+          GoRoute(
+            path: '/workout-scheduler',
+            pageBuilder: (context, state) => const NoTransitionPage(child: WorkoutSchedulerView()),
+          ),
+          GoRoute(
+            path: '/fitness-progress',
+            pageBuilder: (context, state) => const NoTransitionPage(child: FitnessProgressView()),
           ),
           GoRoute(
             path: '/staff',

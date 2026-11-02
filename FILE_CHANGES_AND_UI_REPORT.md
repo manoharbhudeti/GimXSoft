@@ -468,17 +468,21 @@ Both backend and frontend services are currently hosted and running locally:
 | **Backend Multi-Tenancy** | `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified zero cross-tenant data leakage with EF Core query filters |
 | **Backend Cryptography** | `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified BCrypt password hashing & salt verification |
 | **Backend Financial Math** | `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified `decimal(18,2)` multi-item transaction precision |
-| **Frontend Design System** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified DesignTokens and Color palette integrity |
-| **Frontend Status Badges** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified dynamic rendering across all membership & payment states |
-| **Frontend Glass Engine** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified `BackdropFilter` glass decoration and borders |
-| **Frontend Metric Cards** | `widget_test.dart` | 1 | ✅ **PASSED** | Verified title, value, icon, and +/- trend rendering |
-| **WhatsApp Customer Messaging** | `whatsapp_messaging_test.dart` | 3 | ✅ **PASSED** | Verified metrics bar, tab navigation, template chip rendering, message delivery tick formatting |
-| **RFC 9457 & Error Mapping** | `feedback_system_test.dart` | 4 | ✅ **PASSED** | DioException to AppError, timeouts, 401/403, sanitized 500s |
-| **Toast & Loading States** | `feedback_system_test.dart` | 3 | ✅ **PASSED** | Toast queueing, max 3 limit, full screen progress, connectivity |
-| **Feedback UI & Error Views** | `feedback_system_test.dart` | 6 | ✅ **PASSED** | Empty states, SearchEmptyState, NetworkError, ServerError |
+| **Adult BMI Calculation & Screening** | `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified BMI = weight/(height/100)^2 formula, precision, and classification |
+| **Weight Progress Deltas & Percentages**| `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified baseline vs current weight difference and % calculation |
+| **WhatsApp STOP Opt-Out Suppression** | `GimXSoft.Tests` | 1 | ✅ **PASSED** | Verified suppression list enforcement blocks automated dispatch |
+| **RFC 9457 KeyNotFound & 500 Handlers** | `GimXSoft.Tests` | 2 | ✅ **PASSED** | Verified Problem Details mapping, Correlation ID, and internal masking |
+| **Fitness Progress Card & Charts** | `phase2_features_test.dart` | 1 | ✅ **PASSED** | Verified FitnessProgressCardModel parsing, weight trends, and review status |
+| **Body Circumference & Measurements** | `phase2_features_test.dart` | 1 | ✅ **PASSED** | Verified MemberMeasurementModel parsing, deltas, and metric fields |
+| **Exercise & Compound Attributes** | `phase2_features_test.dart` | 1 | ✅ **PASSED** | Verified ExerciseModel parsing, equipment, safety notes, sets/reps |
+| **Member Weekly Delivery Schedule** | `phase2_features_test.dart` | 1 | ✅ **PASSED** | Verified MemberWorkoutScheduleModel routine titles, delivery times, rest days |
+| **WhatsApp WABA Credentials & Queue**| `phase2_features_test.dart` | 2 | ✅ **PASSED** | Verified WABA connection status, health status, and scheduled message queues |
+| **Frontend Design Tokens & Badges** | `widget_test.dart` | 4 | ✅ **PASSED** | Verified DesignTokens, StatusBadge, GlassCard, and MetricStatCard |
+| **RFC 9457 & Feedback Architecture**| `feedback_system_test.dart` | 13 | ✅ **PASSED** | Error mapping, toast limits, loaders, empty states, and offline detectors |
+| **WhatsApp Customer Messaging API** | `whatsapp_messaging_test.dart` | 3 | ✅ **PASSED** | Verified metrics bar, template chips, and delivery tick formatting |
 | **Static Code Analysis** | `dart analyze` | - | ✅ **0 Errors** | Clean Dart analysis across entire frontend repository |
-| **Backend Build & Tests** | `dotnet test` | 5 | ✅ **PASSED** | 5/5 passed including RFC 9457 middleware & data sanitization |
-| **Frontend Test Suite** | `flutter test` | 20 | ✅ **PASSED** | 20/20 unit & widget tests passed across all modules |
+| **Backend Test Suite** | `dotnet test` | 8 | ✅ **PASSED** | 8/8 unit & integration tests passed in net9.0 |
+| **Frontend Test Suite** | `flutter test` | 26 | ✅ **PASSED** | 26/26 unit & widget tests passed across all modules |
 
 ---
 

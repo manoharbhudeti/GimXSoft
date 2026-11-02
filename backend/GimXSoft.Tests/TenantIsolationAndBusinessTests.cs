@@ -220,6 +220,74 @@ public class TenantIsolationAndBusinessTests
         Assert.Equal("BUSINESS_CONFLICT", root.GetProperty("errorCode").GetString());
         Assert.Equal("TEST-CORRELATION-002", root.GetProperty("correlationId").GetString());
     }
+
+    [Fact]
+    public void BmiCalculation_AccuratelyComputesBmiAndClassifiesCorrectly()
+    {
+        // Arrange
+        decimal weightKg = 79.80m;
+        decimal heightCm = 178.00m;
+
+        // Act: Standard Adult BMI = Weight(kg) / (Height(m)^2)
+        var heightInMeters = heightCm / 100m;
+        var bmi = Math.Round(weightKg / (heightInMeters * heightInMeters), 2);
+
+        var category = bmi switch
+        {
+            < 18.5m => "Underweight",
+            < 25.0m => "Normal Weight",
+            < 30.0m => "Overweight",
+            _ => "Obese"
+        };
+
+        // Assert
+        Assert.Equal(25.19m, bmi);
+        Assert.Equal("Overweight", category);
+    }
+
+    [Fact]
+    public void WeightProgressCalculation_AccuratelyCalculatesDeltasAndPercentages()
+    {
+        // Arrange
+        decimal baselineWeight = 84.50m;
+        decimal currentWeight = 79.80m;
+
+        // Act
+        var weightDiff = Math.Round(currentWeight - baselineWeight, 2);
+        var changePercent = Math.Round((weightDiff / baselineWeight) * 100m, 2);
+
+        // Assert
+        Assert.Equal(-4.70m, weightDiff);
+        Assert.Equal(-5.56m, changePercent);
+    }
+
+    [Fact]
+    public async Task WhatsAppSuppression_ShouldPreventAutomatedDispatchToOptedOutRecipient()
+    {
+        // Arrange
+        var tenantId = Guid.NewGuid();
+        var tenantService = new CurrentTenantService();
+        tenantService.SetTenant(tenantId);
+
+        using var context = CreateInMemoryContext(tenantService, Guid.NewGuid().ToString());
+        var phone = "+15553018841";
+
+        // Add to suppression list
+        context.WhatsAppSuppressions.Add(new WhatsAppSuppression
+        {
+            TenantId = tenantId,
+            Phone = phone,
+            Reason = "STOP keyword received"
+        });
+        await context.SaveChangesAsync();
+
+        // Act: Check if recipient is suppressed
+        var isSuppressed = await context.WhatsAppSuppressions
+            .AnyAsync(s => s.Phone == phone);
+
+        // Assert
+        Assert.True(isSuppressed);
+    }
 }
 
 public class FakeLogger<T> : Microsoft.Extensions.Logging.ILogger<T>

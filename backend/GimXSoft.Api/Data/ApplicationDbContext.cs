@@ -31,6 +31,19 @@ public class ApplicationDbContext : DbContext
     public DbSet<WhatsAppMessage> WhatsAppMessages => Set<WhatsAppMessage>();
     public DbSet<WhatsAppTemplate> WhatsAppTemplates => Set<WhatsAppTemplate>();
     public DbSet<WhatsAppTriggerRule> WhatsAppTriggerRules => Set<WhatsAppTriggerRule>();
+    public DbSet<WhatsAppIntegration> WhatsAppIntegrations => Set<WhatsAppIntegration>();
+    public DbSet<WhatsAppConsent> WhatsAppConsents => Set<WhatsAppConsent>();
+    public DbSet<WhatsAppSuppression> WhatsAppSuppressions => Set<WhatsAppSuppression>();
+    public DbSet<ScheduledMessage> ScheduledMessages => Set<ScheduledMessage>();
+    public DbSet<Exercise> Exercises => Set<Exercise>();
+    public DbSet<ExerciseCategory> ExerciseCategories => Set<ExerciseCategory>();
+    public DbSet<WorkoutTemplate> WorkoutTemplates => Set<WorkoutTemplate>();
+    public DbSet<MemberWorkoutSchedule> MemberWorkoutSchedules => Set<MemberWorkoutSchedule>();
+    public DbSet<WorkoutCompletion> WorkoutCompletions => Set<WorkoutCompletion>();
+    public DbSet<MemberMeasurement> MemberMeasurements => Set<MemberMeasurement>();
+    public DbSet<MemberFitnessBaseline> MemberFitnessBaselines => Set<MemberFitnessBaseline>();
+    public DbSet<MemberOnboardingJourney> MemberOnboardingJourneys => Set<MemberOnboardingJourney>();
+    public DbSet<MemberProgressReview> MemberProgressReviews => Set<MemberProgressReview>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +66,19 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<WhatsAppMessage>().HasQueryFilter(wm => !_tenantService!.TenantId.HasValue || wm.TenantId == _tenantService.TenantId.Value);
         modelBuilder.Entity<WhatsAppTemplate>().HasQueryFilter(wt => !_tenantService!.TenantId.HasValue || wt.TenantId == _tenantService.TenantId.Value);
         modelBuilder.Entity<WhatsAppTriggerRule>().HasQueryFilter(wtr => !_tenantService!.TenantId.HasValue || wtr.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WhatsAppIntegration>().HasQueryFilter(wi => !_tenantService!.TenantId.HasValue || wi.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WhatsAppConsent>().HasQueryFilter(wc => !_tenantService!.TenantId.HasValue || wc.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WhatsAppSuppression>().HasQueryFilter(ws => !_tenantService!.TenantId.HasValue || ws.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<ScheduledMessage>().HasQueryFilter(sm => !_tenantService!.TenantId.HasValue || sm.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<Exercise>().HasQueryFilter(ex => !_tenantService!.TenantId.HasValue || ex.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<ExerciseCategory>().HasQueryFilter(ec => !_tenantService!.TenantId.HasValue || ec.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WorkoutTemplate>().HasQueryFilter(wt => !_tenantService!.TenantId.HasValue || wt.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<MemberWorkoutSchedule>().HasQueryFilter(mws => !_tenantService!.TenantId.HasValue || mws.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<WorkoutCompletion>().HasQueryFilter(wc => !_tenantService!.TenantId.HasValue || wc.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<MemberMeasurement>().HasQueryFilter(mm => !_tenantService!.TenantId.HasValue || mm.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<MemberFitnessBaseline>().HasQueryFilter(mfb => !_tenantService!.TenantId.HasValue || mfb.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<MemberOnboardingJourney>().HasQueryFilter(moj => !_tenantService!.TenantId.HasValue || moj.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<MemberProgressReview>().HasQueryFilter(mpr => !_tenantService!.TenantId.HasValue || mpr.TenantId == _tenantService.TenantId.Value);
 
         // Relationships & Constraints
         modelBuilder.Entity<Tenant>()

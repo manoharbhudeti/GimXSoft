@@ -42,7 +42,7 @@ class _WhatsAppMessagingViewState extends ConsumerState<WhatsAppMessagingView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -294,6 +294,8 @@ class _WhatsAppMessagingViewState extends ConsumerState<WhatsAppMessagingView>
                   Tab(icon: Icon(Icons.chat_bubble_outline_rounded, size: 18), text: 'Member Direct Chat'),
                   Tab(icon: Icon(Icons.campaign_outlined, size: 18), text: 'Broadcast Campaigns'),
                   Tab(icon: Icon(Icons.auto_mode_rounded, size: 18), text: 'Automated Triggers & Templates'),
+                  Tab(icon: Icon(Icons.hub_outlined, size: 18), text: 'Account Connection & Webhook'),
+                  Tab(icon: Icon(Icons.schedule_send_rounded, size: 18), text: 'Scheduled Messages'),
                 ],
               ),
             ),
@@ -307,6 +309,8 @@ class _WhatsAppMessagingViewState extends ConsumerState<WhatsAppMessagingView>
                   _buildLiveChatTab(isDark, selectedMemberId),
                   _buildBroadcastTab(isDark),
                   _buildAutomatedTriggersTab(isDark),
+                  _buildAccountConnectionTab(isDark),
+                  _buildScheduledMessagesTab(isDark),
                 ],
               ),
             ),
@@ -1021,4 +1025,281 @@ class _WhatsAppMessagingViewState extends ConsumerState<WhatsAppMessagingView>
         return triggerEvent;
     }
   }
+
+  // ==========================================
+  // TAB 4: ACCOUNT CONNECTION & WEBHOOK
+  // ==========================================
+  Widget _buildAccountConnectionTab(bool isDark) {
+    final configAsync = ref.watch(whatsAppConfigProvider);
+
+    return SingleChildScrollView(
+      child: configAsync.buildStateWidget(
+        context,
+        onRetry: () => ref.invalidate(whatsAppConfigProvider),
+        onData: (config) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Connection Status Header Card
+              GlassCard(
+                padding: const EdgeInsets.all(DesignTokens.space24),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: config.isConnected ? const Color(0xFF25D366).withOpacity(0.15) : AppColors.error.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        config.isConnected ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                        color: config.isConnected ? const Color(0xFF25D366) : AppColors.error,
+                        size: 32,
+                      ),
+                    ),
+                    const SizedBox(width: DesignTokens.space20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                config.businessPortfolioName.isNotEmpty ? config.businessPortfolioName : 'Titan Fitness WhatsApp Business',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary(isDark)),
+                              ),
+                              const SizedBox(width: 10),
+                              StatusBadge(status: config.connectionStatus, isPill: true),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: config.healthStatus == 'HEALTHY' ? Colors.green.withOpacity(0.1) : Colors.orange.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(color: config.healthStatus == 'HEALTHY' ? Colors.green : Colors.orange),
+                                ),
+                                child: Text(
+                                  'API: ${config.healthStatus}',
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: config.healthStatus == 'HEALTHY' ? Colors.green : Colors.orange),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Connected Number: ${config.displayPhoneNumber} • WABA ID: ${config.wabaId} • Phone ID: ${config.phoneNumberId}',
+                            style: TextStyle(fontSize: 13, color: AppColors.textSecondary(isDark)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    AppButton(
+                      text: 'Sync Meta Templates',
+                      icon: Icons.sync_rounded,
+                      variant: ButtonVariant.outline,
+                      onPressed: () async {
+                        final ok = await ref.read(whatsAppActionProvider).syncTemplates();
+                        if (ok) {
+                          ref.read(toastProvider.notifier).success('Templates Synced', message: 'Meta Cloud API approved templates updated.');
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    AppButton(
+                      text: config.isConnected ? 'Disconnect' : 'Connect',
+                      variant: config.isConnected ? ButtonVariant.danger : ButtonVariant.primary,
+                      onPressed: () async {
+                        if (config.isConnected) {
+                          final ok = await ref.read(whatsAppActionProvider).disconnectConfig();
+                          if (ok) {
+                            ref.read(toastProvider.notifier).info('Account Disconnected', message: 'WhatsApp Business account was disconnected.');
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: DesignTokens.space24),
+
+              // Two Column Settings Grid
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Meta WABA Settings
+                  Expanded(
+                    child: GlassCard(
+                      padding: const EdgeInsets.all(DesignTokens.space24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Meta Cloud API Credentials', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary(isDark))),
+                          const SizedBox(height: DesignTokens.space16),
+                          AppTextField(label: 'WhatsApp Business Account ID (WABA)', initialValue: config.wabaId),
+                          const SizedBox(height: DesignTokens.space12),
+                          AppTextField(label: 'Phone Number ID', initialValue: config.phoneNumberId),
+                          const SizedBox(height: DesignTokens.space12),
+                          AppTextField(label: 'Display Phone Number', initialValue: config.displayPhoneNumber),
+                          const SizedBox(height: DesignTokens.space12),
+                          AppTextField(label: 'Timezone for Automation', initialValue: config.timeZoneId),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: DesignTokens.space20),
+
+                  // Webhook Configuration Card
+                  Expanded(
+                    child: GlassCard(
+                      padding: const EdgeInsets.all(DesignTokens.space24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Webhook & Inbound Event Routing', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary(isDark))),
+                          const SizedBox(height: DesignTokens.space8),
+                          Text(
+                            'Configure these details in the Meta App Dashboard > WhatsApp > Configuration to enable real-time delivery receipts and STOP opt-out processing.',
+                            style: TextStyle(fontSize: 13, color: AppColors.textSecondary(isDark)),
+                          ),
+                          const SizedBox(height: DesignTokens.space16),
+                          AppTextField(
+                            label: 'Callback URL',
+                            initialValue: config.webhookUrl.isNotEmpty ? config.webhookUrl : 'http://localhost:5128/api/whatsapp/webhook',
+                            suffixIcon: Icons.copy_rounded,
+                          ),
+                          const SizedBox(height: DesignTokens.space12),
+                          AppTextField(
+                            label: 'Verify Token',
+                            initialValue: config.webhookVerifyToken,
+                            suffixIcon: Icons.lock_outline_rounded,
+                          ),
+                          const SizedBox(height: DesignTokens.space16),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.shield_outlined, color: AppColors.primary, size: 20),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    'Webhook verification handshake (hub.challenge) is active and verified with SHA-256 idempotency.',
+                                    style: TextStyle(fontSize: 12, color: AppColors.textPrimary(isDark)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  // ==========================================
+  // TAB 5: SCHEDULED MESSAGE QUEUE
+  // ==========================================
+  Widget _buildScheduledMessagesTab(bool isDark) {
+    final scheduledAsync = ref.watch(whatsAppScheduledMessagesProvider);
+
+    return scheduledAsync.buildStateWidget(
+      context,
+      onRetry: () => ref.invalidate(whatsAppScheduledMessagesProvider),
+      onData: (messages) {
+        if (messages.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.schedule_send_rounded, size: 56, color: AppColors.textSecondary(isDark).withOpacity(0.4)),
+                const SizedBox(height: 12),
+                Text('Scheduled Queue is Clear', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary(isDark))),
+                const SizedBox(height: 6),
+                Text('Automated workout notifications and expiry reminders will appear here when scheduled.', style: TextStyle(fontSize: 14, color: AppColors.textSecondary(isDark))),
+              ],
+            ),
+          );
+        }
+
+        return GlassCard(
+          padding: const EdgeInsets.all(DesignTokens.space16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Active Scheduled Queue (${messages.length} Pending)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary(isDark))),
+                  AppButton(
+                    text: 'Refresh Queue',
+                    icon: Icons.refresh_rounded,
+                    variant: ButtonVariant.ghost,
+                    onPressed: () => ref.invalidate(whatsAppScheduledMessagesProvider),
+                  ),
+                ],
+              ),
+              const SizedBox(height: DesignTokens.space12),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: messages.length,
+                  separatorBuilder: (_, __) => Divider(color: isDark ? Colors.white10 : Colors.black12),
+                  itemBuilder: (context, index) {
+                    final msg = messages[index];
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: msg.isPending ? AppColors.primary.withOpacity(0.15) : Colors.grey.withOpacity(0.15),
+                        child: Icon(
+                          msg.triggerType == 'DailyWorkout' ? Icons.fitness_center_rounded : Icons.alarm_rounded,
+                          color: msg.isPending ? AppColors.primary : Colors.grey,
+                          size: 20,
+                        ),
+                      ),
+                      title: Text('${msg.recipientName} (${msg.recipientPhone})', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark))),
+                      subtitle: Text(
+                        'Scheduled: ${DateFormat('MMM dd, hh:mm a').format(msg.scheduledForUtc)} • Trigger: ${msg.triggerType}\n${msg.messageContent}',
+                        style: TextStyle(fontSize: 12, color: AppColors.textSecondary(isDark)),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          StatusBadge(status: msg.status, isPill: true),
+                          if (msg.isPending) ...[
+                            const SizedBox(width: 8),
+                            IconButton(
+                              icon: const Icon(Icons.cancel_outlined, color: AppColors.error, size: 20),
+                              tooltip: 'Cancel Scheduled Message',
+                              onPressed: () async {
+                                final ok = await ref.read(whatsAppActionProvider).cancelScheduledMessage(msg.id);
+                                if (ok) {
+                                  ref.read(toastProvider.notifier).success('Scheduled Message Cancelled');
+                                }
+                              },
+                            ),
+                          ],
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }

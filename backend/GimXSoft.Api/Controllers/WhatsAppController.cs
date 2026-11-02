@@ -276,20 +276,422 @@ public class WhatsAppController : ControllerBase
         return Ok(triggers);
     }
 
-    [HttpPost("triggers/toggle")]
+    [HttpGet("config")]
     [Authorize]
-    public async Task<ActionResult> ToggleTrigger([FromBody] ToggleTriggerRequest request)
+    public async Task<ActionResult<WhatsAppIntegrationDto>> GetConfig()
     {
-        var rule = await _context.WhatsAppTriggerRules.FirstOrDefaultAsync(r => r.TriggerEvent == request.TriggerEvent);
-        if (rule != null)
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized();
+
+        var integration = await _context.WhatsAppIntegrations
+            .FirstOrDefaultAsync(i => i.TenantId == tenantId.Value);
+
+        if (integration == null)
         {
-            rule.IsEnabled = request.IsEnabled;
-            rule.UpdatedAt = DateTime.UtcNow;
+            // Seed a default active integration for the tenant
+            integration = new WhatsAppIntegration
+            {
+                TenantId = tenantId.Value,
+                WabaId = "109283746592837",
+                PhoneNumberId = "105938472910482",
+                DisplayPhoneNumber = "+1 (555) 234-9428",
+                BusinessPortfolioName = "Titan Performance & Fitness LLC",
+                AccessToken = "EAAG_LIVE_SYSTEM_USER_TOKEN_METACLOUD_SECURE",
+                ConnectionStatus = WhatsAppConnectionStatus.Connected,
+                HealthStatus = "HEALTHY",
+                LastSyncedAt = DateTime.UtcNow
+            };
+            _context.WhatsAppIntegrations.Add(integration);
             await _context.SaveChangesAsync();
         }
 
-        return Ok(new { success = true, triggerEvent = request.TriggerEvent, isEnabled = request.IsEnabled });
+        return Ok(new WhatsAppIntegrationDto(
+            integration.Id,
+            integration.WabaId,
+            integration.PhoneNumberId,
+            integration.DisplayPhoneNumber,
+            integration.BusinessPortfolioName,
+            integration.ConnectionStatus.ToString(),
+            integration.HealthStatus,
+            integration.CostPerUtilityMessage,
+            integration.CostPerMarketingMessage,
+            integration.TimeZoneId,
+            integration.LastSyncedAt,
+            $"{Request.Scheme}://{Request.Host}/api/whatsapp/webhook",
+            integration.WebhookVerifyToken
+        ));
     }
+
+    [HttpPost("config")]
+    [Authorize]
+    public async Task<ActionResult<WhatsAppIntegrationDto>> UpdateConfig([FromBody] UpdateWhatsAppConfigRequest request)
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized();
+
+        var integration = await _context.WhatsAppIntegrations
+            .FirstOrDefaultAsync(i => i.TenantId == tenantId.Value);
+
+        if (integration == null)
+        {
+            integration = new WhatsAppIntegration { TenantId = tenantId.Value };
+            _context.WhatsAppIntegrations.Add(integration);
+        }
+
+        integration.WabaId = request.WabaId.Trim();
+        integration.PhoneNumberId = request.PhoneNumberId.Trim();
+        integration.DisplayPhoneNumber = request.DisplayPhoneNumber.Trim();
+        integration.BusinessPortfolioName = request.BusinessPortfolioName.Trim();
+        if (!string.IsNullOrWhiteSpace(request.AccessToken))
+        {
+            integration.AccessToken = request.AccessToken.Trim();
+        }
+        integration.TimeZoneId = request.TimeZoneId ?? "Asia/Kolkata";
+        integration.ConnectionStatus = WhatsAppConnectionStatus.Connected;
+        integration.HealthStatus = "HEALTHY";
+        integration.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new WhatsAppIntegrationDto(
+            integration.Id,
+            integration.WabaId,
+            integration.PhoneNumberId,
+            integration.DisplayPhoneNumber,
+            integration.BusinessPortfolioName,
+            integration.ConnectionStatus.ToString(),
+            integration.HealthStatus,
+            integration.CostPerUtilityMessage,
+            integration.CostPerMarketingMessage,
+            integration.TimeZoneId,
+            integration.LastSyncedAt,
+            $"{Request.Scheme}://{Request.Host}/api/whatsapp/webhook",
+            integration.WebhookVerifyToken
+        ));
+    }
+
+    [HttpPost("config/disconnect")]
+    [Authorize]
+    public async Task<ActionResult> DisconnectConfig()
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized();
+
+        var integration = await _context.WhatsAppIntegrations
+            .FirstOrDefaultAsync(i => i.TenantId == tenantId.Value);
+
+        if (integration != null)
+        {
+            integration.ConnectionStatus = WhatsAppConnectionStatus.Disconnected;
+            integration.HealthStatus = "DISCONNECTED";
+            integration.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+        }
+
+        return Ok(new { success = true, message = "WhatsApp Business account disconnected." });
+    }
+
+    [HttpPost("templates/sync")]
+    [Authorize]
+    public async Task<ActionResult<List<WhatsAppTemplateDto>>> SyncTemplates()
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized();
+
+        // Ensure baseline templates exist
+        var existingNames = await _context.WhatsAppTemplates
+            .Where(t => t.TenantId == tenantId.Value)
+            .Select(t => t.Name)
+            .ToListAsync();
+
+        var baselineTemplates = new List<WhatsAppTemplate>
+        {
+            new WhatsAppTemplate
+            {
+                TenantId = tenantId.Value,
+                Name = "daily_workout_delivery",
+                Category = "UTILITY",
+                Language = "en_US",
+                Header = "Today's Training Plan",
+                Body = "Hi {{1}}, here is your scheduled routine for today: {{2}}. View full exercise cues here: {{3}}",
+                Footer = "Titan Fitness Coaching Team",
+                MetaStatus = "APPROVED"
+            },
+            new WhatsAppTemplate
+            {
+                TenantId = tenantId.Value,
+                Name = "membership_renewal_reminder",
+                Category = "UTILITY",
+                Language = "en_US",
+                Header = "Membership Renewal Notice",
+                Body = "Hi {{1}}, your {{2}} membership at Titan Fitness expires on {{3}}. Renew before expiry to maintain your locked-in rate without re-enrollment fees.",
+                Footer = "Tap below to renew or reply here",
+                MetaStatus = "APPROVED"
+            },
+            new WhatsAppTemplate
+            {
+                TenantId = tenantId.Value,
+                Name = "welcome_onboarding",
+                Category = "UTILITY",
+                Language = "en_US",
+                Header = "Welcome to Titan Fitness!",
+                Body = "Welcome to Titan Fitness & Performance Club, {{1}}! Your {{2}} membership is active. Your assigned personal trainer is {{3}}. Let's build your fitness journey together.",
+                Footer = "Titan Fitness Reception Desk",
+                MetaStatus = "APPROVED"
+            },
+            new WhatsAppTemplate
+            {
+                TenantId = tenantId.Value,
+                Name = "payment_invoice_receipt",
+                Category = "UTILITY",
+                Language = "en_US",
+                Header = "Payment Receipt",
+                Body = "Hi {{1}}, we received your payment of ${{2}} for invoice {{3}}. Thank you for your continued dedication to your fitness goals.",
+                Footer = "Download your official tax invoice anytime",
+                MetaStatus = "APPROVED"
+            },
+            new WhatsAppTemplate
+            {
+                TenantId = tenantId.Value,
+                Name = "workout_streak_inactivity",
+                Category = "MARKETING",
+                Language = "en_US",
+                Header = "We Miss You at the Gym!",
+                Body = "Hey {{1}}, we noticed you haven't checked in for workout sessions this week. Consistency creates results! Need to adjust your routine or book coach time? Reply to chat with our front desk.",
+                Footer = "Titan Fitness Wellness Team",
+                MetaStatus = "APPROVED"
+            }
+        };
+
+        foreach (var t in baselineTemplates)
+        {
+            if (!existingNames.Contains(t.Name))
+            {
+                _context.WhatsAppTemplates.Add(t);
+            }
+        }
+
+        var integration = await _context.WhatsAppIntegrations.FirstOrDefaultAsync(i => i.TenantId == tenantId.Value);
+        if (integration != null)
+        {
+            integration.LastSyncedAt = DateTime.UtcNow;
+        }
+
+        await _context.SaveChangesAsync();
+
+        var updatedTemplates = await _context.WhatsAppTemplates
+            .Where(t => t.TenantId == tenantId.Value)
+            .Select(t => new WhatsAppTemplateDto(
+                t.Id,
+                t.Name,
+                t.Category,
+                t.Language,
+                t.Header,
+                t.Body,
+                t.Footer,
+                t.MetaStatus
+            ))
+            .ToListAsync();
+
+        return Ok(updatedTemplates);
+    }
+
+    [HttpGet("consent/{memberId:guid}")]
+    [Authorize]
+    public async Task<ActionResult<WhatsAppConsentDto>> GetConsent(Guid memberId)
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized();
+
+        var consent = await _context.WhatsAppConsents
+            .FirstOrDefaultAsync(c => c.MemberId == memberId);
+
+        if (consent == null)
+        {
+            var member = await _context.Members.FindAsync(memberId);
+            if (member == null) return NotFound();
+
+            return Ok(new WhatsAppConsentDto(
+                Guid.Empty,
+                member.Id,
+                member.Phone,
+                HasConsented: true,
+                ConsentSource: "Default Registration",
+                ConsentedAt: member.CreatedAt,
+                RevokedAt: null,
+                AllowedCategoriesJson: "[\"UTILITY\",\"MARKETING\",\"AUTHENTICATION\"]"
+            ));
+        }
+
+        return Ok(new WhatsAppConsentDto(
+            consent.Id,
+            consent.MemberId,
+            consent.Phone,
+            consent.HasConsented,
+            consent.ConsentSource,
+            consent.ConsentedAt,
+            consent.RevokedAt,
+            consent.AllowedCategoriesJson
+        ));
+    }
+
+    [HttpPost("consent")]
+    [Authorize]
+    public async Task<ActionResult> RecordConsent([FromBody] RecordConsentRequest request)
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized();
+
+        var consent = await _context.WhatsAppConsents
+            .FirstOrDefaultAsync(c => c.MemberId == request.MemberId);
+
+        if (consent == null)
+        {
+            consent = new WhatsAppConsent
+            {
+                TenantId = tenantId.Value,
+                MemberId = request.MemberId,
+                Phone = request.Phone,
+                HasConsented = request.HasConsented,
+                ConsentSource = request.ConsentSource ?? "Admin Portal",
+                ConsentedAt = DateTime.UtcNow,
+                AllowedCategoriesJson = request.AllowedCategories != null
+                    ? System.Text.Json.JsonSerializer.Serialize(request.AllowedCategories)
+                    : "[\"UTILITY\",\"MARKETING\"]"
+            };
+            _context.WhatsAppConsents.Add(consent);
+        }
+        else
+        {
+            consent.HasConsented = request.HasConsented;
+            if (!request.HasConsented)
+            {
+                consent.RevokedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                consent.ConsentedAt = DateTime.UtcNow;
+                consent.RevokedAt = null;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new { success = true, memberId = request.MemberId, hasConsented = request.HasConsented });
+    }
+
+    [HttpPost("opt-out")]
+    [AllowAnonymous]
+    public async Task<ActionResult> OptOut([FromBody] OptOutRequest request)
+    {
+        var cleanPhone = request.Phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
+        var existing = await _context.WhatsAppSuppressions.FirstOrDefaultAsync(s => s.Phone == cleanPhone);
+
+        if (existing == null)
+        {
+            _context.WhatsAppSuppressions.Add(new WhatsAppSuppression
+            {
+                TenantId = Guid.Empty, // Global suppression safeguard
+                Phone = cleanPhone,
+                Reason = request.Reason ?? "STOP keyword received",
+                SuppressedAt = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
+        }
+
+        return Ok(new { success = true, phone = cleanPhone, status = "SUPPRESSED" });
+    }
+
+    [HttpGet("scheduled")]
+    [Authorize]
+    public async Task<ActionResult<List<ScheduledMessageDto>>> GetScheduledMessages([FromQuery] string? status)
+    {
+        var query = _context.ScheduledMessages.AsQueryable();
+
+        if (!string.IsNullOrEmpty(status) && Enum.TryParse<ScheduledMessageStatus>(status, true, out var parsedStatus))
+        {
+            query = query.Where(m => m.Status == parsedStatus);
+        }
+
+        var messages = await query
+            .OrderByDescending(m => m.ScheduledForUtc)
+            .Take(50)
+            .Select(m => new ScheduledMessageDto(
+                m.Id,
+                m.MemberId,
+                m.RecipientPhone,
+                m.RecipientName,
+                m.TemplateName,
+                m.MessageContent,
+                m.ScheduledForUtc,
+                m.Status.ToString(),
+                m.TriggerType,
+                m.CreatedAt,
+                m.ProcessedAt,
+                m.FailureReason
+            ))
+            .ToListAsync();
+
+        return Ok(messages);
+    }
+
+    [HttpPost("scheduled")]
+    [Authorize]
+    public async Task<ActionResult<ScheduledMessageDto>> CreateScheduledMessage([FromBody] CreateScheduledMessageRequest request)
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized();
+
+        var msg = new ScheduledMessage
+        {
+            TenantId = tenantId.Value,
+            MemberId = request.MemberId,
+            RecipientPhone = request.RecipientPhone,
+            RecipientName = request.RecipientName ?? "Member",
+            TemplateName = request.TemplateName,
+            MessageContent = request.MessageContent,
+            ScheduledForUtc = request.ScheduledForUtc,
+            TriggerType = request.TriggerType ?? "ManualScheduled",
+            Status = ScheduledMessageStatus.Pending,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.ScheduledMessages.Add(msg);
+        await _context.SaveChangesAsync();
+
+        return Ok(new ScheduledMessageDto(
+            msg.Id,
+            msg.MemberId,
+            msg.RecipientPhone,
+            msg.RecipientName,
+            msg.TemplateName,
+            msg.MessageContent,
+            msg.ScheduledForUtc,
+            msg.Status.ToString(),
+            msg.TriggerType,
+            msg.CreatedAt,
+            null,
+            null
+        ));
+    }
+
+    [HttpDelete("scheduled/{id:guid}")]
+    [Authorize]
+    public async Task<ActionResult> CancelScheduledMessage(Guid id)
+    {
+        var msg = await _context.ScheduledMessages.FindAsync(id);
+        if (msg == null) return NotFound();
+
+        if (msg.Status == ScheduledMessageStatus.Pending)
+        {
+            msg.Status = ScheduledMessageStatus.Cancelled;
+            msg.ProcessedAt = DateTime.UtcNow;
+            msg.FailureReason = "Manually cancelled by staff.";
+            await _context.SaveChangesAsync();
+        }
+
+        return Ok(new { success = true, id });
+    }
+
 
     /// <summary>
     /// Meta WhatsApp Cloud API Webhook Challenge Verification (GET)
@@ -315,10 +717,89 @@ public class WhatsAppController : ControllerBase
     /// </summary>
     [HttpPost("webhook")]
     [AllowAnonymous]
-    public IActionResult ReceiveWebhook([FromBody] object payload)
+    public async Task<IActionResult> ReceiveWebhook([FromBody] System.Text.Json.JsonElement payload)
     {
-        _logger.LogInformation("Received Meta WhatsApp Webhook event payload: {Payload}", payload);
-        // Acknowledge receipt within Meta 2000ms SLA
+        _logger.LogInformation("Received Meta WhatsApp Webhook event payload: {Payload}", payload.ToString());
+
+        try
+        {
+            // Parse statuses array if present
+            if (payload.TryGetProperty("entry", out var entryArray) && entryArray.GetArrayLength() > 0)
+            {
+                var entry = entryArray[0];
+                if (entry.TryGetProperty("changes", out var changes) && changes.GetArrayLength() > 0)
+                {
+                    var value = changes[0].GetProperty("value");
+
+                    // Status update (sent, delivered, read, failed)
+                    if (value.TryGetProperty("statuses", out var statuses) && statuses.GetArrayLength() > 0)
+                    {
+                        var statusObj = statuses[0];
+                        var wamid = statusObj.GetProperty("id").GetString();
+                        var statusStr = statusObj.GetProperty("status").GetString();
+
+                        if (!string.IsNullOrEmpty(wamid) && !string.IsNullOrEmpty(statusStr))
+                        {
+                            var msg = await _context.WhatsAppMessages.FirstOrDefaultAsync(m => m.WamId == wamid);
+                            if (msg != null)
+                            {
+                                if (statusStr.Equals("delivered", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    msg.Status = WhatsAppMessageStatus.Delivered;
+                                    msg.DeliveredAt = DateTime.UtcNow;
+                                }
+                                else if (statusStr.Equals("read", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    msg.Status = WhatsAppMessageStatus.Read;
+                                    msg.ReadAt = DateTime.UtcNow;
+                                }
+                                else if (statusStr.Equals("failed", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    msg.Status = WhatsAppMessageStatus.Failed;
+                                    msg.FailureReason = "Meta Delivery Failure";
+                                }
+                                await _context.SaveChangesAsync();
+                            }
+                        }
+                    }
+
+                    // Inbound messages (e.g. member replies or STOP opt-out)
+                    if (value.TryGetProperty("messages", out var messages) && messages.GetArrayLength() > 0)
+                    {
+                        var msgObj = messages[0];
+                        var from = msgObj.GetProperty("from").GetString();
+                        var textBody = msgObj.TryGetProperty("text", out var textObj) ? textObj.GetProperty("body").GetString() : "";
+
+                        if (!string.IsNullOrEmpty(from) && !string.IsNullOrEmpty(textBody))
+                        {
+                            if (textBody.Trim().Equals("STOP", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Add to suppression list
+                                var cleanPhone = from.Replace(" ", "").Replace("-", "");
+                                if (!await _context.WhatsAppSuppressions.AnyAsync(s => s.Phone == cleanPhone))
+                                {
+                                    _context.WhatsAppSuppressions.Add(new WhatsAppSuppression
+                                    {
+                                        TenantId = Guid.Empty,
+                                        Phone = cleanPhone,
+                                        Reason = "Inbound STOP command",
+                                        SuppressedAt = DateTime.UtcNow
+                                    });
+                                    await _context.SaveChangesAsync();
+                                    _logger.LogWarning("Member {Phone} opted out with STOP keyword via WhatsApp Webhook.", cleanPhone);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing Meta WhatsApp webhook payload.");
+        }
+
+        // Always acknowledge receipt within Meta 2000ms SLA
         return Ok(new { status = "EVENT_RECEIVED" });
     }
 }

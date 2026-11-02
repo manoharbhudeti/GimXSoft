@@ -61,6 +61,23 @@ final whatsAppTriggersProvider =
       .toList();
 });
 
+final whatsAppConfigProvider =
+    FutureProvider<WhatsAppIntegrationModel>((ref) async {
+  final client = ref.read(apiClientProvider);
+  final response = await client.dio.get(ApiConstants.whatsAppConfig);
+  return WhatsAppIntegrationModel.fromJson(response.data as Map<String, dynamic>);
+});
+
+final whatsAppScheduledMessagesProvider =
+    FutureProvider<List<ScheduledMessageModel>>((ref) async {
+  final client = ref.read(apiClientProvider);
+  final response = await client.dio.get(ApiConstants.whatsAppScheduled);
+  final list = response.data as List;
+  return list
+      .map((item) => ScheduledMessageModel.fromJson(item as Map<String, dynamic>))
+      .toList();
+});
+
 class WhatsAppActionService {
   final Ref ref;
 
@@ -130,6 +147,70 @@ class WhatsAppActionService {
         },
       );
       ref.invalidate(whatsAppTriggersProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> updateConfig({
+    required String wabaId,
+    required String phoneNumberId,
+    required String displayPhoneNumber,
+    required String businessPortfolioName,
+    required String accessToken,
+    required String timeZoneId,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppConfig,
+        data: {
+          'wabaId': wabaId,
+          'phoneNumberId': phoneNumberId,
+          'displayPhoneNumber': displayPhoneNumber,
+          'businessPortfolioName': businessPortfolioName,
+          'accessToken': accessToken,
+          'timeZoneId': timeZoneId,
+        },
+      );
+      ref.invalidate(whatsAppConfigProvider);
+      ref.invalidate(whatsAppMetricsProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> disconnectConfig() async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(ApiConstants.whatsAppDisconnect);
+      ref.invalidate(whatsAppConfigProvider);
+      ref.invalidate(whatsAppMetricsProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> syncTemplates() async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(ApiConstants.whatsAppSyncTemplates);
+      ref.invalidate(whatsAppTemplatesProvider);
+      ref.invalidate(whatsAppConfigProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> cancelScheduledMessage(String id) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.delete('${ApiConstants.whatsAppScheduled}/$id');
+      ref.invalidate(whatsAppScheduledMessagesProvider);
       return true;
     } catch (_) {
       return false;

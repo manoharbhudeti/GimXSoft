@@ -29,6 +29,27 @@ class ApiConstants {
   static const String whatsAppTemplates = '/whatsapp/templates';
   static const String whatsAppTriggers = '/whatsapp/triggers';
   static const String whatsAppToggleTrigger = '/whatsapp/triggers/toggle';
+  static const String whatsAppConfig = '/whatsapp/config';
+  static const String whatsAppDisconnect = '/whatsapp/config/disconnect';
+  static const String whatsAppSyncTemplates = '/whatsapp/templates/sync';
+  static const String whatsAppConsent = '/whatsapp/consent';
+  static const String whatsAppOptOut = '/whatsapp/opt-out';
+  static const String whatsAppScheduled = '/whatsapp/scheduled';
+
+  // Exercises & Workout Catalogue
+  static const String exercises = '/exercises';
+  static const String exerciseCategories = '/exercises/categories';
+  static const String workoutTemplates = '/workouts/templates';
+  static const String workoutSchedules = '/workouts/schedules';
+  static const String assignWorkoutSchedule = '/workouts/schedules/assign';
+
+  // Member Fitness & Measurement Tracking
+  static const String measurements = '/measurements';
+  static const String memberMeasurements = '/measurements/member';
+  static const String progressCard = '/measurements/progress-card';
+  static const String measurementBaseline = '/measurements/baseline';
+  static const String onboardingJourney = '/measurements/onboarding';
+  static const String onboardingStage = '/measurements/onboarding/stage';
 
   // Attendance
   static const String attendanceToday = '/attendance/today-summary';

@@ -859,6 +859,306 @@ public static class DbInitializer
             }
         );
 
+        // 13. Seed WhatsApp Integration & Consent
+        context.WhatsAppIntegrations.Add(new WhatsAppIntegration
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            WabaId = "109283746592837",
+            PhoneNumberId = "105938472910482",
+            DisplayPhoneNumber = "+1 (555) 234-9428",
+            BusinessPortfolioName = "Titan Performance & Fitness LLC",
+            AccessToken = "EAAG_LIVE_SYSTEM_USER_TOKEN_METACLOUD_SECURE",
+            ConnectionStatus = WhatsAppConnectionStatus.Connected,
+            HealthStatus = "HEALTHY",
+            TimeZoneId = "Asia/Kolkata",
+            LastSyncedAt = DateTime.UtcNow
+        });
+
+        context.WhatsAppConsents.AddRange(
+            new WhatsAppConsent { TenantId = tenant.Id, MemberId = member1.Id, Phone = member1.Phone, HasConsented = true, ConsentSource = "Digital Enrollment Agreement" },
+            new WhatsAppConsent { TenantId = tenant.Id, MemberId = member2.Id, Phone = member2.Phone, HasConsented = true, ConsentSource = "Digital Enrollment Agreement" },
+            new WhatsAppConsent { TenantId = tenant.Id, MemberId = member3.Id, Phone = member3.Phone, HasConsented = true, ConsentSource = "Digital Enrollment Agreement" }
+        );
+
+        // 14. Seed Exercise Categories
+        var catStrength = new ExerciseCategory { TenantId = tenant.Id, Name = "Strength Training", Description = "Hypertrophy and progressive overload lifting", IconName = "dumbbell" };
+        var catCardio = new ExerciseCategory { TenantId = tenant.Id, Name = "Cardio & HIIT", Description = "Cardiovascular conditioning and interval sprints", IconName = "heart-pulse" };
+        var catCore = new ExerciseCategory { TenantId = tenant.Id, Name = "Core & Trunk", Description = "Abdominal stability and posterior chain support", IconName = "shield" };
+        var catMobility = new ExerciseCategory { TenantId = tenant.Id, Name = "Mobility & Flexibility", Description = "Joint decompression and active range of motion", IconName = "activity" };
+        context.ExerciseCategories.AddRange(catStrength, catCardio, catCore, catMobility);
+
+        // 15. Seed Exercises
+        var exBench = new Exercise
+        {
+            TenantId = tenant.Id,
+            Name = "Barbell Bench Press",
+            Category = "Strength",
+            TargetMuscle = "Chest",
+            SecondaryMusclesJson = "[\"Triceps\", \"Anterior Deltoids\"]",
+            Equipment = "Barbell & Flat Bench",
+            DifficultyLevel = FitnessLevel.Intermediate,
+            Instructions = "Retract scapulae firmly onto bench. Lower bar with controlled cadence to mid-sternum, then press vertically with explosive intent.",
+            DefaultSets = 4,
+            DefaultReps = "8-10",
+            DefaultRestSeconds = 90,
+            SafetyNotes = "Always utilize spotter or safety pins when performing near-failure sets."
+        };
+
+        var exSquat = new Exercise
+        {
+            TenantId = tenant.Id,
+            Name = "Barbell Back Squat",
+            Category = "Strength",
+            TargetMuscle = "Legs",
+            SecondaryMusclesJson = "[\"Quadriceps\", \"Glutes\", \"Hamstrings\", \"Spinal Erectors\"]",
+            Equipment = "Barbell & Squat Rack",
+            DifficultyLevel = FitnessLevel.Intermediate,
+            Instructions = "Place bar firmly across upper traps. Inhale into abdominal brace, break at hips and knees simultaneously to depth below parallel.",
+            DefaultSets = 4,
+            DefaultReps = "6-8",
+            DefaultRestSeconds = 120,
+            SafetyNotes = "Maintain rigid spinal alignment throughout entire concentric arc."
+        };
+
+        var exDeadlift = new Exercise
+        {
+            TenantId = tenant.Id,
+            Name = "Barbell Deadlift",
+            Category = "Strength",
+            TargetMuscle = "Back",
+            SecondaryMusclesJson = "[\"Hamstrings\", \"Glutes\", \"Lats\", \"Trapezius\"]",
+            Equipment = "Olympic Barbell & Bumper Plates",
+            DifficultyLevel = FitnessLevel.Advanced,
+            Instructions = "Stand with mid-foot beneath barbell. Hinge hips backwards, grip bar outside shins, pull chest tall to set lats, push floor away.",
+            DefaultSets = 3,
+            DefaultReps = "5",
+            DefaultRestSeconds = 180,
+            SafetyNotes = "Do not round the lumbar spine during the initial pull off the platform."
+        };
+
+        var exOverheadPress = new Exercise
+        {
+            TenantId = tenant.Id,
+            Name = "Standing Overhead Press",
+            Category = "Strength",
+            TargetMuscle = "Shoulders",
+            SecondaryMusclesJson = "[\"Triceps\", \"Upper Chest\", \"Core\"]",
+            Equipment = "Barbell",
+            DifficultyLevel = FitnessLevel.Intermediate,
+            Instructions = "Grip barbell just outside shoulder width. Squeeze glutes and quads, press bar vertically clearing chin, lock elbows overhead.",
+            DefaultSets = 3,
+            DefaultReps = "8-10",
+            DefaultRestSeconds = 90
+        };
+
+        var exPlank = new Exercise
+        {
+            TenantId = tenant.Id,
+            Name = "Forearm Plank with Hip Dips",
+            Category = "Core",
+            TargetMuscle = "Core",
+            SecondaryMusclesJson = "[\"Obliques\", \"Transverse Abdominis\"]",
+            Equipment = "Fitness Mat",
+            DifficultyLevel = FitnessLevel.Beginner,
+            Instructions = "Hold solid neutral plank on forearms. Gently rotate hips from side to side tapping mat lightly while maintaining core stiffness.",
+            DefaultSets = 3,
+            DefaultReps = "12 per side",
+            DefaultRestSeconds = 60,
+            DurationSeconds = 45
+        };
+
+        var exHiit = new Exercise
+        {
+            TenantId = tenant.Id,
+            Name = "Sprint Treadmill Intervals",
+            Category = "Cardio",
+            TargetMuscle = "Full Body",
+            SecondaryMusclesJson = "[\"Calves\", \"Hamstrings\", \"Cardiovascular\"]",
+            Equipment = "Commercial Treadmill",
+            DifficultyLevel = FitnessLevel.Intermediate,
+            Instructions = "Warm up 3 minutes at 5 km/h. Sprint 30 seconds at 14 km/h followed by 30 seconds walk recovery at 4 km/h for 10 rounds.",
+            DefaultSets = 10,
+            DefaultReps = "30s sprint / 30s rest",
+            DefaultRestSeconds = 30,
+            DurationSeconds = 600
+        };
+
+        context.Exercises.AddRange(exBench, exSquat, exDeadlift, exOverheadPress, exPlank, exHiit);
+
+        // 16. Seed Workout Templates
+        var templateHypertrophy = new WorkoutTemplate
+        {
+            TenantId = tenant.Id,
+            Title = "4-Day Hypertrophy & Strength Split",
+            Description = "Classic Upper/Lower high-yield muscle development protocol designed for intermediate lifters.",
+            Goal = "Muscle Building",
+            Level = FitnessLevel.Intermediate,
+            DaysPerWeek = 4,
+            EstimatedMinutesPerSession = 55,
+            RoutineJson = "[{\"day\":\"Monday\",\"routineTitle\":\"Upper Push & Delts\",\"exercises\":[{\"name\":\"Barbell Bench Press\",\"sets\":4,\"reps\":\"8-10\",\"rest\":\"90s\"},{\"name\":\"Standing Overhead Press\",\"sets\":3,\"reps\":\"10\",\"rest\":\"90s\"}]},{\"day\":\"Tuesday\",\"routineTitle\":\"Lower Quad & Core\",\"exercises\":[{\"name\":\"Barbell Back Squat\",\"sets\":4,\"reps\":\"6-8\",\"rest\":\"120s\"},{\"name\":\"Forearm Plank with Hip Dips\",\"sets\":3,\"reps\":\"12 per side\",\"rest\":\"60s\"}]}]",
+            CreatedAt = DateTime.UtcNow.AddMonths(-3)
+        };
+
+        var templateFatLoss = new WorkoutTemplate
+        {
+            TenantId = tenant.Id,
+            Title = "Fat Loss & Metabolic Conditioning",
+            Description = "Fast-paced compound circuits combined with HIIT sprint conditioning to maximize caloric expenditure.",
+            Goal = "Fat Loss & Conditioning",
+            Level = FitnessLevel.Beginner,
+            DaysPerWeek = 5,
+            EstimatedMinutesPerSession = 40,
+            RoutineJson = "[{\"day\":\"Monday\",\"routineTitle\":\"Full Body Metabolic Circuit\",\"exercises\":[{\"name\":\"Barbell Back Squat\",\"sets\":3,\"reps\":\"12\",\"rest\":\"60s\"},{\"name\":\"Sprint Treadmill Intervals\",\"sets\":8,\"reps\":\"30s/30s\",\"rest\":\"30s\"}]}]",
+            CreatedAt = DateTime.UtcNow.AddMonths(-2)
+        };
+        context.WorkoutTemplates.AddRange(templateHypertrophy, templateFatLoss);
+
+        // 17. Seed Member Workout Schedules
+        context.MemberWorkoutSchedules.AddRange(
+            new MemberWorkoutSchedule
+            {
+                TenantId = tenant.Id,
+                MemberId = member1.Id,
+                WorkoutTemplateId = templateHypertrophy.Id,
+                AssignedTrainerId = trainer1.Id,
+                DayOfWeek = "Monday",
+                ScheduledDeliveryTime = "07:00",
+                RoutineTitle = "Chest & Delts Hypertrophy",
+                ExercisesJson = "[{\"name\":\"Barbell Bench Press\",\"sets\":4,\"reps\":\"8-10\",\"rest\":\"90s\"},{\"name\":\"Standing Overhead Press\",\"sets\":3,\"reps\":\"10\",\"rest\":\"90s\"}]",
+                IsRestDay = false,
+                TrainerApproved = true,
+                IsActive = true,
+                TrainerNotes = "Focus on a clean 2-second eccentric lowering phase today."
+            },
+            new MemberWorkoutSchedule
+            {
+                TenantId = tenant.Id,
+                MemberId = member1.Id,
+                WorkoutTemplateId = templateHypertrophy.Id,
+                AssignedTrainerId = trainer1.Id,
+                DayOfWeek = "Tuesday",
+                ScheduledDeliveryTime = "07:00",
+                RoutineTitle = "Lower Body Squat & Posterior Chain",
+                ExercisesJson = "[{\"name\":\"Barbell Back Squat\",\"sets\":4,\"reps\":\"6-8\",\"rest\":\"120s\"},{\"name\":\"Forearm Plank with Hip Dips\",\"sets\":3,\"reps\":\"12 per side\",\"rest\":\"60s\"}]",
+                IsRestDay = false,
+                TrainerApproved = true,
+                IsActive = true
+            },
+            new MemberWorkoutSchedule
+            {
+                TenantId = tenant.Id,
+                MemberId = member1.Id,
+                DayOfWeek = "Wednesday",
+                ScheduledDeliveryTime = "08:00",
+                RoutineTitle = "Mid-Week Active Recovery",
+                ExercisesJson = "[]",
+                IsRestDay = true,
+                TrainerApproved = true,
+                IsActive = true,
+                TrainerNotes = "Aim for 8,000 steps of light walking and gentle stretching."
+            }
+        );
+
+        // 18. Seed Member Fitness Baseline & Measurements
+        var baseline1 = new MemberFitnessBaseline
+        {
+            TenantId = tenant.Id,
+            MemberId = member1.Id,
+            InitialWeightKg = 84.50m,
+            HeightCm = 178.00m,
+            InitialBmi = 26.67m,
+            InitialMeasurementDate = DateTime.UtcNow.AddMonths(-6).Date,
+            FitnessGoal = "Lean Muscle Hypertrophy & Fat Reduction",
+            FitnessLevel = FitnessLevel.Intermediate,
+            TrainingFrequencyDaysPerWeek = 4,
+            MedicalAndDietNotes = "High protein diet target (160g/day). Avoiding excessive heavy overhead presses due to prior right shoulder history."
+        };
+        context.MemberFitnessBaselines.Add(baseline1);
+
+        context.MemberMeasurements.AddRange(
+            new MemberMeasurement
+            {
+                TenantId = tenant.Id,
+                MemberId = member1.Id,
+                WeightKg = 84.50m,
+                HeightCm = 178.00m,
+                CalculatedBmi = 26.67m,
+                WaistCm = 93.00m,
+                ChestCm = 104.00m,
+                HipCm = 102.00m,
+                LeftArmCm = 36.50m,
+                RightArmCm = 37.00m,
+                BodyFatPercentage = 22.4m,
+                MeasurementDate = DateTime.UtcNow.AddMonths(-6).Date,
+                Notes = "Initial onboarding intake assessment.",
+                WeightDifferenceKg = 0.00m,
+                WeightChangePercent = 0.00m
+            },
+            new MemberMeasurement
+            {
+                TenantId = tenant.Id,
+                MemberId = member1.Id,
+                WeightKg = 82.20m,
+                HeightCm = 178.00m,
+                CalculatedBmi = 25.94m,
+                WaistCm = 89.50m,
+                ChestCm = 105.00m,
+                HipCm = 100.50m,
+                LeftArmCm = 37.00m,
+                RightArmCm = 37.20m,
+                BodyFatPercentage = 19.8m,
+                MeasurementDate = DateTime.UtcNow.AddMonths(-3).Date,
+                Notes = "Month 3 progress check-in. Significant waist reduction and noticeable strength gain on bench press.",
+                WeightDifferenceKg = -2.30m,
+                WeightChangePercent = -2.72m
+            },
+            new MemberMeasurement
+            {
+                TenantId = tenant.Id,
+                MemberId = member1.Id,
+                WeightKg = 79.80m,
+                HeightCm = 178.00m,
+                CalculatedBmi = 25.19m,
+                WaistCm = 85.00m,
+                ChestCm = 106.50m,
+                HipCm = 98.00m,
+                LeftArmCm = 38.00m,
+                RightArmCm = 38.20m,
+                BodyFatPercentage = 16.5m,
+                MeasurementDate = DateTime.UtcNow.AddDays(-5).Date,
+                Notes = "Recent comprehensive review. Reached sub-80kg milestone with increased arm circumference!",
+                WeightDifferenceKg = -4.70m,
+                WeightChangePercent = -5.56m
+            }
+        );
+
+        // 19. Seed Onboarding Journey
+        context.MemberOnboardingJourneys.Add(new MemberOnboardingJourney
+        {
+            TenantId = tenant.Id,
+            MemberId = member1.Id,
+            RegistrationCompleted = true,
+            RegistrationCompletedAt = DateTime.UtcNow.AddMonths(-6),
+            ConsentCollected = true,
+            ConsentCollectedAt = DateTime.UtcNow.AddMonths(-6),
+            WelcomeSent = true,
+            WelcomeSentAt = DateTime.UtcNow.AddMonths(-6),
+            AssessmentCompleted = true,
+            AssessmentCompletedAt = DateTime.UtcNow.AddMonths(-6).AddDays(1),
+            InitialMeasurementDone = true,
+            InitialMeasurementDoneAt = DateTime.UtcNow.AddMonths(-6).AddDays(1),
+            TrainerAssigned = true,
+            TrainerAssignedAt = DateTime.UtcNow.AddMonths(-6).AddDays(2),
+            WorkoutPlanAssigned = true,
+            WorkoutPlanAssignedAt = DateTime.UtcNow.AddMonths(-6).AddDays(2),
+            FirstWorkoutDelivered = true,
+            FirstWorkoutDeliveredAt = DateTime.UtcNow.AddMonths(-6).AddDays(3),
+            FirstWeekReviewDone = true,
+            FirstWeekReviewDoneAt = DateTime.UtcNow.AddMonths(-6).AddDays(10),
+            Notes = "Completed full onboarding with flying colors."
+        });
+
         await context.SaveChangesAsync();
     }
 }

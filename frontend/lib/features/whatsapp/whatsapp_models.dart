@@ -189,3 +189,105 @@ class WhatsAppTriggerRuleModel {
   }
 }
 
+class WhatsAppIntegrationModel {
+  final String id;
+  final String wabaId;
+  final String phoneNumberId;
+  final String displayPhoneNumber;
+  final String businessPortfolioName;
+  final String connectionStatus;
+  final String healthStatus;
+  final double costPerUtilityMessage;
+  final double costPerMarketingMessage;
+  final String timeZoneId;
+  final DateTime? lastSyncedAt;
+  final String webhookUrl;
+  final String webhookVerifyToken;
+
+  WhatsAppIntegrationModel({
+    required this.id,
+    required this.wabaId,
+    required this.phoneNumberId,
+    required this.displayPhoneNumber,
+    required this.businessPortfolioName,
+    required this.connectionStatus,
+    required this.healthStatus,
+    required this.costPerUtilityMessage,
+    required this.costPerMarketingMessage,
+    required this.timeZoneId,
+    this.lastSyncedAt,
+    required this.webhookUrl,
+    required this.webhookVerifyToken,
+  });
+
+  bool get isConnected => connectionStatus.toLowerCase() == 'connected';
+
+  factory WhatsAppIntegrationModel.fromJson(Map<String, dynamic> json) {
+    return WhatsAppIntegrationModel(
+      id: json['id'] as String? ?? '',
+      wabaId: json['wabaId'] as String? ?? '',
+      phoneNumberId: json['phoneNumberId'] as String? ?? '',
+      displayPhoneNumber: json['displayPhoneNumber'] as String? ?? '',
+      businessPortfolioName: json['businessPortfolioName'] as String? ?? '',
+      connectionStatus: json['connectionStatus'] as String? ?? 'Connected',
+      healthStatus: json['healthStatus'] as String? ?? 'HEALTHY',
+      costPerUtilityMessage: (json['costPerUtilityMessage'] as num?)?.toDouble() ?? 0.005,
+      costPerMarketingMessage: (json['costPerMarketingMessage'] as num?)?.toDouble() ?? 0.025,
+      timeZoneId: json['timeZoneId'] as String? ?? 'Asia/Kolkata',
+      lastSyncedAt: json['lastSyncedAt'] != null ? DateTime.tryParse(json['lastSyncedAt'] as String) : null,
+      webhookUrl: json['webhookUrl'] as String? ?? '',
+      webhookVerifyToken: json['webhookVerifyToken'] as String? ?? 'GIMXSOFT_WHATSAPP_WEBHOOK_VERIFY_TOKEN',
+    );
+  }
+}
+
+class ScheduledMessageModel {
+  final String id;
+  final String? memberId;
+  final String recipientPhone;
+  final String recipientName;
+  final String? templateName;
+  final String messageContent;
+  final DateTime scheduledForUtc;
+  final String status;
+  final String triggerType;
+  final DateTime createdAt;
+  final DateTime? processedAt;
+  final String? failureReason;
+
+  ScheduledMessageModel({
+    required this.id,
+    this.memberId,
+    required this.recipientPhone,
+    required this.recipientName,
+    this.templateName,
+    required this.messageContent,
+    required this.scheduledForUtc,
+    required this.status,
+    required this.triggerType,
+    required this.createdAt,
+    this.processedAt,
+    this.failureReason,
+  });
+
+  bool get isPending => status.toLowerCase() == 'pending';
+
+  factory ScheduledMessageModel.fromJson(Map<String, dynamic> json) {
+    return ScheduledMessageModel(
+      id: json['id'] as String,
+      memberId: json['memberId'] as String?,
+      recipientPhone: json['recipientPhone'] as String? ?? '',
+      recipientName: json['recipientName'] as String? ?? 'Member',
+      templateName: json['templateName'] as String?,
+      messageContent: json['messageContent'] as String? ?? '',
+      scheduledForUtc: DateTime.tryParse(json['scheduledForUtc'] as String? ?? '') ?? DateTime.now(),
+      status: json['status'] as String? ?? 'Pending',
+      triggerType: json['triggerType'] as String? ?? 'Manual',
+      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
+      processedAt: json['processedAt'] != null ? DateTime.tryParse(json['processedAt'] as String) : null,
+      failureReason: json['failureReason'] as String?,
+    );
+  }
+}
+
+
