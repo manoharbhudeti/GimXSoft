@@ -51,6 +51,7 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
 
         var now = DateTime.UtcNow;
         var pendingMessages = await context.ScheduledMessages
+            .IgnoreQueryFilters()
             .Where(m => m.Status == ScheduledMessageStatus.Pending && m.ScheduledForUtc <= now)
             .OrderBy(m => m.ScheduledForUtc)
             .Take(25)
@@ -69,6 +70,7 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
 
                 // 1. Compliance check: Verify recipient is not suppressed (opted-out)
                 var isSuppressed = await context.WhatsAppSuppressions
+                    .IgnoreQueryFilters()
                     .AnyAsync(s => s.TenantId == msg.TenantId && s.Phone == msg.RecipientPhone, cancellationToken);
 
                 if (isSuppressed)
@@ -85,6 +87,7 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
                 if (msg.MemberId.HasValue)
                 {
                     var consent = await context.WhatsAppConsents
+                        .IgnoreQueryFilters()
                         .FirstOrDefaultAsync(c => c.TenantId == msg.TenantId && c.MemberId == msg.MemberId.Value, cancellationToken);
 
                     if (consent != null && !consent.HasConsented)
@@ -99,6 +102,7 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
 
                 // 3. Dispatch message via Cloud API
                 var integration = await context.WhatsAppIntegrations
+                    .IgnoreQueryFilters()
                     .FirstOrDefaultAsync(i => i.TenantId == msg.TenantId, cancellationToken);
 
                 var phoneId = integration?.PhoneNumberId ?? "105938472910482";
@@ -181,11 +185,13 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
 
         // 1. Daily Workout Routine Trigger
         var workoutTriggerRule = await context.WhatsAppTriggerRules
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(r => r.TriggerEvent == "OnDailyWorkoutRoutine" && r.IsEnabled, cancellationToken);
 
         if (workoutTriggerRule != null)
         {
             var schedules = await context.MemberWorkoutSchedules
+                .IgnoreQueryFilters()
                 .Include(s => s.Member)
                 .Where(s => s.IsActive && s.TrainerApproved && s.DayOfWeek == todayDayName)
                 .ToListAsync(cancellationToken);
@@ -196,6 +202,7 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
 
                 // Check if already dispatched for today
                 var alreadySentToday = await context.WhatsAppMessages
+                    .IgnoreQueryFilters()
                     .AnyAsync(m => m.MemberId == sched.MemberId && m.SentAt >= today && m.TemplateName == "daily_workout_delivery", cancellationToken);
 
                 if (alreadySentToday) continue;
@@ -224,12 +231,14 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
 
         // 2. Membership Expiry Automation Trigger
         var expiryTriggerRule = await context.WhatsAppTriggerRules
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(r => r.TriggerEvent == "OnMembershipExpiring" && r.IsEnabled, cancellationToken);
 
         if (expiryTriggerRule != null)
         {
             var sevenDaysLater = today.AddDays(7);
             var expiringMembers = await context.MemberSubscriptions
+                .IgnoreQueryFilters()
                 .Include(s => s.Member)
                 .Include(s => s.MembershipPlan)
                 .Where(s => s.Status == SubscriptionStatus.Active && s.EndDate.Date == sevenDaysLater)
@@ -240,6 +249,7 @@ public class WhatsAppSchedulerBackgroundService : BackgroundService
                 if (sub.Member == null) continue;
 
                 var alreadyNotified = await context.ScheduledMessages
+                    .IgnoreQueryFilters()
                     .AnyAsync(m => m.MemberId == sub.MemberId && m.TriggerType == "ExpiryReminder" && m.CreatedAt >= today.AddDays(-6), cancellationToken);
 
                 if (alreadyNotified) continue;

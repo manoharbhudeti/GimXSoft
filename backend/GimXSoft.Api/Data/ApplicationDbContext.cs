@@ -50,35 +50,35 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // Global Query Filters for Strict Multi-Tenant Isolation
-        modelBuilder.Entity<Branch>().HasQueryFilter(b => !_tenantService!.TenantId.HasValue || b.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<User>().HasQueryFilter(u => !_tenantService!.TenantId.HasValue || u.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<Member>().HasQueryFilter(m => !_tenantService!.TenantId.HasValue || m.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<MembershipPlan>().HasQueryFilter(p => !_tenantService!.TenantId.HasValue || p.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<MemberSubscription>().HasQueryFilter(s => !_tenantService!.TenantId.HasValue || s.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<Lead>().HasQueryFilter(l => !_tenantService!.TenantId.HasValue || l.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<LeadActivity>().HasQueryFilter(a => !_tenantService!.TenantId.HasValue || a.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<AttendanceRecord>().HasQueryFilter(ar => !_tenantService!.TenantId.HasValue || ar.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(pt => !_tenantService!.TenantId.HasValue || pt.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<TrainerProfile>().HasQueryFilter(tp => !_tenantService!.TenantId.HasValue || tp.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<TrainerSession>().HasQueryFilter(ts => !_tenantService!.TenantId.HasValue || ts.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WorkoutPlan>().HasQueryFilter(wp => !_tenantService!.TenantId.HasValue || wp.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<AuditLog>().HasQueryFilter(al => !_tenantService!.TenantId.HasValue || al.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WhatsAppMessage>().HasQueryFilter(wm => !_tenantService!.TenantId.HasValue || wm.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WhatsAppTemplate>().HasQueryFilter(wt => !_tenantService!.TenantId.HasValue || wt.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WhatsAppTriggerRule>().HasQueryFilter(wtr => !_tenantService!.TenantId.HasValue || wtr.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WhatsAppIntegration>().HasQueryFilter(wi => !_tenantService!.TenantId.HasValue || wi.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WhatsAppConsent>().HasQueryFilter(wc => !_tenantService!.TenantId.HasValue || wc.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WhatsAppSuppression>().HasQueryFilter(ws => !_tenantService!.TenantId.HasValue || ws.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<ScheduledMessage>().HasQueryFilter(sm => !_tenantService!.TenantId.HasValue || sm.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<Exercise>().HasQueryFilter(ex => !_tenantService!.TenantId.HasValue || ex.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<ExerciseCategory>().HasQueryFilter(ec => !_tenantService!.TenantId.HasValue || ec.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WorkoutTemplate>().HasQueryFilter(wt => !_tenantService!.TenantId.HasValue || wt.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<MemberWorkoutSchedule>().HasQueryFilter(mws => !_tenantService!.TenantId.HasValue || mws.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<WorkoutCompletion>().HasQueryFilter(wc => !_tenantService!.TenantId.HasValue || wc.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<MemberMeasurement>().HasQueryFilter(mm => !_tenantService!.TenantId.HasValue || mm.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<MemberFitnessBaseline>().HasQueryFilter(mfb => !_tenantService!.TenantId.HasValue || mfb.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<MemberOnboardingJourney>().HasQueryFilter(moj => !_tenantService!.TenantId.HasValue || moj.TenantId == _tenantService.TenantId.Value);
-        modelBuilder.Entity<MemberProgressReview>().HasQueryFilter(mpr => !_tenantService!.TenantId.HasValue || mpr.TenantId == _tenantService.TenantId.Value);
+        modelBuilder.Entity<Branch>().HasQueryFilter(b => _tenantService == null || !_tenantService.TenantId.HasValue || b.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<User>().HasQueryFilter(u => _tenantService == null || !_tenantService.TenantId.HasValue || u.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<Member>().HasQueryFilter(m => _tenantService == null || !_tenantService.TenantId.HasValue || m.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<MembershipPlan>().HasQueryFilter(p => _tenantService == null || !_tenantService.TenantId.HasValue || p.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<MemberSubscription>().HasQueryFilter(s => _tenantService == null || !_tenantService.TenantId.HasValue || s.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<Lead>().HasQueryFilter(l => _tenantService == null || !_tenantService.TenantId.HasValue || l.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<LeadActivity>().HasQueryFilter(a => _tenantService == null || !_tenantService.TenantId.HasValue || a.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<AttendanceRecord>().HasQueryFilter(ar => _tenantService == null || !_tenantService.TenantId.HasValue || ar.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(pt => _tenantService == null || !_tenantService.TenantId.HasValue || pt.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<TrainerProfile>().HasQueryFilter(tp => _tenantService == null || !_tenantService.TenantId.HasValue || tp.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<TrainerSession>().HasQueryFilter(ts => _tenantService == null || !_tenantService.TenantId.HasValue || ts.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WorkoutPlan>().HasQueryFilter(wp => _tenantService == null || !_tenantService.TenantId.HasValue || wp.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<AuditLog>().HasQueryFilter(al => _tenantService == null || !_tenantService.TenantId.HasValue || al.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppMessage>().HasQueryFilter(wm => _tenantService == null || !_tenantService.TenantId.HasValue || wm.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppTemplate>().HasQueryFilter(wt => _tenantService == null || !_tenantService.TenantId.HasValue || wt.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppTriggerRule>().HasQueryFilter(wtr => _tenantService == null || !_tenantService.TenantId.HasValue || wtr.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppIntegration>().HasQueryFilter(wi => _tenantService == null || !_tenantService.TenantId.HasValue || wi.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppConsent>().HasQueryFilter(wc => _tenantService == null || !_tenantService.TenantId.HasValue || wc.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppSuppression>().HasQueryFilter(ws => _tenantService == null || !_tenantService.TenantId.HasValue || ws.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<ScheduledMessage>().HasQueryFilter(sm => _tenantService == null || !_tenantService.TenantId.HasValue || sm.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<Exercise>().HasQueryFilter(ex => _tenantService == null || !_tenantService.TenantId.HasValue || ex.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<ExerciseCategory>().HasQueryFilter(ec => _tenantService == null || !_tenantService.TenantId.HasValue || ec.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WorkoutTemplate>().HasQueryFilter(wt => _tenantService == null || !_tenantService.TenantId.HasValue || wt.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<MemberWorkoutSchedule>().HasQueryFilter(mws => _tenantService == null || !_tenantService.TenantId.HasValue || mws.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WorkoutCompletion>().HasQueryFilter(wc => _tenantService == null || !_tenantService.TenantId.HasValue || wc.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<MemberMeasurement>().HasQueryFilter(mm => _tenantService == null || !_tenantService.TenantId.HasValue || mm.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<MemberFitnessBaseline>().HasQueryFilter(mfb => _tenantService == null || !_tenantService.TenantId.HasValue || mfb.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<MemberOnboardingJourney>().HasQueryFilter(moj => _tenantService == null || !_tenantService.TenantId.HasValue || moj.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<MemberProgressReview>().HasQueryFilter(mpr => _tenantService == null || !_tenantService.TenantId.HasValue || mpr.TenantId == _tenantService.TenantId);
 
         // Relationships & Constraints
         modelBuilder.Entity<Tenant>()
