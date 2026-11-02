@@ -1,0 +1,37 @@
+services:
+  database:
+    image: docker.io/library/postgres:16
+    container_name: gimxsoft-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    volumes:
+      - pg_data:/var/lib/postgresql/data:Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend/GimXSoft.Api
+      dockerfile: Dockerfile
+    container_name: gimxsoft-backend
+    restart: unless-stopped
+    ports:
+      - "5128:5128"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5128
+      DATABASE_URL: Host=database;Port=5432;Database=mydb;Username=user;Password=mypassword;Include Error Detail=true
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  pg_data:

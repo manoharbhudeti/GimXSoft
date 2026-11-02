@@ -25,23 +25,32 @@ GIMXSOFT is an enterprise-grade gym management, operations, and CRM web applicat
 ## 🏗️ Technology Stack
 
 - **Frontend**: Flutter Web (Dart 3.x), Riverpod state management, GoRouter declarative routing, Dio HTTP client, FL Chart, Google Fonts (Inter).
-- **Backend**: ASP.NET Core 9 Web API (C# 13), Entity Framework Core 9, SQLite (zero-config local) / SQL Server, JWT Bearer Authentication, Swagger / OpenAPI.
+- **Backend**: ASP.NET Core 9 / 10 Web API, Entity Framework Core, PostgreSQL (Npgsql) / SQLite, JWT Bearer Authentication, Swagger / OpenAPI.
+- **Database & Containerization**: PostgreSQL 16, Docker / Podman Compose, Multi-stage Dockerfile.
 - **Security**: BCrypt password hashing, dual JWT token rotation, Entity Framework Core Global Query Filters enforcing strict multi-tenant database isolation.
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### 1. Launch the Backend API
+### 1. Launch with Docker Compose (PostgreSQL + Backend API)
+```bash
+# Start PostgreSQL and Backend API with one command:
+podman compose up -d
+# or with docker:
+docker compose up -d
+```
+The database schema and sample data will automatically initialize and seed in PostgreSQL.
+- API Base URL: `http://localhost:5128/api`
+- Swagger UI: `http://localhost:5128/swagger`
+
+### 2. Alternative: Launch Locally with .NET CLI
 ```bash
 cd backend/GimXSoft.Api
 dotnet run --urls "http://localhost:5128"
 ```
-The database will automatically initialize and seed sample demo data.
-- API Base URL: `http://localhost:5128/api`
-- Swagger UI: `http://localhost:5128/swagger`
 
-### 2. Pre-Seeded One-Click Demo Accounts
+### 3. Pre-Seeded One-Click Demo Accounts
 On the login screen, click any of the quick-fill chips or use:
 - **Gym Owner**: `admin@titanfit.com` | `Admin123!`
 - **Branch Manager**: `sarah.manager@titanfit.com` | `Manager123!`
