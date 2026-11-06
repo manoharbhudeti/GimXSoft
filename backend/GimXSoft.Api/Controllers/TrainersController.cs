@@ -175,5 +175,98 @@ public class TrainersController : ControllerBase
             session.CreatedAt
         ));
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<TrainerDto>> GetTrainerById(Guid id)
+    {
+        var t = await _context.TrainerProfiles
+            .Include(x => x.User)
+            .Include(x => x.Sessions)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (t == null) return NotFound(new { message = "Trainer profile not found." });
+
+        return Ok(new TrainerDto(
+            t.Id,
+            t.TenantId,
+            t.UserId,
+            t.User?.FullName ?? "Trainer",
+            t.User?.Email ?? "",
+            t.User?.Phone ?? "",
+            t.User?.AvatarUrl,
+            t.Bio,
+            t.SpecializationsJson,
+            t.CertificationsJson,
+            t.HourlyRate,
+            t.IsActive,
+            _context.Members.Count(m => m.AssignedTrainerId == t.UserId),
+            t.Sessions.Count(s => s.Status == SessionStatus.Completed)
+        ));
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> UpdateTrainer(Guid id, [FromBody] UpdateTrainerRequest request)
+    {
+        var profile = await _context.TrainerProfiles
+            .Include(p => p.User)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (profile == null) return NotFound(new { message = "Trainer profile not found." });
+
+        if (profile.User != null)
+        {
+            profile.User.FullName = request.FullName.Trim();
+            if (!string.IsNullOrWhiteSpace(request.Phone)) profile.User.Phone = request.Phone.Trim();
+        }
+
+        profile.Bio = request.Bio ?? "";
+        profile.SpecializationsJson = request.SpecializationsJson ?? "[]";
+        profile.CertificationsJson = request.CertificationsJson ?? "[]";
+        profile.HourlyRate = request.HourlyRate;
+        profile.IsActive = request.IsActive;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> DeleteTrainer(Guid id)
+    {
+        var profile = await _context.TrainerProfiles.FindAsync(id);
+        if (profile == null) return NotFound(new { message = "Trainer profile not found." });
+
+        profile.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Trainer profile deactivated successfully." });
+    }
+
+    [HttpPut("sessions/{id:guid}/status")]
+    public async Task<ActionResult> UpdateSessionStatus(Guid id, [FromBody] UpdateSessionStatusRequest request)
+    {
+        var session = await _context.TrainerSessions.FindAsync(id);
+        if (session == null) return NotFound(new { message = "Session not found." });
+
+        session.Status = request.Status;
+        if (!string.IsNullOrWhiteSpace(request.Notes))
+        {
+            session.Notes = $"{session.Notes} | {request.Notes}".Trim(' ', '|');
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new { success = true, sessionId = session.Id, status = session.Status.ToString() });
+    }
+
+    [HttpDelete("sessions/{id:guid}")]
+    public async Task<ActionResult> CancelSession(Guid id)
+    {
+        var session = await _context.TrainerSessions.FindAsync(id);
+        if (session == null) return NotFound(new { message = "Session not found." });
+
+        session.Status = SessionStatus.Cancelled;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Session cancelled successfully." });
+    }
 }
 

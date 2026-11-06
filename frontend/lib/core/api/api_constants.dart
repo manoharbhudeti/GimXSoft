@@ -1,12 +1,19 @@
 class ApiConstants {
   static const String baseUrl = 'http://localhost:5128/api';
 
-  // Auth
+  // Auth & Subscription Trial
   static const String login = '/auth/login';
   static const String registerTenant = '/auth/register-tenant';
+  static const String registerTrial = '/auth/register-trial';
+  static const String trialStatus = '/auth/trial-status';
+  static const String cancelSubscription = '/auth/cancel-subscription';
   static const String refreshToken = '/auth/refresh-token';
   static const String me = '/auth/me';
   static const String changePassword = '/auth/change-password';
+
+  // Leads & Inquiries
+  static const String leads = '/leads';
+  static const String publicInquiry = '/leads/public-inquiry';
 
   // Dashboard
   static const String dashboardMetrics = '/dashboard/metrics';
@@ -56,11 +63,18 @@ class ApiConstants {
   static const String attendanceHistory = '/attendance/history';
   static const String attendanceCheckIn = '/attendance/check-in';
   static const String attendanceCheckOut = '/attendance/check-out';
+  static const String liveOccupancy = '/attendance/live-occupancy';
+  static const String simulateScan = '/attendance/simulate-scan';
 
   // Payments & Billing
   static const String payments = '/payments';
   static const String collectPayment = '/payments/collect';
+  static const String posCharge = '/payments/pos-charge';
   static const String financialSummary = '/payments/financial-summary';
+
+  // WhatsApp Quick Dispatches & Triggers
+  static const String whatsAppQuickSend = '/whatsapp/quick-send';
+  static const String whatsAppTestMessage = '/whatsapp/test-message';
 
   // Trainers & Workouts
   static const String trainers = '/trainers';
@@ -71,9 +85,15 @@ class ApiConstants {
   static const String staff = '/staff';
   static const String branches = '/branches';
 
-  // Reports
+  // Reports & Analytics
   static const String reportRevenue = '/reports/revenue-summary';
   static const String reportAttendance = '/reports/attendance-distribution';
   static const String reportRetention = '/reports/retention-metrics';
+  static const String roiCalculator = '/reports/roi-calculator';
+  static const String facilityTraffic = '/reports/facility-traffic';
+  static const String membershipBreakdown = '/reports/membership-breakdown';
+
+  // Audit Logs
+  static const String auditLogs = '/auditlogs';
 }
 

@@ -59,6 +59,38 @@ public record TenantSummaryDto(
     string SubscriptionPlan,
     string SubscriptionStatus,
     int MaxBranches,
-    int MaxMembers
+    int MaxMembers,
+    bool IsTrial = false,
+    DateTime? TrialEndsAt = null,
+    decimal MonthlyPrice = 200m
+);
+
+public record RegisterTrialRequest(
+    [Required] string GymName,
+    [Required] string AdminFullName,
+    [Required, EmailAddress] string AdminEmail,
+    [Required, MinLength(6)] string AdminPassword,
+    string? Slug,
+    string? Phone,
+    string? BranchName,
+    string? City
+);
+
+public record TrialStatusResponse(
+    bool IsTrial,
+    string SubscriptionPlan,
+    string SubscriptionStatus,
+    DateTime? TrialEndsAt,
+    int DaysRemaining,
+    decimal MonthlyPrice,
+    bool NoPaymentNeeded,
+    bool CanCancelAnytime,
+    string Message
+);
+
+public record CancelSubscriptionResponse(
+    bool Success,
+    string Status,
+    string Message
 );
 

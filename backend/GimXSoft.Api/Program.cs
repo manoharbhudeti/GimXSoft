@@ -29,7 +29,7 @@ string? rawConnStr = Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? (envVars.TryGetValue("DATABASE_URL", out var envDbUrl) && !string.IsNullOrWhiteSpace(envDbUrl) ? envDbUrl : null)
     ?? (envVars.TryGetValue("DB_LINK", out var envDbLink) && !string.IsNullOrWhiteSpace(envDbLink) ? envDbLink : null)
     ?? builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Host=localhost;Port=5432;Database=mydb;Username=user;Password=mypassword;Include Error Detail=true";
+    ?? "Data Source=gimxsoft.db";
 
 // Helper to convert standard URI (postgres://user:password@host:port/database) to Npgsql connection string
 static string ParsePostgresConnectionString(string connectionString)

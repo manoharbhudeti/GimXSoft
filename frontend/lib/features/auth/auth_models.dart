@@ -44,6 +44,9 @@ class TenantModel {
   final String subscriptionPlan;
   final int maxBranches;
   final int maxMembers;
+  final bool isTrial;
+  final DateTime? trialEndsAt;
+  final double monthlyPrice;
 
   const TenantModel({
     required this.id,
@@ -53,6 +56,9 @@ class TenantModel {
     required this.subscriptionPlan,
     required this.maxBranches,
     required this.maxMembers,
+    this.isTrial = false,
+    this.trialEndsAt,
+    this.monthlyPrice = 200.0,
   });
 
   factory TenantModel.fromJson(Map<String, dynamic> json) {
@@ -61,9 +67,12 @@ class TenantModel {
       name: json['name'] ?? '',
       slug: json['slug'] ?? '',
       logoUrl: json['logoUrl'],
-      subscriptionPlan: json['subscriptionPlan'] ?? 'Starter',
+      subscriptionPlan: json['subscriptionPlan'] ?? '1-Month Free Trial',
       maxBranches: json['maxBranches'] ?? 5,
       maxMembers: json['maxMembers'] ?? 1000,
+      isTrial: json['isTrial'] == true,
+      trialEndsAt: json['trialEndsAt'] != null ? DateTime.tryParse(json['trialEndsAt'].toString()) : null,
+      monthlyPrice: (json['monthlyPrice'] as num?)?.toDouble() ?? 200.0,
     );
   }
 
@@ -75,6 +84,9 @@ class TenantModel {
     'subscriptionPlan': subscriptionPlan,
     'maxBranches': maxBranches,
     'maxMembers': maxMembers,
+    'isTrial': isTrial,
+    'trialEndsAt': trialEndsAt?.toIso8601String(),
+    'monthlyPrice': monthlyPrice,
   };
 }
 

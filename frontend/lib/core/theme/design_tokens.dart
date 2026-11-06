@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// Unslopped Design Tokens based on heydamir/unslop specifications:
+/// - 4px spacing scale
+/// - Nested border radii (inner = outer - padding, never < 4)
+/// - Neutral depth (no colored glows or neon auras)
+/// - Unified cubic-bezier(0.22, 1, 0.36, 1) easing curve
 class DesignTokens {
-  // Spacing
+  // Spacing Scale (strict 4px grid)
   static const double space2 = 2.0;
   static const double space4 = 4.0;
   static const double space6 = 6.0;
@@ -14,6 +19,7 @@ class DesignTokens {
   static const double space32 = 32.0;
   static const double space40 = 40.0;
   static const double space48 = 48.0;
+  static const double space64 = 64.0;
 
   // Semantic spacing aliases
   static const double spacingXs = space4;
@@ -22,12 +28,13 @@ class DesignTokens {
   static const double spacingLg = space24;
   static const double spacingXl = space32;
 
-  // Corner Radii
+  // Nested Corner Radii
+  // Keycaps/tags: 6px, Rows/Inputs/Buttons: 8-10px, Cards: 12-14px, Panels: 16-20px
   static const double radiusXs = 4.0;
   static const double radiusSm = 6.0;
-  static const double radiusMd = 10.0;
-  static const double radiusLg = 14.0;
-  static const double radiusXl = 18.0;
+  static const double radiusMd = 8.0;
+  static const double radiusLg = 12.0;
+  static const double radiusXl = 16.0;
   static const double radiusFull = 9999.0;
 
   static const BorderRadius borderXs = BorderRadius.all(Radius.circular(radiusXs));
@@ -37,52 +44,54 @@ class DesignTokens {
   static const BorderRadius borderXl = BorderRadius.all(Radius.circular(radiusXl));
   static const BorderRadius borderFull = BorderRadius.all(Radius.circular(radiusFull));
 
-  // Glassmorphism Blur
-  static const double blurSubtle = 8.0;
-  static const double blurStandard = 14.0;
-  static const double blurHeavy = 24.0;
+  // Glassmorphism Blur (toned down to subtle calm backdrop filters)
+  static const double blurSubtle = 4.0;
+  static const double blurStandard = 8.0;
+  static const double blurHeavy = 16.0;
 
-  // Animation Durations
-  static const Duration durationFast = Duration(milliseconds: 150);
-  static const Duration durationNormal = Duration(milliseconds: 250);
-  static const Duration durationSlow = Duration(milliseconds: 350);
+  // Motion Durations & Easing
+  // Standard curve: cubic-bezier(0.22, 1, 0.36, 1)
+  static const Curve easeOutStandard = Cubic(0.22, 1.0, 0.36, 1.0);
+  static const Duration durationFast = Duration(milliseconds: 140);
+  static const Duration durationNormal = Duration(milliseconds: 200);
+  static const Duration durationSlow = Duration(milliseconds: 320);
 
   // Responsive Breakpoints
   static const double breakpointMobile = 640.0;
   static const double breakpointTablet = 1024.0;
   static const double breakpointDesktop = 1440.0;
 
-  // Shadows
+  // Quiet Neutral Shadows (Dark uses hairlines + subtle ambient drop; Light uses soft diffuse shadows)
   static List<BoxShadow> shadowSm(bool isDark) => [
     BoxShadow(
-      color: isDark ? Colors.black.withOpacity(0.25) : Colors.black.withOpacity(0.04),
-      blurRadius: 4,
+      color: isDark ? Colors.black.withOpacity(0.35) : const Color(0x0D000000),
+      blurRadius: 2,
       offset: const Offset(0, 1),
     ),
   ];
 
   static List<BoxShadow> shadowMd(bool isDark) => [
     BoxShadow(
-      color: isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06),
-      blurRadius: 10,
-      offset: const Offset(0, 4),
+      color: isDark ? Colors.black.withOpacity(0.40) : const Color(0x12000000),
+      blurRadius: 8,
+      offset: const Offset(0, 2),
     ),
   ];
 
   static List<BoxShadow> shadowLg(bool isDark) => [
     BoxShadow(
-      color: isDark ? Colors.black.withOpacity(0.45) : Colors.black.withOpacity(0.08),
+      color: isDark ? Colors.black.withOpacity(0.50) : const Color(0x14000000),
       blurRadius: 20,
-      offset: const Offset(0, 8),
+      offset: const Offset(0, 6),
     ),
   ];
 
+  // Restrained neutral elevation (replaces glowing primary shadows)
   static List<BoxShadow> glowPrimary = [
-    BoxShadow(
-      color: const Color(0xFF6366F1).withOpacity(0.35),
-      blurRadius: 16,
-      offset: const Offset(0, 4),
+    const BoxShadow(
+      color: Color(0x1F000000),
+      blurRadius: 8,
+      offset: Offset(0, 2),
     ),
   ];
 }
-

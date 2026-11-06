@@ -67,3 +67,21 @@ public record LeadActivityDto(
     DateTime CreatedAt
 );
 
+public record PublicInquiryRequest(
+    [Required] string FullName,
+    string? Email,
+    [Required] string Phone,
+    string? GymName,
+    string? MemberRange,
+    string? Message
+);
+
+public record ConvertLeadRequest(
+    Guid? InitialPlanId,
+    Guid? BranchId,
+    string? EmergencyContactName,
+    string? EmergencyContactPhone,
+    string? Address
+);
+
+

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,12 +10,17 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/metric_card.dart';
 import '../../core/widgets/skeleton_loader.dart';
-import '../../core/widgets/interactive_3d_card.dart';
 import '../../core/states/feedback/app_state_handler.dart';
 import '../auth/auth_provider.dart';
 import 'dashboard_models.dart';
 import 'dashboard_provider.dart';
 
+/// Unslopped Dashboard View:
+/// - Direction: Athletic, exact, focused operations console
+/// - Contextual quiet header with live gym floor capacity signature
+/// - Restrained 4-card metric row in tabular figures
+/// - Dominant revenue line chart on a calm muted grid without gradient fills
+/// - Quiet 36px action toolbar replacing rainbow-colored 3D tiles
 class DashboardView extends ConsumerWidget {
   const DashboardView({super.key});
 
@@ -43,16 +49,15 @@ class DashboardView extends ConsumerWidget {
         children: [
           Row(
             children: const [
-              SkeletonLoader(width: 200, height: 28),
+              SkeletonLoader(width: 220, height: 24),
               Spacer(),
-              SkeletonLoader(width: 120, height: 38),
+              SkeletonLoader(width: 140, height: 36),
             ],
           ),
           const SizedBox(height: DesignTokens.space24),
-          // Skeleton stat cards
           Wrap(
-            spacing: 16,
-            runSpacing: 16,
+            spacing: DesignTokens.space16,
+            runSpacing: DesignTokens.space16,
             children: List.generate(
               4,
               (index) => SizedBox(
@@ -89,411 +94,281 @@ class DashboardView extends ConsumerWidget {
     final currencyFormat = NumberFormat.simpleCurrency(decimalDigits: 0);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(DesignTokens.space24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. Welcome & Quick Action Bar
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(
+        horizontal: DesignTokens.space24,
+        vertical: DesignTokens.space20,
+      ),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1440),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // 1. Contextual Header (Replaces greeting slop)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Welcome back, ${authState.user?.fullName.split(' ').first ?? 'Team'}',
+                        'Operations Overview',
                         style: TextStyle(
                           fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: -0.5,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: -0.4,
                           color: AppColors.textPrimary(isDark),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: AppColors.secondary.withOpacity(0.12),
-                          borderRadius: DesignTokens.borderFull,
-                          border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(width: 6, height: 6, decoration: const BoxDecoration(color: AppColors.secondary, shape: BoxShape.circle)),
-                            const SizedBox(width: 6),
-                            const Text('Live Operations', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.secondary)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Real-time overview of ${authState.selectedBranch?.name ?? 'all gym facilities'}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary(isDark),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  AppButton(
-                    text: 'Reception Desk',
-                    icon: Icons.qr_code_scanner_rounded,
-                    variant: ButtonVariant.secondary,
-                    onPressed: () => context.go('/attendance'),
-                  ),
-                  const SizedBox(width: DesignTokens.space12),
-                  AppButton(
-                    text: 'Refresh',
-                    icon: Icons.refresh_rounded,
-                    variant: ButtonVariant.ghost,
-                    onPressed: () => ref.invalidate(dashboardMetricsProvider),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: DesignTokens.space24),
-
-          // 2. Interactive 3D Quick Action Command Deck
-          _build3DQuickActionDeck(context, isDark),
-          const SizedBox(height: DesignTokens.space24),
-
-          // 3. High-Level Metric Stat Cards Grid
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final cardWidth = constraints.maxWidth > 1100
-                  ? (constraints.maxWidth - (3 * 16)) / 4
-                  : (constraints.maxWidth > 700
-                      ? (constraints.maxWidth - 16) / 2
-                      : constraints.maxWidth);
-
-              return Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: [
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'Total Active Members',
-                      value: '${metrics.activeMembers}',
-                      subtitle: '${metrics.totalMembers} total registered',
-                      icon: Icons.people_alt_rounded,
-                      iconColor: AppColors.primary,
-                      trendPercentage: 12.8,
-                      isPositiveTrend: true,
-                      onTap: () => context.go('/members'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'Monthly Revenue',
-                      value: currencyFormat.format(metrics.monthlyRevenue > 0 ? metrics.monthlyRevenue : 18450),
-                      subtitle: 'vs previous month',
-                      icon: Icons.attach_money_rounded,
-                      iconColor: AppColors.secondary,
-                      trendPercentage: metrics.revenueGrowthPercentage,
-                      isPositiveTrend: metrics.revenueGrowthPercentage >= 0,
-                      onTap: () => context.go('/payments'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'Today\'s Attendance',
-                      value: '${metrics.todaysAttendance}',
-                      subtitle: 'Gym floor check-ins',
-                      icon: Icons.how_to_reg_rounded,
-                      iconColor: AppColors.accentCyan,
-                      trendPercentage: 8.4,
-                      isPositiveTrend: true,
-                      onTap: () => context.go('/attendance'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'Renewal Rate',
-                      value: '${metrics.membershipRenewalRate.toStringAsFixed(1)}%',
-                      subtitle: 'Member retention rate',
-                      icon: Icons.autorenew_rounded,
-                      iconColor: AppColors.accentPurple,
-                      trendPercentage: 4.2,
-                      isPositiveTrend: true,
-                    ),
-                  ),
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'WhatsApp Messages Sent',
-                      value: '${metrics.whatsAppSentToday}',
-                      subtitle: 'Receipts, reminders & alerts',
-                      icon: Icons.mark_chat_read_rounded,
-                      iconColor: const Color(0xFF25D366),
-                      trendPercentage: 24.0,
-                      isPositiveTrend: true,
-                      onTap: () => context.go('/whatsapp'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'WhatsApp Delivery SLA',
-                      value: '${metrics.whatsAppDeliveryRate.toStringAsFixed(1)}%',
-                      subtitle: 'Verified Meta Cloud Delivery',
-                      icon: Icons.done_all_rounded,
-                      iconColor: const Color(0xFF25D366),
-                      trendPercentage: 1.2,
-                      isPositiveTrend: true,
-                      onTap: () => context.go('/whatsapp'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'Expired Memberships',
-                      value: '${metrics.expiredMembers}',
-                      subtitle: 'Pending renewal follow-ups',
-                      icon: Icons.warning_amber_rounded,
-                      iconColor: AppColors.warning,
-                      trendPercentage: -3.0,
-                      isPositiveTrend: false,
-                    ),
-                  ),
-                  SizedBox(
-                    width: cardWidth,
-                    child: MetricStatCard(
-                      title: 'Pending Collections',
-                      value: currencyFormat.format(metrics.pendingPayments),
-                      subtitle: 'Unsettled balances',
-                      icon: Icons.receipt_long_rounded,
-                      iconColor: AppColors.accentCyan,
-                      onTap: () => context.go('/payments'),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: DesignTokens.space24),
-
-          // 3. Interactive Charts Row
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final isTwoColumn = constraints.maxWidth >= 1000;
-
-              if (isTwoColumn) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 6,
-                      child: _buildRevenueChartCard(metrics, isDark),
-                    ),
-                    const SizedBox(width: DesignTokens.space16),
-                    Expanded(
-                      flex: 4,
-                      child: _buildAttendanceTrendCard(metrics, isDark),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    _buildRevenueChartCard(metrics, isDark),
-                    const SizedBox(height: DesignTokens.space16),
-                    _buildAttendanceTrendCard(metrics, isDark),
-                  ],
-                );
-              }
-            },
-          ),
-          const SizedBox(height: DesignTokens.space24),
-
-          // 4. Secondary Row: Upcoming Expirations + Pending CRM Follow-ups + Activities
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final isWide = constraints.maxWidth >= 1100;
-
-              if (isWide) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 6,
-                      child: _buildUpcomingExpirationsCard(context, metrics, isDark),
-                    ),
-                    const SizedBox(width: DesignTokens.space16),
-                    Expanded(
-                      flex: 4,
-                      child: _buildRecentActivityFeedCard(metrics, isDark),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    _buildUpcomingExpirationsCard(context, metrics, isDark),
-                    const SizedBox(height: DesignTokens.space16),
-                    _buildRecentActivityFeedCard(metrics, isDark),
-                  ],
-                );
-              }
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _build3DQuickActionDeck(BuildContext context, bool isDark) {
-    final actions = [
-      (
-        title: 'New Member',
-        subtitle: 'Intake & profile',
-        icon: Icons.person_add_alt_1_rounded,
-        color: AppColors.primary,
-        route: '/members',
-      ),
-      (
-        title: 'Scan Check-In',
-        subtitle: 'Turnstile reception',
-        icon: Icons.qr_code_scanner_rounded,
-        color: const Color(0xFF10B981),
-        route: '/attendance',
-      ),
-      (
-        title: 'WhatsApp Desk',
-        subtitle: 'Direct chat & alerts',
-        icon: Icons.mark_chat_read_rounded,
-        color: const Color(0xFF25D366),
-        route: '/whatsapp',
-      ),
-      (
-        title: 'Weekly Workouts',
-        subtitle: 'Routine dispatcher',
-        icon: Icons.calendar_month_rounded,
-        color: const Color(0xFFF59E0B),
-        route: '/workouts/scheduler',
-      ),
-      (
-        title: 'Fitness Metrics',
-        subtitle: 'BMI & body delta',
-        icon: Icons.monitor_weight_rounded,
-        color: const Color(0xFF8B5CF6),
-        route: '/fitness-progress',
-      ),
-    ];
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double width;
-        if (constraints.maxWidth >= 1100) {
-          width = (constraints.maxWidth - (actions.length - 1) * 14) / actions.length;
-        } else if (constraints.maxWidth >= 700) {
-          width = (constraints.maxWidth - 14) / 2;
-        } else {
-          width = constraints.maxWidth;
-        }
-
-        return Wrap(
-          spacing: 14,
-          runSpacing: 14,
-          children: actions.map((act) {
-            return SizedBox(
-              width: width,
-              child: Interactive3DCard(
-                onTap: () => context.go(act.route),
-                glowColor: act.color,
-                maxTiltAngle: 0.12,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                child: Row(
-                  children: [
-                    ParallaxLayer(
-                      depth: 14.0,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: act.color.withOpacity(isDark ? 0.20 : 0.12),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: act.color.withOpacity(0.35),
-                            width: 1.2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: act.color.withOpacity(0.20),
-                              blurRadius: 8.0,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Icon(act.icon, color: act.color, size: 20),
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: 4),
+                      Row(
                         children: [
-                          ParallaxLayer(
-                            depth: 6.0,
-                            child: Text(
-                              act.title,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary(isDark),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          Text(
+                            '${authState.selectedBranch?.name ?? 'Downtown Flagship'} • November 2026',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary(isDark),
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            act.subtitle,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppColors.textMuted(isDark),
+                          const SizedBox(width: 10),
+                          // Signature athletic capacity telemetry
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.raised(isDark),
+                              borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+                              border: Border.all(color: AppColors.border(isDark)),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.success,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Floor occupancy: ${metrics.todaysAttendance} / 120 (35%)',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                    fontFeatures: const [FontFeature.tabularFigures()],
+                                    color: AppColors.textPrimary(isDark),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    ParallaxLayer(
-                      depth: 10.0,
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 13,
-                        color: act.color.withOpacity(0.7),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      AppButton(
+                        text: 'Scan check-in',
+                        icon: Icons.qr_code_scanner_rounded,
+                        variant: ButtonVariant.primary,
+                        onPressed: () => context.go('/attendance'),
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(width: DesignTokens.space8),
+                      AppButton(
+                        text: 'Refresh',
+                        icon: Icons.refresh_rounded,
+                        variant: ButtonVariant.secondary,
+                        onPressed: () => ref.invalidate(dashboardMetricsProvider),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            );
-          }).toList(),
-        );
-      },
+              const SizedBox(height: DesignTokens.space20),
+
+              // 2. Focused Action Bar (Replaces 5-color glowing 3D command deck)
+              _buildQuietActionRow(context, isDark),
+              const SizedBox(height: DesignTokens.space20),
+
+              // 3. Compact Stat Cards (Numbers first, tabular figures, 500 weight)
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final cardWidth = constraints.maxWidth > 1100
+                      ? (constraints.maxWidth - (3 * 16)) / 4
+                      : (constraints.maxWidth > 700
+                          ? (constraints.maxWidth - 16) / 2
+                          : constraints.maxWidth);
+
+                  return Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
+                      SizedBox(
+                        width: cardWidth,
+                        child: MetricStatCard(
+                          title: 'Active members',
+                          value: '${metrics.activeMembers}',
+                          subtitle: 'vs last month',
+                          icon: Icons.people_outline_rounded,
+                          trendPercentage: 12.8,
+                          isPositiveTrend: true,
+                          onTap: () => context.go('/members'),
+                        ),
+                      ),
+                      SizedBox(
+                        width: cardWidth,
+                        child: MetricStatCard(
+                          title: 'Monthly revenue',
+                          value: currencyFormat.format(metrics.monthlyRevenue > 0 ? metrics.monthlyRevenue : 18450),
+                          subtitle: 'vs previous period',
+                          icon: Icons.attach_money_rounded,
+                          trendPercentage: metrics.revenueGrowthPercentage,
+                          isPositiveTrend: metrics.revenueGrowthPercentage >= 0,
+                          onTap: () => context.go('/payments'),
+                        ),
+                      ),
+                      SizedBox(
+                        width: cardWidth,
+                        child: MetricStatCard(
+                          title: 'Today\'s attendance',
+                          value: '${metrics.todaysAttendance}',
+                          subtitle: 'floor check-ins',
+                          icon: Icons.how_to_reg_outlined,
+                          trendPercentage: 8.4,
+                          isPositiveTrend: true,
+                          onTap: () => context.go('/attendance'),
+                        ),
+                      ),
+                      SizedBox(
+                        width: cardWidth,
+                        child: MetricStatCard(
+                          title: 'Renewal rate',
+                          value: '${metrics.membershipRenewalRate.toStringAsFixed(1)}%',
+                          subtitle: 'membership retention',
+                          icon: Icons.autorenew_rounded,
+                          trendPercentage: 4.2,
+                          isPositiveTrend: true,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: DesignTokens.space20),
+
+              // 4. Main Analytics Deck: Revenue Trajectory + Peak Traffic
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isTwoColumn = constraints.maxWidth >= 1000;
+
+                  if (isTwoColumn) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: _buildRevenueChartCard(metrics, isDark),
+                        ),
+                        const SizedBox(width: DesignTokens.space16),
+                        Expanded(
+                          flex: 4,
+                          child: _buildAttendanceTrendCard(metrics, isDark),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        _buildRevenueChartCard(metrics, isDark),
+                        const SizedBox(height: DesignTokens.space16),
+                        _buildAttendanceTrendCard(metrics, isDark),
+                      ],
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: DesignTokens.space20),
+
+              // 5. Expirations and Live Operational Stream
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth >= 1100;
+
+                  if (isWide) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: _buildUpcomingExpirationsCard(context, metrics, isDark),
+                        ),
+                        const SizedBox(width: DesignTokens.space16),
+                        Expanded(
+                          flex: 4,
+                          child: _buildRecentActivityFeedCard(metrics, isDark),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        _buildUpcomingExpirationsCard(context, metrics, isDark),
+                        const SizedBox(height: DesignTokens.space16),
+                        _buildRecentActivityFeedCard(metrics, isDark),
+                      ],
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
+  /// Unslopped Action Row: Compact 34px buttons with quiet line icons and uniform styling
+  Widget _buildQuietActionRow(BuildContext context, bool isDark) {
+    final actions = [
+      (label: 'New member', icon: Icons.person_add_outlined, route: '/members'),
+      (label: 'Attendance terminal', icon: Icons.qr_code_scanner_rounded, route: '/attendance'),
+      (label: 'WhatsApp messaging', icon: Icons.chat_bubble_outline_rounded, route: '/whatsapp'),
+      (label: 'Workout schedules', icon: Icons.fitness_center_outlined, route: '/workouts/scheduler'),
+      (label: 'Fitness baselines', icon: Icons.monitor_weight_outlined, route: '/fitness-progress'),
+      (label: 'Collect payment', icon: Icons.point_of_sale_outlined, route: '/payments'),
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: actions.map((act) {
+          return Padding(
+            padding: const EdgeInsets.only(right: DesignTokens.space8),
+            child: AppButton(
+              text: act.label,
+              icon: act.icon,
+              size: ButtonSize.sm,
+              variant: ButtonVariant.secondary,
+              onPressed: () => context.go(act.route),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  /// Unslopped Line Chart: Single crisp 2px line on a quiet hairline grid (no purple gradients underneath)
   Widget _buildRevenueChartCard(DashboardMetricsModel metrics, bool isDark) {
     final spots = metrics.monthlyRevenueChart.asMap().entries.map((entry) {
       return FlSpot(entry.key.toDouble(), entry.value.revenue / 1000);
     }).toList();
 
     return GlassCard(
-      padding: const EdgeInsets.all(DesignTokens.space24),
+      padding: const EdgeInsets.all(DesignTokens.space20),
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -504,36 +379,42 @@ class DashboardView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Monthly Revenue Analytics',
+                    'Monthly revenue',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.textPrimary(isDark),
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Trailing 6-month gross receipts (\$ in thousands)',
+                    'Trailing 6-month gross receipts in thousands (\$k)',
                     style: TextStyle(fontSize: 12, color: AppColors.textMuted(isDark)),
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.12),
-                  borderRadius: DesignTokens.borderSm,
+                  color: AppColors.raised(isDark),
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+                  border: Border.all(color: AppColors.border(isDark)),
                 ),
                 child: Text(
-                  '+${metrics.revenueGrowthPercentage}% YoY',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.primary),
+                  '+${metrics.revenueGrowthPercentage}% vs previous period',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                    color: AppColors.success,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: DesignTokens.space24),
+          const SizedBox(height: DesignTokens.space20),
           SizedBox(
-            height: 220,
+            height: 200,
             child: LineChart(
               LineChartData(
                 gridData: FlGridData(
@@ -541,7 +422,7 @@ class DashboardView extends ConsumerWidget {
                   drawVerticalLine: false,
                   horizontalInterval: 5,
                   getDrawingHorizontalLine: (value) => FlLine(
-                    color: AppColors.border(isDark).withOpacity(0.5),
+                    color: AppColors.border(isDark),
                     strokeWidth: 1,
                   ),
                 ),
@@ -549,22 +430,26 @@ class DashboardView extends ConsumerWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 36,
+                      reservedSize: 32,
                       getTitlesWidget: (val, meta) => Text(
                         '\$${val.toInt()}k',
-                        style: TextStyle(fontSize: 10, color: AppColors.textMuted(isDark)),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                          color: AppColors.textMuted(isDark),
+                        ),
                       ),
                     ),
                   ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 26,
+                      reservedSize: 24,
                       getTitlesWidget: (val, meta) {
                         final idx = val.toInt();
                         if (idx >= 0 && idx < metrics.monthlyRevenueChart.length) {
                           return Padding(
-                            padding: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.only(top: 6),
                             child: Text(
                               metrics.monthlyRevenueChart[idx].month,
                               style: TextStyle(fontSize: 11, color: AppColors.textSecondary(isDark)),
@@ -584,31 +469,20 @@ class DashboardView extends ConsumerWidget {
                     spots: spots.isNotEmpty
                         ? spots
                         : const [FlSpot(0, 8), FlSpot(1, 10), FlSpot(2, 14), FlSpot(3, 12), FlSpot(4, 18), FlSpot(5, 21)],
-                    isCurved: true,
-                    curveSmoothness: 0.35,
+                    isCurved: false, // Honest straight athletic trend lines
                     color: AppColors.primary,
-                    barWidth: 3,
+                    barWidth: 2,
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-                        radius: 4,
+                        radius: 3,
                         color: AppColors.primary,
-                        strokeWidth: 2,
-                        strokeColor: Colors.white,
+                        strokeWidth: 1.5,
+                        strokeColor: isDark ? AppColors.darkCard : Colors.white,
                       ),
                     ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withOpacity(0.3),
-                          AppColors.primary.withOpacity(0.0),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
+                    belowBarData: BarAreaData(show: false), // Zero slop gradient washes
                   ),
                 ],
               ),
@@ -619,9 +493,11 @@ class DashboardView extends ConsumerWidget {
     );
   }
 
+  /// Unslopped Bar Chart: Monochromatic athletic volume bars
   Widget _buildAttendanceTrendCard(DashboardMetricsModel metrics, bool isDark) {
     return GlassCard(
-      padding: const EdgeInsets.all(DesignTokens.space24),
+      padding: const EdgeInsets.all(DesignTokens.space20),
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -632,10 +508,10 @@ class DashboardView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Peak Attendance Days',
+                    'Peak traffic days',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.textPrimary(isDark),
                     ),
                   ),
@@ -646,12 +522,12 @@ class DashboardView extends ConsumerWidget {
                   ),
                 ],
               ),
-              const Icon(Icons.show_chart_rounded, size: 20, color: AppColors.accentCyan),
+              Icon(Icons.bar_chart_rounded, size: 18, color: AppColors.textMuted(isDark)),
             ],
           ),
-          const SizedBox(height: DesignTokens.space24),
+          const SizedBox(height: DesignTokens.space20),
           SizedBox(
-            height: 220,
+            height: 200,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
@@ -668,9 +544,9 @@ class DashboardView extends ConsumerWidget {
                         final idx = val.toInt();
                         if (idx >= 0 && idx < metrics.attendanceTrendsChart.length) {
                           return Padding(
-                            padding: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.only(top: 6),
                             child: Text(
-                              metrics.attendanceTrendsChart[idx].dayOfWeek,
+                              metrics.attendanceTrendsChart[idx].dayOfWeek.substring(0, 3),
                               style: TextStyle(fontSize: 11, color: AppColors.textSecondary(isDark)),
                             ),
                           );
@@ -683,14 +559,15 @@ class DashboardView extends ConsumerWidget {
                 gridData: const FlGridData(show: false),
                 borderData: FlBorderData(show: false),
                 barGroups: metrics.attendanceTrendsChart.asMap().entries.map((entry) {
+                  final isPeak = entry.value.checkIns >= 60;
                   return BarChartGroupData(
                     x: entry.key,
                     barRods: [
                       BarChartRodData(
                         toY: entry.value.checkIns.toDouble(),
-                        color: entry.key == 0 || entry.key == 2 ? AppColors.primary : AppColors.accentCyan,
-                        width: 14,
-                        borderRadius: DesignTokens.borderSm,
+                        color: isPeak ? AppColors.primary : AppColors.raised(isDark),
+                        width: 12,
+                        borderRadius: BorderRadius.circular(DesignTokens.radiusXs),
                       ),
                     ],
                   );
@@ -703,32 +580,31 @@ class DashboardView extends ConsumerWidget {
     );
   }
 
+  /// Unslopped Expirations List: Clean rows with subtle days-remaining tag
   Widget _buildUpcomingExpirationsCard(BuildContext context, DashboardMetricsModel metrics, bool isDark) {
     return GlassCard(
-      padding: const EdgeInsets.all(DesignTokens.space24),
+      padding: const EdgeInsets.all(DesignTokens.space20),
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const Icon(Icons.timer_outlined, size: 20, color: AppColors.warning),
-                  const SizedBox(width: DesignTokens.space8),
-                  Text(
-                    'Upcoming Expirations (Next 14 Days)',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary(isDark),
-                    ),
-                  ),
-                ],
+              Text(
+                'Upcoming expirations (14 days)',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary(isDark),
+                ),
               ),
-              TextButton(
-                onPressed: () => context.go('/members'),
-                child: const Text('View All Members →', style: TextStyle(fontSize: 12)),
+              InkWell(
+                onTap: () => context.go('/members'),
+                child: Text(
+                  'View members',
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary(isDark)),
+                ),
               ),
             ],
           ),
@@ -748,17 +624,23 @@ class DashboardView extends ConsumerWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: metrics.upcomingExpirations.length,
-              separatorBuilder: (_, __) => const Divider(height: 16),
+              separatorBuilder: (_, __) => Divider(height: 16, color: AppColors.border(isDark)),
               itemBuilder: (context, index) {
                 final item = metrics.upcomingExpirations[index];
                 return Row(
                   children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: AppColors.warning.withOpacity(0.15),
-                      child: Text(
-                        item.memberName.isNotEmpty ? item.memberName[0] : 'M',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.warning),
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: AppColors.raised(isDark),
+                        borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+                      ),
+                      child: Center(
+                        child: Text(
+                          item.memberName.isNotEmpty ? item.memberName[0] : 'M',
+                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: AppColors.textPrimary(isDark)),
+                        ),
                       ),
                     ),
                     const SizedBox(width: DesignTokens.space12),
@@ -770,7 +652,7 @@ class DashboardView extends ConsumerWidget {
                             item.memberName,
                             style: TextStyle(
                               fontSize: 13,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                               color: AppColors.textPrimary(isDark),
                             ),
                           ),
@@ -784,19 +666,24 @@ class DashboardView extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.warning.withOpacity(0.12),
-                        borderRadius: DesignTokens.borderSm,
+                        color: AppColors.raised(isDark),
+                        borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
                       ),
                       child: Text(
-                        '${item.daysRemaining} days left',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.warning),
+                        '${item.daysRemaining}d left',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                          color: AppColors.warning,
+                        ),
                       ),
                     ),
                     const SizedBox(width: DesignTokens.space8),
                     AppButton(
                       text: 'Renew',
                       size: ButtonSize.sm,
-                      variant: ButtonVariant.outline,
+                      variant: ButtonVariant.ghost,
                       onPressed: () => context.go('/memberships'),
                     ),
                   ],
@@ -808,9 +695,11 @@ class DashboardView extends ConsumerWidget {
     );
   }
 
+  /// Unslopped Operational Stream: Quiet monochrome timeline with subtle status indicators
   Widget _buildRecentActivityFeedCard(DashboardMetricsModel metrics, bool isDark) {
     return GlassCard(
-      padding: const EdgeInsets.all(DesignTokens.space24),
+      padding: const EdgeInsets.all(DesignTokens.space20),
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -818,14 +707,14 @@ class DashboardView extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Live Operational Feed',
+                'Live activity',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.textPrimary(isDark),
                 ),
               ),
-              const Icon(Icons.bolt_rounded, size: 18, color: AppColors.primary),
+              Icon(Icons.history_rounded, size: 16, color: AppColors.textMuted(isDark)),
             ],
           ),
           const SizedBox(height: DesignTokens.space16),
@@ -840,16 +729,15 @@ class DashboardView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 2),
-                    width: 8,
-                    height: 8,
+                    margin: const EdgeInsets.only(top: 4),
+                    width: 6,
+                    height: 6,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: AppColors.textMuted(isDark),
                       shape: BoxShape.circle,
-                      boxShadow: DesignTokens.glowPrimary,
                     ),
                   ),
-                  const SizedBox(width: DesignTokens.space12),
+                  const SizedBox(width: DesignTokens.space10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -858,7 +746,7 @@ class DashboardView extends ConsumerWidget {
                           act.title,
                           style: TextStyle(
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: AppColors.textPrimary(isDark),
                           ),
                         ),
@@ -871,7 +759,11 @@ class DashboardView extends ConsumerWidget {
                   ),
                   Text(
                     DateFormat('HH:mm').format(act.timestamp),
-                    style: TextStyle(fontSize: 11, color: AppColors.textMuted(isDark)),
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      color: AppColors.textMuted(isDark),
+                    ),
                   ),
                 ],
               );

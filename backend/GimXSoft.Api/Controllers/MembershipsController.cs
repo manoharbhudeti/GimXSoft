@@ -109,6 +109,44 @@ public class MembershipsController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("plans/{id}")]
+    public async Task<ActionResult<MembershipPlanDto>> GetPlanById(Guid id)
+    {
+        var plan = await _context.MembershipPlans
+            .Include(p => p.Subscriptions)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (plan == null) return NotFound(new { message = "Plan not found." });
+
+        return Ok(new MembershipPlanDto(
+            plan.Id,
+            plan.TenantId,
+            plan.Name,
+            plan.Description,
+            plan.DurationDays,
+            plan.Price,
+            plan.RegistrationFee,
+            plan.BenefitsJson,
+            plan.IsPersonalTraining,
+            plan.IncludedSessions,
+            plan.IsActive,
+            plan.Subscriptions.Count(s => s.Status == SubscriptionStatus.Active),
+            plan.CreatedAt
+        ));
+    }
+
+    [HttpDelete("plans/{id}")]
+    public async Task<ActionResult> DeletePlan(Guid id)
+    {
+        var plan = await _context.MembershipPlans.FindAsync(id);
+        if (plan == null) return NotFound(new { message = "Plan not found." });
+
+        plan.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Plan deactivated successfully." });
+    }
+
     [HttpGet("subscriptions")]
     public async Task<ActionResult<List<MemberSubscriptionDto>>> GetSubscriptions(
         [FromQuery] Guid? memberId,
@@ -291,6 +329,35 @@ public class MembershipsController : ControllerBase
         sub.Status = SubscriptionStatus.Cancelled;
         await _context.SaveChangesAsync();
         return Ok(new { success = true, message = "Subscription cancelled." });
+    }
+
+    [HttpGet("subscriptions/{id}")]
+    public async Task<ActionResult<MemberSubscriptionDto>> GetSubscriptionById(Guid id)
+    {
+        var s = await _context.MemberSubscriptions
+            .Include(x => x.Member)
+            .Include(x => x.MembershipPlan)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (s == null) return NotFound(new { message = "Subscription not found." });
+
+        return Ok(new MemberSubscriptionDto(
+            s.Id,
+            s.TenantId,
+            s.MemberId,
+            s.Member?.FullName ?? "Member",
+            s.MembershipPlanId,
+            s.MembershipPlan?.Name ?? "Plan",
+            s.StartDate,
+            s.EndDate,
+            s.PricePaid,
+            s.DiscountAmount,
+            s.Status.ToString(),
+            s.FreezeStartDate,
+            s.FreezeEndDate,
+            s.Notes,
+            s.CreatedAt
+        ));
     }
 }
 

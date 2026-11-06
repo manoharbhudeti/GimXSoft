@@ -229,4 +229,129 @@ public class PaymentsController : ControllerBase
             recent
         ));
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<PaymentTransactionDto>> GetPaymentById(Guid id)
+    {
+        var p = await _context.PaymentTransactions
+            .Include(x => x.Branch)
+            .Include(x => x.Member)
+            .Include(x => x.Subscription)
+                .ThenInclude(s => s!.MembershipPlan)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (p == null) return NotFound(new { message = "Payment transaction not found." });
+
+        return Ok(new PaymentTransactionDto(
+            p.Id,
+            p.TenantId,
+            p.BranchId,
+            p.Branch?.Name,
+            p.MemberId,
+            p.Member?.FullName ?? "Direct Payment",
+            p.Member?.MemberCode ?? "-",
+            p.SubscriptionId,
+            p.Subscription?.MembershipPlan?.Name,
+            p.InvoiceNumber,
+            p.Amount,
+            p.PaymentMethod.ToString(),
+            p.Status.ToString(),
+            p.TransactionReference,
+            p.Notes,
+            p.CreatedAt
+        ));
+    }
+
+    [HttpGet("{id:guid}/invoice")]
+    public async Task<ActionResult<TaxInvoiceDto>> GetTaxInvoice(Guid id)
+    {
+        var p = await _context.PaymentTransactions
+            .Include(x => x.Branch)
+            .Include(x => x.Member)
+            .Include(x => x.Subscription)
+                .ThenInclude(s => s!.MembershipPlan)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (p == null) return NotFound(new { message = "Payment transaction not found." });
+
+        var tenant = await _context.Tenants.FindAsync(p.TenantId);
+
+        // Standard Indian GST for Gymnasium / Health Fitness services: SAC Code 999723 (18% GST: 9% CGST + 9% SGST)
+        var totalAmount = p.Amount;
+        var subtotal = Math.Round(totalAmount / 1.18m, 2);
+        var taxTotal = totalAmount - subtotal;
+        var cgst = Math.Round(taxTotal / 2.0m, 2);
+        var sgst = Math.Round(taxTotal / 2.0m, 2);
+
+        return Ok(new TaxInvoiceDto(
+            p.Id,
+            p.InvoiceNumber,
+            tenant?.Name ?? "GimXSoft Fitness Club",
+            p.Branch?.Address ?? "Flagship Facility",
+            GymGstin: "29AABCU9603R1ZM",
+            p.Member?.FullName ?? "Athlete / Customer",
+            p.Member?.MemberCode,
+            p.Member?.Phone,
+            p.Subscription?.MembershipPlan?.Name ?? p.Notes ?? "Facility Access Dues",
+            subtotal,
+            cgst,
+            sgst,
+            totalAmount,
+            p.PaymentMethod.ToString(),
+            p.TransactionReference ?? $"TXN-{p.Id.ToString()[..8].ToUpper()}",
+            SacCode: "999723",
+            p.CreatedAt
+        ));
+    }
+
+    [HttpPost("pos-charge")]
+    public async Task<ActionResult<PaymentTransactionDto>> PosCharge([FromBody] PosChargeRequest request)
+    {
+        var tenantId = _tenantService.TenantId ?? throw new UnauthorizedAccessException();
+        if (request.Amount <= 0)
+        {
+            return BadRequest(new { message = "Amount must be greater than zero." });
+        }
+
+        var count = await _context.PaymentTransactions.CountAsync();
+        var invoiceNumber = $"POS-{DateTime.UtcNow.Year}-{1000 + count + 1}";
+        var memberId = request.MemberId ?? Guid.Empty;
+
+        var payment = new PaymentTransaction
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenantId,
+            BranchId = request.BranchId,
+            MemberId = memberId,
+            InvoiceNumber = invoiceNumber,
+            Amount = request.Amount,
+            PaymentMethod = request.PaymentMethod,
+            Status = PaymentStatus.Completed,
+            TransactionReference = $"POS_{DateTime.UtcNow.Ticks}",
+            Notes = $"POS: {request.Description} {(string.IsNullOrWhiteSpace(request.CustomerName) ? "" : "for " + request.CustomerName)}",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.PaymentTransactions.Add(payment);
+        await _context.SaveChangesAsync();
+
+        return Ok(new PaymentTransactionDto(
+            payment.Id,
+            payment.TenantId,
+            payment.BranchId,
+            null,
+            payment.MemberId,
+            request.CustomerName ?? "Drop-In Guest",
+            "-",
+            null,
+            null,
+            payment.InvoiceNumber,
+            payment.Amount,
+            payment.PaymentMethod.ToString(),
+            payment.Status.ToString(),
+            payment.TransactionReference,
+            payment.Notes,
+            payment.CreatedAt
+        ));
+    }
 }

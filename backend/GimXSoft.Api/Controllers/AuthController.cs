@@ -218,6 +218,198 @@ public class AuthController : ControllerBase
         return Ok(new LoginResponse(accessToken, refreshToken, DateTime.UtcNow.AddMinutes(120), userDto, tenantDto, branches));
     }
 
+    [HttpPost("register-trial")]
+    [AllowAnonymous]
+    public async Task<ActionResult<LoginResponse>> RegisterTrial([FromBody] RegisterTrialRequest request)
+    {
+        // 1. Determine clean slug
+        var baseSlug = !string.IsNullOrWhiteSpace(request.Slug) 
+            ? request.Slug.Trim().ToLower() 
+            : System.Text.RegularExpressions.Regex.Replace(request.GymName.ToLower(), @"[^a-z0-9]+", "-").Trim('-');
+
+        if (string.IsNullOrWhiteSpace(baseSlug))
+        {
+            baseSlug = "gym-" + Guid.NewGuid().ToString()[..6];
+        }
+
+        var slug = baseSlug;
+        var suffix = 1;
+        while (await _context.Tenants.IgnoreQueryFilters().AnyAsync(t => t.Slug.ToLower() == slug.ToLower()))
+        {
+            slug = $"{baseSlug}-{suffix++}";
+        }
+
+        // Check if email already registered
+        var existingUser = await _context.Users.IgnoreQueryFilters().AnyAsync(u => u.Email.ToLower() == request.AdminEmail.ToLower());
+        if (existingUser)
+        {
+            return BadRequest(new { message = "An account with this email address already exists. Please sign in instead." });
+        }
+
+        var trialEnd = DateTime.UtcNow.AddMonths(1);
+
+        // 2. Create Tenant with 1-Month Free Trial and Zero Payment Needed
+        var tenant = new Tenant
+        {
+            Id = Guid.NewGuid(),
+            Name = request.GymName.Trim(),
+            Slug = slug,
+            SubscriptionPlan = "1-Month Free Trial",
+            SubscriptionStatus = "TrialActive",
+            MaxBranches = 5,
+            MaxMembers = 2500,
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.Tenants.Add(tenant);
+
+        // 3. Create default primary branch
+        var branch = new Branch
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = !string.IsNullOrWhiteSpace(request.BranchName) ? request.BranchName.Trim() : $"{request.GymName.Trim()} Main",
+            Code = "HQ-01",
+            Address = "Main Facility",
+            City = request.City ?? "City Hub",
+            Phone = request.Phone ?? "",
+            Email = request.AdminEmail.Trim().ToLower(),
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.Branches.Add(branch);
+
+        // 4. Create GymOwner Admin User
+        var adminUser = new User
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branch.Id,
+            FullName = request.AdminFullName.Trim(),
+            Email = request.AdminEmail.Trim().ToLower(),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.AdminPassword),
+            Role = UserRole.GymOwner,
+            Phone = request.Phone ?? "",
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.Users.Add(adminUser);
+
+        // 5. Default ₹200 Monthly Plan and ₹2,000 Annual Plan
+        var defaultMonthly = new MembershipPlan
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Monthly All-Access (₹200)",
+            Description = "Standard monthly membership with turnstile access & WhatsApp alerts",
+            DurationDays = 30,
+            Price = 200.00m,
+            RegistrationFee = 0.00m,
+            BenefitsJson = "[\"Full Gym Floor Access\", \"Turnstile RFID / QR Access\", \"Automated WhatsApp Receipts\"]"
+        };
+        var defaultAnnual = new MembershipPlan
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            Name = "Annual VIP All-Access (₹2,000)",
+            Description = "Yearly access with VIP routine splits and biometrics tracking",
+            DurationDays = 365,
+            Price = 2000.00m,
+            RegistrationFee = 0.00m,
+            BenefitsJson = "[\"All-Access\", \"Trainer Routine Splits\", \"InBody Scans\", \"Priority WhatsApp Alerts\"]"
+        };
+        _context.MembershipPlans.AddRange(defaultMonthly, defaultAnnual);
+
+        var accessToken = _tokenService.GenerateAccessToken(adminUser);
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        adminUser.RefreshToken = refreshToken;
+        adminUser.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+        await _context.SaveChangesAsync();
+
+        var userDto = new UserDto(
+            adminUser.Id,
+            adminUser.TenantId,
+            adminUser.BranchId,
+            adminUser.FullName,
+            adminUser.Email,
+            adminUser.Role.ToString(),
+            adminUser.Phone,
+            adminUser.AvatarUrl,
+            adminUser.IsActive
+        );
+
+        var tenantDto = new TenantSummaryDto(
+            tenant.Id,
+            tenant.Name,
+            tenant.Slug,
+            tenant.LogoUrl,
+            tenant.SubscriptionPlan,
+            tenant.SubscriptionStatus,
+            tenant.MaxBranches,
+            tenant.MaxMembers,
+            IsTrial: true,
+            TrialEndsAt: trialEnd,
+            MonthlyPrice: 200.00m
+        );
+
+        var branches = new List<BranchDto>
+        {
+            new(branch.Id, branch.TenantId, branch.Name, branch.Code, branch.Address, branch.City, branch.Phone, branch.Email, branch.IsActive, branch.CreatedAt)
+        };
+
+        return Ok(new LoginResponse(accessToken, refreshToken, DateTime.UtcNow.AddMinutes(120), userDto, tenantDto, branches));
+    }
+
+    [HttpGet("trial-status")]
+    [Authorize]
+    public async Task<ActionResult<TrialStatusResponse>> GetTrialStatus()
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized(new { message = "Tenant context required." });
+
+        var tenant = await _context.Tenants.IgnoreQueryFilters().FirstOrDefaultAsync(t => t.Id == tenantId.Value);
+        if (tenant == null) return NotFound(new { message = "Tenant not found." });
+
+        var isTrial = tenant.SubscriptionPlan.Contains("Trial", StringComparison.OrdinalIgnoreCase) || 
+                      tenant.SubscriptionStatus.Contains("Trial", StringComparison.OrdinalIgnoreCase);
+
+        var trialEnds = tenant.CreatedAt.AddMonths(1);
+        var remainingDays = Math.Max(0, (trialEnds - DateTime.UtcNow).Days);
+
+        return Ok(new TrialStatusResponse(
+            IsTrial: isTrial,
+            SubscriptionPlan: tenant.SubscriptionPlan,
+            SubscriptionStatus: tenant.SubscriptionStatus,
+            TrialEndsAt: trialEnds,
+            DaysRemaining: remainingDays,
+            MonthlyPrice: 200.00m,
+            NoPaymentNeeded: true,
+            CanCancelAnytime: true,
+            Message: isTrial 
+                ? $"Your 1-month free trial is active with {remainingDays} days remaining. No payment needed for registration. You can cancel anytime."
+                : "Active subscription."
+        ));
+    }
+
+    [HttpPost("cancel-subscription")]
+    [Authorize]
+    public async Task<ActionResult<CancelSubscriptionResponse>> CancelSubscription()
+    {
+        var tenantId = _tenantService.TenantId;
+        if (!tenantId.HasValue) return Unauthorized(new { message = "Tenant context required." });
+
+        var tenant = await _context.Tenants.IgnoreQueryFilters().FirstOrDefaultAsync(t => t.Id == tenantId.Value);
+        if (tenant == null) return NotFound(new { message = "Tenant not found." });
+
+        tenant.SubscriptionStatus = "Cancelled";
+        await _context.SaveChangesAsync();
+
+        return Ok(new CancelSubscriptionResponse(
+            Success: true,
+            Status: "Cancelled",
+            Message: "Your subscription/trial has been cancelled. No payments will be charged. You can continue using the platform until the end of your current 1-month period."
+        ));
+    }
+
     [HttpPost("refresh-token")]
     [AllowAnonymous]
     public async Task<ActionResult<LoginResponse>> RefreshToken([FromBody] RefreshTokenRequest request)

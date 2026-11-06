@@ -588,4 +588,48 @@ This causes floating icons, difficulty tags, and action buttons to shift at diff
 5. **Weekly Routine Scheduler (`workout_scheduler_view.dart`)**:
    - 7-day routine cards featuring raised active workout styling and recessed debossed rest-day visuals.
 
+---
+
+## 9. Database Modernization & Container Orchestration
+
+### 9.1 Hybrid Dual-Database Architecture (PostgreSQL & SQLite)
+In commit `c2de578`, the backend API engine was modernized from a single-engine SQLite database to a hybrid architecture supporting enterprise PostgreSQL alongside local SQLite:
+- **`Npgsql.EntityFrameworkCore.PostgreSQL`**: Added v10.0.3 to target .NET 10 / ASP.NET 10 environments.
+- **Legacy Timestamp Compatibility**: Enabled via `AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true)` to ensure seamless timestamp interoperability between UTC and DateTime representations across all tables.
+- **Dynamic URI Connection Resolution**: Implemented `ParsePostgresConnectionString()` in `Program.cs` capable of ingesting cloud URI connection strings (`postgres://user:password@host:port/database`) and automatically converting them to valid Npgsql key-value strings.
+- **Execution Resilience & Retries**: Npgsql database context automatically registers `EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: 5s)`.
+
+### 9.2 Containerized Orchestration (`compose.yaml`)
+- **Multi-Stage Dockerfile**: Implemented in `backend/GimXSoft.Api/Dockerfile` using `mcr.microsoft.com/dotnet/sdk:10.0` for multi-stage builds and `mcr.microsoft.com/dotnet/aspnet:10.0` for lightweight production runtimes.
+- **Podman / Docker Compose Stack**:
+  - `gimxsoft-postgres`: Runs official `postgres:16` image on port `5432` with persistent volume `pg_data` and healthcheck (`pg_isready -U user -d mydb`).
+  - `gimxsoft-backend`: Depends on `gimxsoft-postgres` with `condition: service_healthy`, serving on port `5128`.
+- **Database Startup Backoff**: Added a 10-attempt exponential backoff retry loop in `Program.cs` ensuring seamless database creation and automated seeding even when the PostgreSQL container is cold-starting.
+
+---
+
+## 10. Multi-Tenant Query Filter Hardening & Security Hygiene
+
+### 10.1 Safe Handling of Nullable `TenantId` in EF Global Query Filters
+In commit `78bf2fa`, a critical issue regarding multi-tenancy isolation was resolved:
+- **Root Cause**: Previously, query filters evaluated `b.TenantId == _tenantService.TenantId.Value`. When a request was unauthenticated, during system initialization, or inside background services where no HTTP context exists, `_tenantService.TenantId` evaluated to `null`, causing runtime exceptions (`Nullable object must have a value`).
+- **Engineered Solution**: Global query filters across all 28 tenant entities in `ApplicationDbContext.cs` were refactored to:
+  ```csharp
+  modelBuilder.Entity<Member>().HasQueryFilter(m => 
+      _tenantService == null || 
+      !_tenantService.TenantId.HasValue || 
+      m.TenantId == _tenantService.TenantId
+  );
+  ```
+
+### 10.2 Cross-Tenant Background Scheduling Engine
+- In `WhatsAppSchedulerBackgroundService.cs`, background worker threads execute scheduled routines (such as 7-day membership expiry reminders and daily workout plan dispatches) across all tenants.
+- Queries against `ScheduledMessages`, `WhatsAppSuppressions`, `WhatsAppConsents`, `WhatsAppIntegrations`, `WhatsAppTriggerRules`, `MemberWorkoutSchedules`, `WhatsAppMessages`, and `MemberSubscriptions` now explicitly utilize `.IgnoreQueryFilters()` to allow the background cron engine to perform system-wide processing safely.
+
+### 10.3 Codebase Hygiene & Secrets Remediation
+- **Secrets Sanitization (`b4b75bf`)**: Removed hardcoded `.env` files containing local database passwords and connection strings from git tracking.
+- **Strict `.gitignore` Policies (`d7c8ba4`)**: Added `.gitignore` rules to `backend/GimXSoft.Api/.gitignore` preventing accidental commits of `.env`, build directories (`bin/`, `obj/`, `publish/`), IDE settings, and database files.
+- **Static Analyzer Cleanliness (`ac2f41f`)**: Configured `frontend/analysis_options.yaml` to exclude `build/**`, `web/**`, and `windows/**` to prevent false positive lint warnings on generated Flutter platform code.
+
+
 

@@ -57,3 +57,16 @@ public record UpdateStaffRequest(
     bool IsActive
 );
 
+public record UpdateBranchRequest(
+    [Required] string Name,
+    string? Address,
+    string? City,
+    string? Phone,
+    string? Email,
+    bool IsActive
+);
+
+public record ResetStaffPasswordRequest(
+    [Required, MinLength(6)] string NewPassword
+);
+

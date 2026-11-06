@@ -8,6 +8,11 @@ typedef AppButtonVariant = ButtonVariant;
 enum ButtonSize { sm, md, lg }
 typedef AppButtonSize = ButtonSize;
 
+/// Unslopped Button Component adhering to heydamir/unslop:
+/// - Dark: Off-white primary with dark text or clean athletic accent fill
+/// - Light: Solid dark graphite fill with white text or clean athletic accent fill
+/// - Secondary: Raised surface with hairline border
+/// - Tactile feel: Subtle 0.98 press scale and top highlight without bouncy springs or fake 3D bevels
 class AppButton extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -17,7 +22,7 @@ class AppButton extends StatefulWidget {
   final IconData? trailingIcon;
   final bool isLoading;
   final bool isFullWidth;
-  final bool enable3d;
+  final bool enable3d; // Maintained for backwards API compatibility
 
   const AppButton({
     super.key,
@@ -30,7 +35,7 @@ class AppButton extends StatefulWidget {
     this.trailingIcon,
     this.isLoading = false,
     this.isFullWidth = false,
-    this.enable3d = true,
+    this.enable3d = false,
   }) : text = text ?? label ?? '';
 
   @override
@@ -46,211 +51,149 @@ class _AppButtonState extends State<AppButton> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isDisabled = widget.onPressed == null || widget.isLoading;
 
-    // Size parameters
+    // Height & padding on 4px grid
     final double height = switch (widget.size) {
-      ButtonSize.sm => 34.0,
-      ButtonSize.md => 42.0,
-      ButtonSize.lg => 48.0,
+      ButtonSize.sm => 32.0,
+      ButtonSize.md => 36.0,
+      ButtonSize.lg => 44.0,
     };
 
     final double fontSize = switch (widget.size) {
-      ButtonSize.sm => 13.0,
-      ButtonSize.md => 14.0,
-      ButtonSize.lg => 15.0,
+      ButtonSize.sm => 12.0,
+      ButtonSize.md => 13.0,
+      ButtonSize.lg => 14.0,
     };
 
     final EdgeInsets padding = switch (widget.size) {
       ButtonSize.sm => const EdgeInsets.symmetric(horizontal: 12),
-      ButtonSize.md => const EdgeInsets.symmetric(horizontal: 18),
-      ButtonSize.lg => const EdgeInsets.symmetric(horizontal: 24),
+      ButtonSize.md => const EdgeInsets.symmetric(horizontal: 16),
+      ButtonSize.lg => const EdgeInsets.symmetric(horizontal: 20),
     };
 
-    // Variant colors
     Color bgColor;
     Color textColor;
     Border? border;
-    List<BoxShadow>? shadows;
 
     switch (widget.variant) {
       case ButtonVariant.primary:
-        bgColor = _isHovered ? AppColors.primaryHover : AppColors.primary;
-        textColor = Colors.white;
-        if (!isDisabled && widget.enable3d) {
-          final bevelColor = const Color(0xFF3730A3); // Darker indigo base
-          shadows = [
-            // 3D tactile ledge
-            BoxShadow(
-              color: bevelColor,
-              offset: Offset(0, _isPressed ? 1.0 : (_isHovered ? 4.0 : 2.5)),
-              blurRadius: 0,
-            ),
-            // Dynamic ambient shadow & neon glow
-            BoxShadow(
-              color: AppColors.primary.withOpacity(_isHovered ? 0.40 : 0.20),
-              offset: Offset(0, _isHovered ? 8.0 : 4.0),
-              blurRadius: _isHovered ? 16.0 : 8.0,
-              spreadRadius: _isHovered ? 1.0 : 0.0,
-            ),
-          ];
+        if (isDark) {
+          // Off-white from the ramp with dark text (heydamir/unslop recommendation for dark themes)
+          bgColor = _isHovered ? const Color(0xFFFFFFFF) : const Color(0xFFEDEDED);
+          textColor = const Color(0xFF141415);
+        } else {
+          // Solid graphite with white text
+          bgColor = _isHovered ? const Color(0xFF262626) : const Color(0xFF171717);
+          textColor = Colors.white;
         }
         break;
+
       case ButtonVariant.secondary:
-        bgColor = isDark
-            ? (_isHovered ? const Color(0xFF26334D) : AppColors.darkCard)
-            : (_isHovered ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9));
+        bgColor = _isHovered ? AppColors.raised(isDark).withOpacity(0.9) : AppColors.raised(isDark);
         textColor = AppColors.textPrimary(isDark);
-        border = Border.all(
-          color: _isHovered
-              ? AppColors.primary.withOpacity(0.5)
-              : AppColors.border(isDark),
-        );
-        if (!isDisabled && widget.enable3d) {
-          shadows = [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.35 : 0.06),
-              offset: Offset(0, _isPressed ? 1.0 : (_isHovered ? 4.0 : 2.0)),
-              blurRadius: _isHovered ? 8.0 : 4.0,
-            ),
-          ];
-        }
+        border = Border.all(color: AppColors.border(isDark), width: 1);
         break;
+
       case ButtonVariant.outline:
-        bgColor = _isHovered
-            ? (isDark ? const Color(0x1A6366F1) : const Color(0x0D4F46E5))
-            : Colors.transparent;
-        textColor = isDark ? AppColors.primaryLight : AppColors.primary;
-        border = Border.all(
-          color: _isHovered
-              ? AppColors.primary
-              : AppColors.primary.withOpacity(0.5),
-          width: _isHovered ? 1.4 : 1.0,
-        );
-        if (!isDisabled && _isHovered && widget.enable3d) {
-          shadows = [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.18),
-              blurRadius: 12.0,
-            ),
-          ];
-        }
-        break;
-      case ButtonVariant.ghost:
-        bgColor = _isHovered
-            ? (isDark ? const Color(0x14FFFFFF) : const Color(0x0A000000))
-            : Colors.transparent;
+        bgColor = _isHovered ? AppColors.raised(isDark) : Colors.transparent;
         textColor = AppColors.textPrimary(isDark);
+        border = Border.all(color: AppColors.border(isDark), width: 1);
         break;
+
+      case ButtonVariant.ghost:
+        bgColor = _isHovered ? AppColors.raised(isDark) : Colors.transparent;
+        textColor = _isHovered ? AppColors.textPrimary(isDark) : AppColors.textSecondary(isDark);
+        break;
+
       case ButtonVariant.danger:
-        bgColor = _isHovered ? const Color(0xFFDC2626) : AppColors.error;
+        bgColor = _isHovered ? const Color(0xFFF0565B) : AppColors.error;
         textColor = Colors.white;
-        if (!isDisabled && widget.enable3d) {
-          shadows = [
-            BoxShadow(
-              color: const Color(0xFF991B1B),
-              offset: Offset(0, _isPressed ? 1.0 : (_isHovered ? 3.5 : 2.0)),
-              blurRadius: 0,
-            ),
-            BoxShadow(
-              color: AppColors.error.withOpacity(_isHovered ? 0.35 : 0.15),
-              offset: Offset(0, _isHovered ? 6.0 : 3.0),
-              blurRadius: _isHovered ? 12.0 : 6.0,
-            ),
-          ];
-        }
         break;
     }
 
     if (isDisabled) {
-      bgColor = isDark ? const Color(0xFF1E2638) : const Color(0xFFE2E8F0);
-      textColor = isDark ? const Color(0xFF4B5563) : const Color(0xFF94A3B8);
+      bgColor = isDark ? const Color(0xFF1F1F22) : const Color(0xFFE5E7EB);
+      textColor = AppColors.textMuted(isDark);
       border = null;
-      shadows = null;
     }
 
-    // 3D tactile displacement calculation
-    final double translateY = (!isDisabled && widget.enable3d)
-        ? (_isPressed ? 2.0 : (_isHovered ? -1.5 : 0.0))
-        : 0.0;
+    Widget content = Row(
+      mainAxisSize: widget.isFullWidth ? MainAxisSize.max : MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (widget.isLoading) ...[
+          SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(textColor),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ] else if (widget.icon != null) ...[
+          Icon(widget.icon, size: 16, color: textColor),
+          const SizedBox(width: 8),
+        ],
+        Text(
+          widget.text,
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.w500, // Two weights: 400 and 500
+            letterSpacing: 0,
+            color: textColor,
+          ),
+        ),
+        if (widget.trailingIcon != null && !widget.isLoading) ...[
+          const SizedBox(width: 8),
+          Icon(widget.trailingIcon, size: 16, color: textColor),
+        ],
+      ],
+    );
 
-    return SizedBox(
-      height: height,
-      width: widget.isFullWidth ? double.infinity : null,
-      child: MouseRegion(
-        cursor: isDisabled ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() {
-          _isHovered = false;
-          _isPressed = false;
-        }),
-        child: GestureDetector(
-          onTapDown: isDisabled ? null : (_) => setState(() => _isPressed = true),
-          onTapUp: isDisabled ? null : (_) => setState(() => _isPressed = false),
-          onTapCancel: isDisabled ? null : () => setState(() => _isPressed = false),
-          onTap: isDisabled ? null : widget.onPressed,
+    return MouseRegion(
+      cursor: isDisabled ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+      onEnter: (_) {
+        if (!isDisabled) setState(() => _isHovered = true);
+      },
+      onExit: (_) {
+        if (!isDisabled) {
+          setState(() {
+            _isHovered = false;
+            _isPressed = false;
+          });
+        }
+      },
+      child: GestureDetector(
+        onTapDown: (_) {
+          if (!isDisabled) setState(() => _isPressed = true);
+        },
+        onTapUp: (_) {
+          if (!isDisabled) setState(() => _isPressed = false);
+        },
+        onTapCancel: () {
+          if (!isDisabled) setState(() => _isPressed = false);
+        },
+        onTap: isDisabled ? null : widget.onPressed,
+        child: AnimatedScale(
+          scale: _isPressed ? 0.98 : 1.0,
+          duration: DesignTokens.durationFast,
+          curve: DesignTokens.easeOutStandard,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 110),
-            curve: Curves.easeOutQuad,
-            transform: Matrix4.translationValues(0.0, translateY, 0.0),
+            duration: DesignTokens.durationFast,
+            curve: DesignTokens.easeOutStandard,
+            height: height,
             padding: padding,
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: DesignTokens.borderMd,
+              borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
               border: border,
-              boxShadow: shadows,
+              boxShadow: (widget.variant == ButtonVariant.primary && !isDisabled)
+                  ? DesignTokens.shadowSm(isDark)
+                  : null,
             ),
-            child: Stack(
-              children: [
-                // Top-lit 3D specular highlight rim for primary and danger buttons
-                if ((widget.variant == ButtonVariant.primary ||
-                        widget.variant == ButtonVariant.danger) &&
-                    !isDisabled)
-                  Positioned(
-                    top: 0,
-                    left: 2,
-                    right: 2,
-                    height: 1.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.25),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                      ),
-                    ),
-                  ),
-                Row(
-                  mainAxisSize: widget.isFullWidth ? MainAxisSize.max : MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (widget.isLoading) ...[
-                      SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(textColor),
-                        ),
-                      ),
-                      const SizedBox(width: DesignTokens.space8),
-                    ] else if (widget.icon != null) ...[
-                      Icon(widget.icon, size: fontSize + 2, color: textColor),
-                      const SizedBox(width: DesignTokens.space8),
-                    ],
-                    Text(
-                      widget.text,
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.w600,
-                        color: textColor,
-                        letterSpacing: -0.2,
-                      ),
-                    ),
-                    if (widget.trailingIcon != null && !widget.isLoading) ...[
-                      const SizedBox(width: DesignTokens.space8),
-                      Icon(widget.trailingIcon, size: fontSize + 2, color: textColor),
-                    ],
-                  ],
-                ),
-              ],
+            child: Center(
+              widthFactor: widget.isFullWidth ? null : 1.0,
+              child: content,
             ),
           ),
         ),

@@ -5,6 +5,7 @@ import '../../features/auth/auth_provider.dart';
 import '../../features/auth/login_view.dart';
 import '../../features/branches/branches_view.dart';
 import '../../features/dashboard/dashboard_view.dart';
+import '../../features/landing/landing_view.dart';
 import '../../features/measurements/fitness_progress_view.dart';
 import '../../features/whatsapp/whatsapp_messaging_view.dart';
 import '../../features/members/members_view.dart';
@@ -22,11 +23,15 @@ final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
 
   return GoRouter(
-    initialLocation: '/dashboard',
+    initialLocation: '/',
     redirect: (context, state) {
       final isAuth = authState.isAuthenticated;
       final isLoggingIn = state.matchedLocation == '/login';
+      final isLanding = state.matchedLocation == '/' || state.matchedLocation == '/landing';
 
+      if (isLanding) {
+        return null;
+      }
       if (!isAuth && !isLoggingIn) {
         return '/login';
       }
@@ -36,6 +41,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const LandingView(),
+      ),
+      GoRoute(
+        path: '/landing',
+        builder: (context, state) => const LandingView(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginView(),

@@ -83,3 +83,18 @@ public record CreateWorkoutPlanRequest(
     string ExercisesJson
 );
 
+public record UpdateTrainerRequest(
+    [Required] string FullName,
+    string? Phone,
+    string? Bio,
+    string? SpecializationsJson,
+    string? CertificationsJson,
+    decimal HourlyRate,
+    bool IsActive
+);
+
+public record UpdateSessionStatusRequest(
+    [Required] SessionStatus Status,
+    string? Notes
+);
+

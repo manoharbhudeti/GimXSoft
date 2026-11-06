@@ -80,6 +80,24 @@ public record ToggleTriggerRequest(
     bool IsEnabled
 );
 
+public record CreateTriggerRuleRequest(
+    string TriggerEvent,
+    string TemplateName,
+    bool IsEnabled = true
+);
+
+public record QuickSendWhatsAppRequest(
+    string RecipientPhone,
+    string? RecipientName,
+    string Message,
+    Guid? MemberId
+);
+
+public record TestWhatsAppMessageRequest(
+    string DestinationPhone,
+    string? TestMessage
+);
+
 public record WhatsAppIntegrationDto(
     Guid Id,
     string WabaId,

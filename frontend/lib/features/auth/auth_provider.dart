@@ -235,6 +235,96 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
+  Future<bool> registerTrial({
+    required String gymName,
+    required String adminFullName,
+    required String adminEmail,
+    required String adminPassword,
+    String? branchName,
+    String? slug,
+    String? phone,
+    String? city,
+  }) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final res = await _apiClient.dio.post(
+        ApiConstants.registerTrial,
+        data: {
+          'gymName': gymName.trim(),
+          'adminFullName': adminFullName.trim(),
+          'adminEmail': adminEmail.trim(),
+          'adminPassword': adminPassword,
+          'branchName': (branchName ?? '').trim(),
+          'slug': (slug ?? '').trim().toLowerCase(),
+          'phone': (phone ?? '').trim(),
+          'city': (city ?? '').trim(),
+        },
+      );
+
+      final data = res.data;
+      final token = data['accessToken'] as String;
+      final refreshToken = data['refreshToken'] as String;
+      final user = UserModel.fromJson(data['user']);
+      final tenant = TenantModel.fromJson(data['tenant']);
+      final branches = (data['branches'] as List)
+          .map((b) => BranchModel.fromJson(b))
+          .toList();
+
+      final selectedBranch = branches.isNotEmpty ? branches.first : null;
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('access_token', token);
+      await prefs.setString('refresh_token', refreshToken);
+      await prefs.setString('tenant_id', tenant.id);
+      if (selectedBranch != null) {
+        await prefs.setString('branch_id', selectedBranch.id);
+      }
+      await prefs.setString('user_data', jsonEncode(user.toJson()));
+      await prefs.setString('tenant_data', jsonEncode(tenant.toJson()));
+
+      _apiClient.updateCredentials(
+        token: token,
+        tenantId: tenant.id,
+        branchId: selectedBranch?.id,
+      );
+
+      state = AuthState(
+        isAuthenticated: true,
+        isLoading: false,
+        user: user,
+        tenant: tenant,
+        branches: branches,
+        selectedBranch: selectedBranch,
+      );
+      return true;
+    } on DioException catch (e) {
+      final msg = e.response?.data?['message'] ?? 'Trial registration failed.';
+      state = state.copyWith(isLoading: false, errorMessage: msg.toString());
+      return false;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: 'Unexpected error occurred.');
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getTrialStatus() async {
+    try {
+      final res = await _apiClient.dio.get(ApiConstants.trialStatus);
+      return res.data as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<bool> cancelSubscription() async {
+    try {
+      final res = await _apiClient.dio.post(ApiConstants.cancelSubscription);
+      return res.statusCode == 200;
+    } catch (_) {
+      return false;
+    }
+  }
+
   void switchBranch(BranchModel branch) async {
     _apiClient.setBranchId(branch.id);
     final prefs = await SharedPreferences.getInstance();

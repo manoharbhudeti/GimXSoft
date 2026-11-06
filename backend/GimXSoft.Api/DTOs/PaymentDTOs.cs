@@ -49,3 +49,33 @@ public record FinancialSummaryDto(
     List<PaymentTransactionDto> RecentTransactions
 );
 
+public record PosChargeRequest(
+    Guid BranchId,
+    Guid? MemberId,
+    [Required] string Description,
+    [Required] decimal Amount,
+    PaymentMethod PaymentMethod,
+    string? CustomerName,
+    string? CustomerPhone
+);
+
+public record TaxInvoiceDto(
+    Guid PaymentId,
+    string InvoiceNumber,
+    string GymName,
+    string? GymAddress,
+    string? GymGstin,
+    string CustomerName,
+    string? MemberCode,
+    string? CustomerPhone,
+    string? PlanOrItemName,
+    decimal Subtotal,
+    decimal CgstAmount,
+    decimal SgstAmount,
+    decimal TotalAmount,
+    string PaymentMethod,
+    string TransactionReference,
+    string SacCode,
+    DateTime InvoiceDate
+);
+

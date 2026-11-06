@@ -38,3 +38,28 @@ public record DailyAttendanceSummaryDto(
     List<AttendanceRecordDto> RecentCheckIns
 );
 
+public record LiveOccupancyDto(
+    int CurrentOccupancy,
+    int MaximumCapacity,
+    double OccupancyPercentage,
+    string Status,
+    string PeakRange,
+    int CheckInsToday,
+    int CheckOutsToday
+);
+
+public record SimulateScanRequest(
+    string? MemberCode,
+    string? TerminalId
+);
+
+public record SimulateScanResponse(
+    bool AccessGranted,
+    string MemberName,
+    string MemberCode,
+    string PlanStatus,
+    int NewOccupancy,
+    DateTime Timestamp,
+    string Message
+);
+

@@ -120,5 +120,53 @@ public class StaffController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<StaffDto>> GetStaffById(Guid id)
+    {
+        var staff = await _context.Users
+            .Include(u => u.Branch)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (staff == null) return NotFound(new { message = "Staff member not found." });
+
+        return Ok(new StaffDto(
+            staff.Id,
+            staff.TenantId,
+            staff.BranchId,
+            staff.Branch?.Name ?? "All Branches",
+            staff.FullName,
+            staff.Email,
+            staff.Role.ToString(),
+            staff.Phone,
+            staff.AvatarUrl,
+            staff.IsActive,
+            staff.CreatedAt
+        ));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteStaff(Guid id)
+    {
+        var staff = await _context.Users.FindAsync(id);
+        if (staff == null) return NotFound(new { message = "Staff member not found." });
+
+        staff.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Staff account deactivated successfully." });
+    }
+
+    [HttpPost("{id}/reset-password")]
+    public async Task<ActionResult> ResetPassword(Guid id, [FromBody] ResetStaffPasswordRequest request)
+    {
+        var staff = await _context.Users.FindAsync(id);
+        if (staff == null) return NotFound(new { message = "Staff member not found." });
+
+        staff.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Password updated successfully." });
+    }
 }
 

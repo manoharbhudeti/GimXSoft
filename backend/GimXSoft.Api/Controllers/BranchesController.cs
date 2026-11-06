@@ -79,5 +79,54 @@ public class BranchesController : ControllerBase
             branch.CreatedAt
         ));
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<BranchDto>> GetBranchById(Guid id)
+    {
+        var branch = await _context.Branches.FindAsync(id);
+        if (branch == null) return NotFound(new { message = "Branch not found." });
+
+        return Ok(new BranchDto(
+            branch.Id,
+            branch.TenantId,
+            branch.Name,
+            branch.Code,
+            branch.Address,
+            branch.City,
+            branch.Phone,
+            branch.Email,
+            branch.IsActive,
+            branch.CreatedAt
+        ));
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> UpdateBranch(Guid id, [FromBody] UpdateBranchRequest request)
+    {
+        var branch = await _context.Branches.FindAsync(id);
+        if (branch == null) return NotFound(new { message = "Branch not found." });
+
+        branch.Name = request.Name.Trim();
+        branch.Address = request.Address ?? "";
+        branch.City = request.City ?? "";
+        branch.Phone = request.Phone ?? "";
+        branch.Email = request.Email ?? "";
+        branch.IsActive = request.IsActive;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> DeleteBranch(Guid id)
+    {
+        var branch = await _context.Branches.FindAsync(id);
+        if (branch == null) return NotFound(new { message = "Branch not found." });
+
+        branch.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Branch deactivated successfully." });
+    }
 }
 

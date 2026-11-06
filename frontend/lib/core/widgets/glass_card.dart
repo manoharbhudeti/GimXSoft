@@ -1,9 +1,11 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/design_tokens.dart';
-import 'interactive_3d_card.dart';
 
+/// Unslopped Card Component:
+/// - Crisp, quiet solid surface from the graphite neutral ramp
+/// - Subtle hairline border (8% opacity)
+/// - Subdued surface step on hover without bouncing, floating or glowing borders
 class GlassCard extends StatefulWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -13,10 +15,10 @@ class GlassCard extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Color? backgroundColor;
   final Color? borderColor;
-  final Color? glowColor;
+  final Color? glowColor; // Kept for API compatibility, rendered as quiet neutral
   final VoidCallback? onTap;
   final bool enableHover;
-  final bool enable3d;
+  final bool enable3d; // Deprecated by unslop, rendered with quiet surface steps
   final double blur;
 
   const GlassCard({
@@ -45,71 +47,43 @@ class _GlassCardState extends State<GlassCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.enable3d) {
-      return Interactive3DCard(
-        width: widget.width,
-        height: widget.height,
-        margin: widget.margin,
-        padding: widget.padding,
-        borderRadius: widget.borderRadius,
-        backgroundColor: widget.backgroundColor,
-        borderColor: widget.borderColor,
-        glowColor: widget.glowColor,
-        onTap: widget.onTap,
-        blur: widget.blur,
-        child: widget.child,
-      );
-    }
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final r = widget.borderRadius ?? DesignTokens.borderLg;
 
-    final defaultBg = widget.backgroundColor ?? AppColors.glassSurface(isDark);
-    final defaultBorder = widget.borderColor ?? AppColors.glassBorder(isDark);
+    final defaultBg = widget.backgroundColor ?? AppColors.card(isDark);
+    final defaultBorder = widget.borderColor ?? AppColors.border(isDark);
+
+    // Unslopped hover: Subtle surface step without colored glow or vertical jump
+    final surfaceColor = _isHovered && (widget.enableHover || widget.onTap != null)
+        ? AppColors.raised(isDark)
+        : defaultBg;
+
+    final effectiveBorder = _isHovered && (widget.enableHover || widget.onTap != null)
+        ? AppColors.border(isDark).withOpacity(0.18)
+        : defaultBorder;
 
     return Container(
       width: widget.width,
       height: widget.height,
       margin: widget.margin,
       child: MouseRegion(
-        onEnter: widget.enableHover ? (_) => setState(() => _isHovered = true) : null,
-        onExit: widget.enableHover ? (_) => setState(() => _isHovered = false) : null,
+        onEnter: (widget.enableHover || widget.onTap != null) ? (_) => setState(() => _isHovered = true) : null,
+        onExit: (widget.enableHover || widget.onTap != null) ? (_) => setState(() => _isHovered = false) : null,
         cursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
         child: GestureDetector(
           onTap: widget.onTap,
           child: AnimatedContainer(
             duration: DesignTokens.durationFast,
-            curve: Curves.easeOut,
-            transform: _isHovered && widget.enableHover
-                ? (Matrix4.identity()..translate(0.0, -3.0, 0.0))
-                : Matrix4.identity(),
+            curve: DesignTokens.easeOutStandard,
             decoration: BoxDecoration(
+              color: surfaceColor,
               borderRadius: r,
-              boxShadow: _isHovered && widget.enableHover
-                  ? DesignTokens.shadowLg(isDark)
-                  : DesignTokens.shadowSm(isDark),
+              border: Border.all(color: effectiveBorder, width: 1.0),
+              boxShadow: DesignTokens.shadowSm(isDark),
             ),
-            child: ClipRRect(
-              borderRadius: r,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: widget.blur, sigmaY: widget.blur),
-                child: Container(
-                  padding: widget.padding ?? const EdgeInsets.all(DesignTokens.space20),
-                  decoration: BoxDecoration(
-                    color: _isHovered && widget.enableHover
-                        ? (isDark ? const Color(0xE6162032) : const Color(0xF2FFFFFF))
-                        : defaultBg,
-                    borderRadius: r,
-                    border: Border.all(
-                      color: _isHovered && widget.enableHover
-                          ? (widget.glowColor ?? AppColors.primary).withOpacity(0.5)
-                          : defaultBorder,
-                      width: 1.0,
-                    ),
-                  ),
-                  child: widget.child,
-                ),
-              ),
+            child: Padding(
+              padding: widget.padding ?? const EdgeInsets.all(DesignTokens.space20),
+              child: widget.child,
             ),
           ),
         ),

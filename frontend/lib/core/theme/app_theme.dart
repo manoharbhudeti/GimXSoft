@@ -1,8 +1,14 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 import 'design_tokens.dart';
 
+/// Unslopped App Theme conforming to heydamir/unslop specifications:
+/// - Inter typography with tabular figures
+/// - Strict weight discipline: 400 (regular) and 500 (medium), max 600
+/// - Zero negative letter spacing under 16px
+/// - Hairline borders at 8% opacity
 class AppTheme {
   static ThemeData get darkTheme {
     final baseText = GoogleFonts.interTextTheme(ThemeData.dark().textTheme);
@@ -14,7 +20,7 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.darkBackground,
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
-        onPrimary: Colors.white,
+        onPrimary: Color(0xFF141415),
         secondary: AppColors.secondary,
         onSecondary: Colors.white,
         surface: AppColors.darkSurface,
@@ -25,35 +31,50 @@ class AppTheme {
       textTheme: baseText.copyWith(
         displayLarge: baseText.displayLarge?.copyWith(
           color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -1.0,
+          fontWeight: FontWeight.w500,
+          fontFeatures: const [FontFeature.tabularFigures()],
+          letterSpacing: -0.5,
         ),
         headlineLarge: baseText.headlineLarge?.copyWith(
           color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
+          fontWeight: FontWeight.w500,
+          fontFeatures: const [FontFeature.tabularFigures()],
+          letterSpacing: -0.3,
         ),
         headlineMedium: baseText.headlineMedium?.copyWith(
           color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.5,
+          fontWeight: FontWeight.w500,
+          letterSpacing: -0.2,
         ),
         titleLarge: baseText.titleLarge?.copyWith(
           color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0,
         ),
         titleMedium: baseText.titleMedium?.copyWith(
           color: AppColors.darkTextPrimary,
           fontWeight: FontWeight.w500,
+          letterSpacing: 0,
+        ),
+        titleSmall: baseText.titleSmall?.copyWith(
+          color: AppColors.darkTextSecondary,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
         bodyLarge: baseText.bodyLarge?.copyWith(
           color: AppColors.darkTextPrimary,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
         bodyMedium: baseText.bodyMedium?.copyWith(
           color: AppColors.darkTextSecondary,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
         bodySmall: baseText.bodySmall?.copyWith(
           color: AppColors.darkTextMuted,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
       ),
       cardTheme: CardThemeData(
@@ -71,9 +92,9 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.darkSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: const TextStyle(color: AppColors.darkTextMuted, fontSize: 14),
+        fillColor: AppColors.darkCard,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        hintStyle: const TextStyle(color: AppColors.darkTextMuted, fontSize: 13),
         border: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
           borderSide: const BorderSide(color: AppColors.darkBorder, width: 1),
@@ -84,7 +105,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
@@ -93,11 +114,11 @@ class AppTheme {
       ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: AppColors.darkCard,
-          borderRadius: DesignTokens.borderSm,
+          color: AppColors.darkRaised,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
           border: Border.all(color: AppColors.darkBorder),
         ),
-        textStyle: const TextStyle(color: AppColors.darkTextPrimary, fontSize: 12),
+        textStyle: const TextStyle(color: AppColors.darkTextPrimary, fontSize: 11),
       ),
     );
   }
@@ -108,12 +129,12 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      primaryColor: AppColors.primaryHover,
+      primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.lightBackground,
       colorScheme: const ColorScheme.light(
-        primary: AppColors.primaryHover,
+        primary: AppColors.primary,
         onPrimary: Colors.white,
-        secondary: AppColors.secondaryDark,
+        secondary: AppColors.secondary,
         onSecondary: Colors.white,
         surface: AppColors.lightSurface,
         onSurface: AppColors.lightTextPrimary,
@@ -123,35 +144,50 @@ class AppTheme {
       textTheme: baseText.copyWith(
         displayLarge: baseText.displayLarge?.copyWith(
           color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -1.0,
+          fontWeight: FontWeight.w500,
+          fontFeatures: const [FontFeature.tabularFigures()],
+          letterSpacing: -0.5,
         ),
         headlineLarge: baseText.headlineLarge?.copyWith(
           color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
+          fontWeight: FontWeight.w500,
+          fontFeatures: const [FontFeature.tabularFigures()],
+          letterSpacing: -0.3,
         ),
         headlineMedium: baseText.headlineMedium?.copyWith(
           color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.5,
+          fontWeight: FontWeight.w500,
+          letterSpacing: -0.2,
         ),
         titleLarge: baseText.titleLarge?.copyWith(
           color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0,
         ),
         titleMedium: baseText.titleMedium?.copyWith(
           color: AppColors.lightTextPrimary,
           fontWeight: FontWeight.w500,
+          letterSpacing: 0,
+        ),
+        titleSmall: baseText.titleSmall?.copyWith(
+          color: AppColors.lightTextSecondary,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
         bodyLarge: baseText.bodyLarge?.copyWith(
           color: AppColors.lightTextPrimary,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
         bodyMedium: baseText.bodyMedium?.copyWith(
           color: AppColors.lightTextSecondary,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
         bodySmall: baseText.bodySmall?.copyWith(
           color: AppColors.lightTextMuted,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0,
         ),
       ),
       cardTheme: CardThemeData(
@@ -169,9 +205,9 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.lightSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: const TextStyle(color: AppColors.lightTextMuted, fontSize: 14),
+        fillColor: AppColors.lightRaised,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        hintStyle: const TextStyle(color: AppColors.lightTextMuted, fontSize: 13),
         border: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
           borderSide: const BorderSide(color: AppColors.lightBorder, width: 1),
@@ -182,7 +218,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.primaryHover, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
@@ -192,11 +228,11 @@ class AppTheme {
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: AppColors.lightCard,
-          borderRadius: DesignTokens.borderSm,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
           border: Border.all(color: AppColors.lightBorder),
           boxShadow: DesignTokens.shadowSm(false),
         ),
-        textStyle: const TextStyle(color: AppColors.lightTextPrimary, fontSize: 12),
+        textStyle: const TextStyle(color: AppColors.lightTextPrimary, fontSize: 11),
       ),
     );
   }

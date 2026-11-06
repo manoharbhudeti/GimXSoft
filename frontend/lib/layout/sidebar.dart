@@ -16,6 +16,11 @@ class SidebarCollapsedNotifier extends Notifier<bool> {
 
 final sidebarCollapsedProvider = NotifierProvider<SidebarCollapsedNotifier, bool>(SidebarCollapsedNotifier.new);
 
+/// Unslopped Sidebar Component:
+/// - 256px desktop width
+/// - Quiet flat logo mark (no neon glow or purple gradients)
+/// - Navigation rows 36px tall, 2px gap, 20px above sections
+/// - Active item uses subtle surface step and hairline rather than glowing violet
 class AppSidebar extends ConsumerWidget {
   const AppSidebar({super.key});
 
@@ -26,14 +31,14 @@ class AppSidebar extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final currentPath = GoRouterState.of(context).matchedLocation;
 
-    final width = isCollapsed ? 74.0 : 250.0;
+    final width = isCollapsed ? 64.0 : 256.0;
 
     return AnimatedContainer(
       duration: DesignTokens.durationNormal,
-      curve: Curves.easeInOutCubic,
+      curve: DesignTokens.easeOutStandard,
       width: width,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        color: isDark ? AppColors.darkDeepest : AppColors.lightCard,
         border: Border(
           right: BorderSide(color: AppColors.border(isDark), width: 1),
         ),
@@ -41,10 +46,10 @@ class AppSidebar extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Header with Logo & Brand
+          // 1. Header with Flat Clean Brand
           Container(
-            height: 64,
-            padding: const EdgeInsets.symmetric(horizontal: DesignTokens.space16),
+            height: 56,
+            padding: EdgeInsets.symmetric(horizontal: isCollapsed ? 14 : DesignTokens.space16),
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
               border: Border(
@@ -58,19 +63,14 @@ class AppSidebar extends ConsumerWidget {
                   Row(
                     children: [
                       Container(
-                        width: 32,
-                        height: 32,
+                        width: 28,
+                        height: 28,
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [AppColors.primary, AppColors.accentCyan],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: DesignTokens.borderMd,
-                          boxShadow: DesignTokens.glowPrimary,
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
                         ),
                         child: const Center(
-                          child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 18),
+                          child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 16),
                         ),
                       ),
                       const SizedBox(width: DesignTokens.space10),
@@ -79,71 +79,69 @@ class AppSidebar extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'GIMXSOFT',
+                            'GimXSoft',
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.8,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: -0.2,
                               color: AppColors.textPrimary(isDark),
                             ),
                           ),
                           Text(
-                            'ENTERPRISE CRM',
+                            'Gym Operations',
                             style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                              color: AppColors.primary,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.textMuted(isDark),
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                ] else ...[
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, AppColors.accentCyan],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: DesignTokens.borderMd,
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 18),
-                    ),
-                  ),
-                ],
-                if (!isCollapsed)
                   IconButton(
                     icon: Icon(
                       Icons.chevron_left_rounded,
-                      size: 20,
+                      size: 18,
                       color: AppColors.textMuted(isDark),
                     ),
-                    splashRadius: 18,
+                    splashRadius: 16,
                     onPressed: () => ref.read(sidebarCollapsedProvider.notifier).collapse(),
                   ),
+                ] else ...[
+                  InkWell(
+                    onTap: () => ref.read(sidebarCollapsedProvider.notifier).expand(),
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 16),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
 
-          // 2. Navigation Items List
+          // 2. Navigation Items List (Dense, 36px rows, 2px gap)
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(
-                vertical: DesignTokens.space12,
-                horizontal: DesignTokens.space10,
+                vertical: DesignTokens.space8,
+                horizontal: DesignTokens.space8,
               ),
               itemCount: kNavigationItems.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 2),
+              separatorBuilder: (context, index) => const SizedBox(height: 2),
               itemBuilder: (context, index) {
                 final item = kNavigationItems[index];
                 final isActive = currentPath == item.path ||
-                    (item.path != '/dashboard' && currentPath.startsWith(item.path));
+                    (item.path != '/' && currentPath.startsWith(item.path));
 
                 return _SidebarTile(
                   item: item,
@@ -155,7 +153,7 @@ class AppSidebar extends ConsumerWidget {
             ),
           ),
 
-          // 3. Bottom Footer / Tenant Info
+          // 3. Bottom Footer / Context Info
           Container(
             padding: const EdgeInsets.all(DesignTokens.space12),
             decoration: BoxDecoration(
@@ -166,82 +164,60 @@ class AppSidebar extends ConsumerWidget {
             child: isCollapsed
                 ? Center(
                     child: IconButton(
-                      icon: Icon(Icons.chevron_right_rounded, color: AppColors.textMuted(isDark), size: 20),
-                      splashRadius: 18,
+                      icon: Icon(Icons.chevron_right_rounded, color: AppColors.textMuted(isDark), size: 18),
+                      splashRadius: 16,
                       onPressed: () => ref.read(sidebarCollapsedProvider.notifier).expand(),
                     ),
                   )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                : Row(
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 14,
-                            backgroundColor: AppColors.primary.withOpacity(0.2),
-                            child: Text(
-                              authState.tenant?.name.isNotEmpty == true
-                                  ? authState.tenant!.name[0].toUpperCase()
-                                  : 'G',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
-                              ),
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: AppColors.raised(isDark),
+                          borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+                          border: Border.all(color: AppColors.border(isDark)),
+                        ),
+                        child: Center(
+                          child: Text(
+                            authState.tenant?.name.isNotEmpty == true
+                                ? authState.tenant!.name[0].toUpperCase()
+                                : 'T',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary(isDark),
                             ),
                           ),
-                          const SizedBox(width: DesignTokens.space8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  authState.tenant?.name ?? 'Titan Fitness Club',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary(isDark),
-                                  ),
-                                ),
-                                Text(
-                                  authState.tenant?.subscriptionPlan ?? 'Enterprise Pro',
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.secondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                      const SizedBox(height: DesignTokens.space8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'v2.4.0 SaaS',
-                            style: TextStyle(fontSize: 10, color: AppColors.textMuted(isDark)),
-                          ),
-                          InkWell(
-                            onTap: () => ref.read(sidebarCollapsedProvider.notifier).collapse(),
-                            borderRadius: DesignTokens.borderSm,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.keyboard_double_arrow_left_rounded, size: 14, color: AppColors.textMuted(isDark)),
-                                  const SizedBox(width: 2),
-                                  Text('Collapse', style: TextStyle(fontSize: 10, color: AppColors.textMuted(isDark))),
-                                ],
+                      const SizedBox(width: DesignTokens.space8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              authState.tenant?.name ?? 'Titan Performance',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textPrimary(isDark),
                               ),
                             ),
-                          ),
-                        ],
+                            Text(
+                              authState.selectedBranch?.name ?? 'Downtown Flagship',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textMuted(isDark),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -276,18 +252,19 @@ class _SidebarTileState extends State<_SidebarTile> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Active item uses small surface step and hairline; inactive hover uses light raised
     final bgColor = widget.isActive
-        ? (isDark ? AppColors.primary.withOpacity(0.16) : AppColors.primary.withOpacity(0.10))
+        ? AppColors.raised(isDark)
         : (_isHovered
-            ? (isDark ? const Color(0x1AFFFFFF) : const Color(0x0A000000))
+            ? (isDark ? const Color(0x1F232325) : const Color(0xFFF4F4F5))
             : Colors.transparent);
 
     final iconColor = widget.isActive
-        ? AppColors.primary
+        ? AppColors.textPrimary(isDark)
         : (_isHovered ? AppColors.textPrimary(isDark) : AppColors.textMuted(isDark));
 
     final textColor = widget.isActive
-        ? (isDark ? Colors.white : AppColors.primary)
+        ? AppColors.textPrimary(isDark)
         : (_isHovered ? AppColors.textPrimary(isDark) : AppColors.textSecondary(isDark));
 
     Widget tile = MouseRegion(
@@ -298,47 +275,36 @@ class _SidebarTileState extends State<_SidebarTile> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: DesignTokens.durationFast,
-          height: 40,
+          curve: DesignTokens.easeOutStandard,
+          height: 36, // Exact 36px token height
           padding: EdgeInsets.symmetric(
-            horizontal: widget.isCollapsed ? 0 : DesignTokens.space12,
+            horizontal: widget.isCollapsed ? 0 : DesignTokens.space10,
           ),
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: DesignTokens.borderMd,
+            borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
             border: widget.isActive
-                ? Border.all(color: AppColors.primary.withOpacity(0.3), width: 1)
+                ? Border.all(color: AppColors.border(isDark).withOpacity(0.18), width: 1)
                 : null,
           ),
           child: Row(
             mainAxisAlignment: widget.isCollapsed ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
-              Icon(widget.item.icon, size: 20, color: iconColor),
+              Icon(widget.item.icon, size: 16, color: iconColor),
               if (!widget.isCollapsed) ...[
-                const SizedBox(width: DesignTokens.space12),
+                const SizedBox(width: DesignTokens.space10),
                 Expanded(
                   child: Text(
                     widget.item.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: widget.isActive ? FontWeight.w500 : FontWeight.w400,
                       color: textColor,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (widget.item.badgeCount != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: DesignTokens.borderFull,
-                    ),
-                    child: Text(
-                      '${widget.item.badgeCount}',
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
               ],
             ],
           ),

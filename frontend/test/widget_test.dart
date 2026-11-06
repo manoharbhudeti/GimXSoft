@@ -53,8 +53,8 @@ void main() {
       ),
     );
 
-    expect(find.text('ACTIVE MEMBERS'), findsOneWidget);
+    expect(find.text('Active Members'), findsOneWidget);
     expect(find.text('420'), findsOneWidget);
-    expect(find.text('12.5%'), findsOneWidget);
+    expect(find.text('+12.5%'), findsOneWidget);
   });
 }
