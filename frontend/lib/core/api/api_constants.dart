@@ -42,6 +42,11 @@ class ApiConstants {
   static const String whatsAppConfig = '/whatsapp/config';
   static const String whatsAppDisconnect = '/whatsapp/config/disconnect';
   static const String whatsAppRegisterNumber = '/whatsapp/meta/register-number';
+  static const String whatsAppOnboardingInitiate = '/whatsapp/onboarding/initiate';
+  static const String whatsAppOnboardingVerify = '/whatsapp/onboarding/verify-code';
+  static const String whatsAppOnboardingResend = '/whatsapp/onboarding/resend-code';
+  static const String whatsAppOnboardingCallback = '/whatsapp/onboarding/embedded-signup-callback';
+  static const String whatsAppConnectionHealth = '/whatsapp/connection-health';
   static const String whatsAppSyncTemplates = '/whatsapp/templates/sync';
   static const String whatsAppConsent = '/whatsapp/consent';
   static const String whatsAppOptOut = '/whatsapp/opt-out';

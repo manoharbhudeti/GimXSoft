@@ -176,7 +176,65 @@ public record WhatsAppIntegrationDto(
     string TimeZoneId,
     DateTime? LastSyncedAt,
     string WebhookUrl,
-    string WebhookVerifyToken
+    string WebhookVerifyToken,
+    string WebhookStatus = "OPERATIONAL",
+    bool RequiresMigration = false,
+    bool CoexistenceEligible = true,
+    string? VerificationSessionId = null
+);
+
+public record InitiateOnboardingRequest(
+    string CountryCode,
+    string PhoneNumber,
+    string? BusinessName = null,
+    string? VerificationMethod = "SMS" // "SMS" or "VOICE"
+);
+
+public record InitiateOnboardingResponse(
+    bool Success,
+    string SessionId,
+    string MaskedPhoneNumber,
+    int ExpiresInSeconds,
+    string Message,
+    bool RequiresMigration = false,
+    bool CoexistenceEligible = true,
+    string? VerificationCode = null
+);
+
+public record VerifyOtpRequest(
+    string SessionId,
+    string Code,
+    string? RegistrationPin = "123456"
+);
+
+public record VerifyOtpResponse(
+    bool Success,
+    string Message,
+    WhatsAppIntegrationDto? Integration,
+    string? ErrorCode = null
+);
+
+public record ResendOtpRequest(
+    string SessionId,
+    string? VerificationMethod = "SMS"
+);
+
+public record EmbeddedSignupCallbackRequest(
+    string Code,
+    string? WabaId = null,
+    string? PhoneNumberId = null
+);
+
+public record ConnectionHealthDto(
+    string Status,
+    string HealthRating,
+    bool WebhooksOperational,
+    string QualityRating,
+    string MessagingLimitTier,
+    DateTime LastCheckedAt,
+    string? Diagnostics,
+    int DailySentToday,
+    int DailyLimit
 );
 
 public record UpdateWhatsAppConfigRequest(

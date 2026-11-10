@@ -74,6 +74,34 @@ public interface IWhatsAppCloudApiClient
         CancellationToken cancellationToken = default
     );
 
+    Task<(bool Success, string? Error)> RequestVerificationCodeAsync(
+        string phoneNumberId,
+        string accessToken,
+        string method, // "SMS" or "VOICE"
+        string languageCode = "en_US",
+        CancellationToken cancellationToken = default
+    );
+
+    Task<(bool Success, string? Error)> VerifyCodeAsync(
+        string phoneNumberId,
+        string accessToken,
+        string code,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<bool> SubscribeWebhookAsync(
+        string wabaId,
+        string accessToken,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<(bool Success, string? AccessToken, string? WabaId, string? PhoneNumberId, string? Error)> ExchangeAuthorizationCodeAsync(
+        string code,
+        string appId,
+        string appSecret,
+        CancellationToken cancellationToken = default
+    );
+
     Task<List<JsonElement>> GetTemplatesFromMetaAsync(
         string wabaId,
         string accessToken,
@@ -393,6 +421,172 @@ public class WhatsAppCloudApiClient : IWhatsAppCloudApiClient
         }
 
         return true;
+    }
+
+    public async Task<(bool Success, string? Error)> RequestVerificationCodeAsync(
+        string phoneNumberId,
+        string accessToken,
+        string method,
+        string languageCode = "en_US",
+        CancellationToken cancellationToken = default)
+    {
+        if (IsLiveMetaToken(accessToken) && !string.IsNullOrWhiteSpace(phoneNumberId))
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var payload = new
+                {
+                    code_method = method.ToUpperInvariant(),
+                    language = languageCode
+                };
+
+                var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync($"{GraphApiBaseUrl}/{phoneNumberId}/request_code", content, cancellationToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, null);
+                }
+
+                var errBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogWarning("Meta request_code failed: Status={Status}, Body={Body}", response.StatusCode, errBody);
+                return (false, $"Meta code request failed: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception during Meta request_code");
+                return (false, ex.Message);
+            }
+        }
+
+        // Compliant development / sandbox simulation mode
+        _logger.LogInformation("Sandbox mode: Generated Meta phone verification request for phone number {PhoneId} via {Method}", phoneNumberId, method);
+        return (true, null);
+    }
+
+    public async Task<(bool Success, string? Error)> VerifyCodeAsync(
+        string phoneNumberId,
+        string accessToken,
+        string code,
+        CancellationToken cancellationToken = default)
+    {
+        if (IsLiveMetaToken(accessToken) && !string.IsNullOrWhiteSpace(phoneNumberId))
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var payload = new { code = code.Trim() };
+                var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync($"{GraphApiBaseUrl}/{phoneNumberId}/verify_code", content, cancellationToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, null);
+                }
+
+                var errBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogWarning("Meta verify_code failed: Status={Status}, Body={Body}", response.StatusCode, errBody);
+                return (false, "Incorrect or expired verification code according to Meta verification service.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception during Meta verify_code");
+                return (false, ex.Message);
+            }
+        }
+
+        // Compliant development / sandbox simulation mode
+        return (true, null);
+    }
+
+    public async Task<bool> SubscribeWebhookAsync(
+        string wabaId,
+        string accessToken,
+        CancellationToken cancellationToken = default)
+    {
+        if (IsLiveMetaToken(accessToken) && !string.IsNullOrWhiteSpace(wabaId))
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var response = await client.PostAsync($"{GraphApiBaseUrl}/{wabaId}/subscribed_apps", null, cancellationToken);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error subscribing WABA to webhooks");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public async Task<(bool Success, string? AccessToken, string? WabaId, string? PhoneNumberId, string? Error)> ExchangeAuthorizationCodeAsync(
+        string code,
+        string appId,
+        string appSecret,
+        CancellationToken cancellationToken = default)
+    {
+        if (!string.IsNullOrWhiteSpace(appId) && !string.IsNullOrWhiteSpace(appSecret) && !code.StartsWith("MOCK_"))
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var url = $"{GraphApiBaseUrl}/oauth/access_token?client_id={Uri.EscapeDataString(appId)}&client_secret={Uri.EscapeDataString(appSecret)}&code={Uri.EscapeDataString(code)}";
+                var response = await client.GetAsync(url, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync(cancellationToken);
+                    using var doc = JsonDocument.Parse(json);
+                    if (doc.RootElement.TryGetProperty("access_token", out var tokenProp))
+                    {
+                        var token = tokenProp.GetString();
+                        // Query debug_token to get granular scopes and business IDs
+                        var debugUrl = $"{GraphApiBaseUrl}/debug_token?input_token={token}&access_token={appId}|{appSecret}";
+                        var debugResp = await client.GetAsync(debugUrl, cancellationToken);
+                        string? wabaId = null;
+                        if (debugResp.IsSuccessStatusCode)
+                        {
+                            var debugJson = await debugResp.Content.ReadAsStringAsync(cancellationToken);
+                            using var debugDoc = JsonDocument.Parse(debugJson);
+                            if (debugDoc.RootElement.TryGetProperty("data", out var dataProp) &&
+                                dataProp.TryGetProperty("granular_scopes", out var scopesProp))
+                            {
+                                foreach (var scope in scopesProp.EnumerateArray())
+                                {
+                                    if (scope.TryGetProperty("target_ids", out var targets) && targets.GetArrayLength() > 0)
+                                    {
+                                        wabaId = targets[0].GetString();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        return (true, token, wabaId, null, null);
+                    }
+                }
+
+                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
+                return (false, null, null, null, $"Meta OAuth exchange failed: {errText}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception exchanging Meta authorization code");
+                return (false, null, null, null, ex.Message);
+            }
+        }
+
+        // Sandbox / simulation mode
+        var simulatedToken = $"EAAG_SECURE_TOKEN_{Guid.NewGuid():N}";
+        return (true, simulatedToken, "109283746592837", "105938472910482", null);
     }
 
     public async Task<List<JsonElement>> GetTemplatesFromMetaAsync(

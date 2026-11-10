@@ -5,10 +5,20 @@ namespace GimXSoft.Api.Entities;
 
 public enum WhatsAppConnectionStatus
 {
-    Disconnected,
-    Connected,
-    PendingVerification,
-    Suspended
+    NotConnected = 0,
+    VerificationPending = 1,
+    AuthorizationPending = 2,
+    Connecting = 3,
+    Connected = 4,
+    ConnectionFailed = 5,
+    NumberRegistrationRequired = 6,
+    MigrationRequired = 7,
+    AuthorizationExpired = 8,
+    WebhookFailure = 9,
+    Disconnected = 10,
+    // Aliases for backward compatibility
+    PendingVerification = 1,
+    Suspended = 5
 }
 
 public enum ScheduledMessageStatus
@@ -73,6 +83,23 @@ public class WhatsAppIntegration
 
     [MaxLength(50)]
     public string TimeZoneId { get; set; } = "Asia/Kolkata"; // Default timezone for scheduled deliveries
+
+    [MaxLength(100)]
+    public string? VerificationSessionId { get; set; }
+
+    [MaxLength(10)]
+    public string? VerificationCode { get; set; }
+
+    public DateTime? VerificationExpiresAt { get; set; }
+
+    [MaxLength(20)]
+    public string VerificationMethod { get; set; } = "SMS"; // SMS, VOICE
+
+    [MaxLength(50)]
+    public string WebhookStatus { get; set; } = "OPERATIONAL"; // OPERATIONAL, PENDING, FAILED
+
+    public bool RequiresMigration { get; set; } = false;
+    public bool CoexistenceEligible { get; set; } = true;
 
     public DateTime? LastSyncedAt { get; set; } = DateTime.UtcNow;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

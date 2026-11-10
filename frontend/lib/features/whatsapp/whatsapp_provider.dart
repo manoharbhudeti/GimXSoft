@@ -98,6 +98,13 @@ final whatsAppScheduledMessagesProvider =
       .toList();
 });
 
+final whatsAppConnectionHealthProvider =
+    FutureProvider<WhatsAppConnectionHealthModel>((ref) async {
+  final client = ref.read(apiClientProvider);
+  final response = await client.dio.get(ApiConstants.whatsAppConnectionHealth);
+  return WhatsAppConnectionHealthModel.fromJson(response.data as Map<String, dynamic>);
+});
+
 class WhatsAppActionService {
   final Ref ref;
 
@@ -393,6 +400,126 @@ class WhatsAppActionService {
       final client = ref.read(apiClientProvider);
       await client.dio.post(ApiConstants.whatsAppDisconnect);
       ref.invalidate(whatsAppConfigProvider);
+      ref.invalidate(whatsAppConnectionHealthProvider);
+      ref.invalidate(whatsAppMetricsProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> sendTestMessage({
+    required String destinationPhone,
+    String? testMessage,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      final response = await client.dio.post(
+        ApiConstants.whatsAppTestMessage,
+        data: {
+          'destinationPhone': destinationPhone,
+          'testMessage': testMessage,
+        },
+      );
+      ref.invalidate(whatsAppMetricsProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
+      return (response.data as Map<String, dynamic>)['success'] as bool? ?? true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<WhatsAppOnboardingInitiateResult?> initiateOnboarding({
+    required String countryCode,
+    required String phoneNumber,
+    String? businessName,
+    String? verificationMethod,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      final response = await client.dio.post(
+        ApiConstants.whatsAppOnboardingInitiate,
+        data: {
+          'countryCode': countryCode,
+          'phoneNumber': phoneNumber,
+          'businessName': businessName,
+          'verificationMethod': verificationMethod ?? 'SMS',
+        },
+      );
+      ref.invalidate(whatsAppConfigProvider);
+      ref.invalidate(whatsAppConnectionHealthProvider);
+      return WhatsAppOnboardingInitiateResult.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<WhatsAppVerificationResult> verifyOtpCode({
+    required String sessionId,
+    required String code,
+    String? registrationPin,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      final response = await client.dio.post(
+        ApiConstants.whatsAppOnboardingVerify,
+        data: {
+          'sessionId': sessionId,
+          'code': code,
+          'registrationPin': registrationPin ?? '123456',
+        },
+      );
+      ref.invalidate(whatsAppConfigProvider);
+      ref.invalidate(whatsAppConnectionHealthProvider);
+      ref.invalidate(whatsAppMetricsProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
+      return WhatsAppVerificationResult.fromJson(response.data as Map<String, dynamic>);
+    } catch (e) {
+      return WhatsAppVerificationResult(
+        success: false,
+        message: 'Verification failed. Please ensure the code is correct.',
+        errorCode: 'VERIFICATION_FAILED',
+      );
+    }
+  }
+
+  Future<WhatsAppOnboardingInitiateResult?> resendOtpCode({
+    required String sessionId,
+    String? verificationMethod,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      final response = await client.dio.post(
+        ApiConstants.whatsAppOnboardingResend,
+        data: {
+          'sessionId': sessionId,
+          'verificationMethod': verificationMethod ?? 'SMS',
+        },
+      );
+      return WhatsAppOnboardingInitiateResult.fromJson(response.data as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<bool> completeEmbeddedSignup({
+    required String code,
+    String? wabaId,
+    String? phoneNumberId,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppOnboardingCallback,
+        data: {
+          'code': code,
+          'wabaId': wabaId,
+          'phoneNumberId': phoneNumberId,
+        },
+      );
+      ref.invalidate(whatsAppConfigProvider);
+      ref.invalidate(whatsAppConnectionHealthProvider);
       ref.invalidate(whatsAppMetricsProvider);
       ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
       return true;

@@ -54,6 +54,8 @@ class _WhatsAppMessagingViewState extends ConsumerState<WhatsAppMessagingView>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final configAsync = ref.watch(whatsAppConfigProvider);
+    final isConnected = configAsync.asData?.value.isConnected ?? true;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -97,12 +99,39 @@ class _WhatsAppMessagingViewState extends ConsumerState<WhatsAppMessagingView>
                   ],
                 ),
                 Row(
-                  children: const [
-                    StatusBadge(status: 'Active'),
+                  children: [
+                    StatusBadge(status: isConnected ? 'Connected' : 'Disconnected'),
                   ],
                 ),
               ],
             ),
+            if (!isConnected) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
+                  border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'WhatsApp Business is not connected. Enter your number and verify OTP to activate automated messaging.',
+                        style: TextStyle(fontSize: 13, color: AppColors.textPrimary(isDark)),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => _tabController.animateTo(5),
+                      child: const Text('Connect Number', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             const SizedBox(height: DesignTokens.space16),
 
             // Tab Bar

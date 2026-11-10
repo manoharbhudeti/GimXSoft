@@ -417,6 +417,10 @@ class WhatsAppIntegrationModel {
   final DateTime? lastSyncedAt;
   final String webhookUrl;
   final String webhookVerifyToken;
+  final String webhookStatus;
+  final bool requiresMigration;
+  final bool coexistenceEligible;
+  final String? verificationSessionId;
 
   WhatsAppIntegrationModel({
     required this.id,
@@ -437,6 +441,10 @@ class WhatsAppIntegrationModel {
     this.lastSyncedAt,
     required this.webhookUrl,
     required this.webhookVerifyToken,
+    this.webhookStatus = 'OPERATIONAL',
+    this.requiresMigration = false,
+    this.coexistenceEligible = true,
+    this.verificationSessionId,
   });
 
   bool get isConnected => connectionStatus.toLowerCase() == 'connected';
@@ -460,7 +468,109 @@ class WhatsAppIntegrationModel {
       timeZoneId: json['timeZoneId'] as String? ?? 'Asia/Kolkata',
       lastSyncedAt: json['lastSyncedAt'] != null ? DateTime.tryParse(json['lastSyncedAt'] as String) : null,
       webhookUrl: json['webhookUrl'] as String? ?? '',
-      webhookVerifyToken: json['webhookVerifyToken'] as String? ?? 'GIMXSOFT_WHATSAPP_WEBHOOK_VERIFY_TOKEN',
+      webhookVerifyToken: json['webhookVerifyToken'] as String? ?? '',
+      webhookStatus: json['webhookStatus'] as String? ?? 'OPERATIONAL',
+      requiresMigration: json['requiresMigration'] as bool? ?? false,
+      coexistenceEligible: json['coexistenceEligible'] as bool? ?? true,
+      verificationSessionId: json['verificationSessionId'] as String?,
+    );
+  }
+}
+
+class WhatsAppOnboardingInitiateResult {
+  final bool success;
+  final String sessionId;
+  final String maskedPhoneNumber;
+  final int expiresInSeconds;
+  final String message;
+  final bool requiresMigration;
+  final bool coexistenceEligible;
+  final String? verificationCode;
+
+  WhatsAppOnboardingInitiateResult({
+    required this.success,
+    required this.sessionId,
+    required this.maskedPhoneNumber,
+    required this.expiresInSeconds,
+    required this.message,
+    this.requiresMigration = false,
+    this.coexistenceEligible = true,
+    this.verificationCode,
+  });
+
+  factory WhatsAppOnboardingInitiateResult.fromJson(Map<String, dynamic> json) {
+    return WhatsAppOnboardingInitiateResult(
+      success: json['success'] as bool? ?? false,
+      sessionId: json['sessionId'] as String? ?? '',
+      maskedPhoneNumber: json['maskedPhoneNumber'] as String? ?? '',
+      expiresInSeconds: (json['expiresInSeconds'] as num?)?.toInt() ?? 300,
+      message: json['message'] as String? ?? '',
+      requiresMigration: json['requiresMigration'] as bool? ?? false,
+      coexistenceEligible: json['coexistenceEligible'] as bool? ?? true,
+      verificationCode: json['verificationCode'] as String?,
+    );
+  }
+}
+
+class WhatsAppVerificationResult {
+  final bool success;
+  final String message;
+  final WhatsAppIntegrationModel? integration;
+  final String? errorCode;
+
+  WhatsAppVerificationResult({
+    required this.success,
+    required this.message,
+    this.integration,
+    this.errorCode,
+  });
+
+  factory WhatsAppVerificationResult.fromJson(Map<String, dynamic> json) {
+    return WhatsAppVerificationResult(
+      success: json['success'] as bool? ?? false,
+      message: json['message'] as String? ?? '',
+      integration: json['integration'] != null
+          ? WhatsAppIntegrationModel.fromJson(json['integration'] as Map<String, dynamic>)
+          : null,
+      errorCode: json['errorCode'] as String?,
+    );
+  }
+}
+
+class WhatsAppConnectionHealthModel {
+  final String status;
+  final String healthRating;
+  final bool webhooksOperational;
+  final String qualityRating;
+  final String messagingLimitTier;
+  final DateTime lastCheckedAt;
+  final String? diagnostics;
+  final int dailySentToday;
+  final int dailyLimit;
+
+  WhatsAppConnectionHealthModel({
+    required this.status,
+    required this.healthRating,
+    required this.webhooksOperational,
+    required this.qualityRating,
+    required this.messagingLimitTier,
+    required this.lastCheckedAt,
+    this.diagnostics,
+    required this.dailySentToday,
+    required this.dailyLimit,
+  });
+
+  factory WhatsAppConnectionHealthModel.fromJson(Map<String, dynamic> json) {
+    return WhatsAppConnectionHealthModel(
+      status: json['status'] as String? ?? 'NotConnected',
+      healthRating: json['healthRating'] as String? ?? 'NOT_INITIALIZED',
+      webhooksOperational: json['webhooksOperational'] as bool? ?? true,
+      qualityRating: json['qualityRating'] as String? ?? 'GREEN',
+      messagingLimitTier: json['messagingLimitTier'] as String? ?? 'TIER_1K',
+      lastCheckedAt: DateTime.tryParse(json['lastCheckedAt'] as String? ?? '') ?? DateTime.now(),
+      diagnostics: json['diagnostics'] as String?,
+      dailySentToday: (json['dailySentToday'] as num?)?.toInt() ?? 0,
+      dailyLimit: (json['dailyLimit'] as num?)?.toInt() ?? 1000,
     );
   }
 }
