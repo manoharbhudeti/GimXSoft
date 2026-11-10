@@ -25,7 +25,10 @@ class TopNavBar extends ConsumerWidget implements PreferredSizeWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeNotifier = ref.watch(themeModeProvider.notifier);
     final authState = ref.watch(authProvider);
-    final currentPath = GoRouterState.of(context).matchedLocation;
+    String currentPath = '/dashboard';
+    try {
+      currentPath = GoRouterState.of(context).matchedLocation;
+    } catch (_) {}
 
     // Breadcrumb page title
     String pageTitle = 'Dashboard';
@@ -75,28 +78,37 @@ class TopNavBar extends ConsumerWidget implements PreferredSizeWidget {
             ),
 
           // Quiet Breadcrumb / Page Title
-          Row(
-            children: [
-              Text(
-                'GimXSoft',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textMuted(isDark),
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!isMobile) ...[
+                  Text(
+                    'GimXSoft',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textMuted(isDark),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.chevron_right_rounded, size: 14, color: AppColors.textMuted(isDark)),
+                  const SizedBox(width: 6),
+                ],
+                Flexible(
+                  child: Text(
+                    pageTitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary(isDark),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 6),
-              Icon(Icons.chevron_right_rounded, size: 14, color: AppColors.textMuted(isDark)),
-              const SizedBox(width: 6),
-              Text(
-                pageTitle,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary(isDark),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           const Spacer(),
@@ -222,6 +234,7 @@ class TopNavBar extends ConsumerWidget implements PreferredSizeWidget {
                 border: Border.all(color: AppColors.border(isDark)),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     width: 22,

@@ -60,7 +60,7 @@ class _WorkoutSchedulerViewState extends ConsumerState<WorkoutSchedulerView> {
                   SwitchListTile(
                     title: const Text('Mark as Rest & Active Recovery Day'),
                     value: isRest,
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                     onChanged: (val) => setDialogState(() => isRest = val),
                   ),
                   const SizedBox(height: DesignTokens.space12),
@@ -81,6 +81,7 @@ class _WorkoutSchedulerViewState extends ConsumerState<WorkoutSchedulerView> {
                         text: 'Save Schedule',
                         icon: Icons.check_rounded,
                         onPressed: () async {
+                          final nav = Navigator.of(context);
                           final ok = await ref.read(workoutActionProvider).assignSchedule({
                             'memberId': schedule.memberId,
                             'dayOfWeek': schedule.dayOfWeek,
@@ -91,8 +92,8 @@ class _WorkoutSchedulerViewState extends ConsumerState<WorkoutSchedulerView> {
                             'trainerApproved': true,
                             'trainerNotes': notesCtrl.text.trim(),
                           });
-                          if (mounted) {
-                            Navigator.of(context).pop();
+                          if (nav.context.mounted) {
+                            nav.pop();
                             if (ok) {
                               ref.read(toastProvider.notifier).success('Schedule Updated', message: '${schedule.dayOfWeek} schedule updated.');
                             }
@@ -160,7 +161,7 @@ class _WorkoutSchedulerViewState extends ConsumerState<WorkoutSchedulerView> {
                 // Member Dropdown Selector
                 membersAsync.when(
                   loading: () => const SizedBox(width: 200, height: 40, child: InlineLoader()),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (error, stack) => const SizedBox.shrink(),
                   data: (members) {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),

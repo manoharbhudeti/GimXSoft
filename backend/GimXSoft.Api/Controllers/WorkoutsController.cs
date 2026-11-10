@@ -23,6 +23,7 @@ public class WorkoutsController : ControllerBase
     }
 
     [HttpGet]
+    [HttpGet("plans")]
     public async Task<ActionResult<List<WorkoutPlanDto>>> GetWorkoutPlans([FromQuery] Guid? memberId)
     {
         var query = _context.WorkoutPlans

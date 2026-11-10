@@ -22,6 +22,51 @@ public class MeasurementsController : ControllerBase
         _tenantService = tenantService;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<List<MemberMeasurementDto>>> GetAllMeasurements([FromQuery] Guid? memberId)
+    {
+        var query = _context.MemberMeasurements
+            .Include(m => m.Member)
+            .Include(m => m.RecordedByUser)
+            .AsQueryable();
+
+        if (memberId.HasValue)
+        {
+            query = query.Where(m => m.MemberId == memberId.Value);
+        }
+
+        var measurements = await query
+            .OrderByDescending(m => m.MeasurementDate)
+            .Take(100)
+            .Select(m => new MemberMeasurementDto(
+                m.Id,
+                m.MemberId,
+                m.Member != null ? m.Member.FullName : "Member",
+                m.WeightKg,
+                m.HeightCm,
+                m.CalculatedBmi,
+                m.WaistCm,
+                m.ChestCm,
+                m.HipCm,
+                m.LeftArmCm,
+                m.RightArmCm,
+                m.LeftThighCm,
+                m.RightThighCm,
+                m.BodyFatPercentage,
+                m.InputUnitSystem.ToString(),
+                m.MeasurementDate,
+                m.RecordedByUserId,
+                m.RecordedByUser != null ? m.RecordedByUser.FullName : null,
+                m.Notes,
+                m.WeightDifferenceKg,
+                m.WeightChangePercent,
+                m.CreatedAt
+            ))
+            .ToListAsync();
+
+        return Ok(measurements);
+    }
+
     [HttpGet("member/{memberId:guid}")]
     public async Task<ActionResult<List<MemberMeasurementDto>>> GetMemberMeasurements(Guid memberId)
     {

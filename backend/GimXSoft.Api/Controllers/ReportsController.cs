@@ -23,6 +23,7 @@ public class ReportsController : ControllerBase
     }
 
     [HttpGet("revenue-summary")]
+    [HttpGet("financial")]
     public async Task<ActionResult> GetRevenueReport([FromQuery] Guid? branchId, [FromQuery] int months = 6)
     {
         var now = DateTime.UtcNow;
@@ -37,13 +38,13 @@ public class ReportsController : ControllerBase
             var start = new DateTime(date.Year, date.Month, 1);
             var end = start.AddMonths(1);
 
-            var total = await query
+            var amounts = await query
                 .Where(p => p.CreatedAt >= start && p.CreatedAt < end && p.Status == PaymentStatus.Completed)
-                .SumAsync(p => p.Amount);
+                .Select(p => p.Amount)
+                .ToListAsync();
 
-            var count = await query
-                .Where(p => p.CreatedAt >= start && p.CreatedAt < end && p.Status == PaymentStatus.Completed)
-                .CountAsync();
+            var total = amounts.Sum();
+            var count = amounts.Count;
 
             if (total == 0 && i > 0)
             {

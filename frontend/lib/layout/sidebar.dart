@@ -29,7 +29,10 @@ class AppSidebar extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isCollapsed = ref.watch(sidebarCollapsedProvider);
     final authState = ref.watch(authProvider);
-    final currentPath = GoRouterState.of(context).matchedLocation;
+    String currentPath = '/dashboard';
+    try {
+      currentPath = GoRouterState.of(context).matchedLocation;
+    } catch (_) {}
 
     final width = isCollapsed ? 64.0 : 256.0;
 
@@ -60,44 +63,52 @@ class AppSidebar extends ConsumerWidget {
               mainAxisAlignment: isCollapsed ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
               children: [
                 if (!isCollapsed) ...[
-                  Row(
-                    children: [
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 16),
-                        ),
-                      ),
-                      const SizedBox(width: DesignTokens.space10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'GimXSoft',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.2,
-                              color: AppColors.textPrimary(isDark),
-                            ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
                           ),
-                          Text(
-                            'Gym Operations',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.textMuted(isDark),
-                            ),
+                          child: const Center(
+                            child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 16),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(width: DesignTokens.space10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'GimXSoft',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: -0.2,
+                                  color: AppColors.textPrimary(isDark),
+                                ),
+                              ),
+                              Text(
+                                'Gym Operations',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.textMuted(isDark),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   IconButton(
                     icon: Icon(
@@ -105,6 +116,8 @@ class AppSidebar extends ConsumerWidget {
                       size: 18,
                       color: AppColors.textMuted(isDark),
                     ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
                     splashRadius: 16,
                     onPressed: () => ref.read(sidebarCollapsedProvider.notifier).collapse(),
                   ),

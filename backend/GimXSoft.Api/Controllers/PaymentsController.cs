@@ -23,6 +23,7 @@ public class PaymentsController : ControllerBase
     }
 
     [HttpGet]
+    [HttpGet("transactions")]
     public async Task<ActionResult<List<PaymentTransactionDto>>> GetPayments(
         [FromQuery] Guid? branchId,
         [FromQuery] PaymentMethod? method,
@@ -182,17 +183,27 @@ public class PaymentsController : ControllerBase
 
         var completedThisMonth = query.Where(p => p.CreatedAt >= startOfMonth && p.Status == PaymentStatus.Completed);
 
-        var totalMonth = await completedThisMonth.SumAsync(p => p.Amount);
-        var totalToday = await query.Where(p => p.CreatedAt >= today && p.Status == PaymentStatus.Completed).SumAsync(p => p.Amount);
+        var completedMonthList = await completedThisMonth
+            .Select(p => new { p.Amount, p.PaymentMethod })
+            .ToListAsync();
+        var totalMonth = completedMonthList.Sum(p => p.Amount);
 
-        var refundsMonth = await query
+        var todayList = await query
+            .Where(p => p.CreatedAt >= today && p.Status == PaymentStatus.Completed)
+            .Select(p => p.Amount)
+            .ToListAsync();
+        var totalToday = todayList.Sum();
+
+        var refundList = await query
             .Where(p => p.CreatedAt >= startOfMonth && p.Status == PaymentStatus.Refunded)
-            .SumAsync(p => p.Amount);
+            .Select(p => p.Amount)
+            .ToListAsync();
+        var refundsMonth = refundList.Sum();
 
-        var cash = await completedThisMonth.Where(p => p.PaymentMethod == PaymentMethod.Cash).SumAsync(p => p.Amount);
-        var upi = await completedThisMonth.Where(p => p.PaymentMethod == PaymentMethod.UPI).SumAsync(p => p.Amount);
-        var card = await completedThisMonth.Where(p => p.PaymentMethod == PaymentMethod.Card).SumAsync(p => p.Amount);
-        var bank = await completedThisMonth.Where(p => p.PaymentMethod == PaymentMethod.BankTransfer).SumAsync(p => p.Amount);
+        var cash = completedMonthList.Where(p => p.PaymentMethod == PaymentMethod.Cash).Sum(p => p.Amount);
+        var upi = completedMonthList.Where(p => p.PaymentMethod == PaymentMethod.UPI).Sum(p => p.Amount);
+        var card = completedMonthList.Where(p => p.PaymentMethod == PaymentMethod.Card).Sum(p => p.Amount);
+        var bank = completedMonthList.Where(p => p.PaymentMethod == PaymentMethod.BankTransfer).Sum(p => p.Amount);
 
         var recent = await query
             .OrderByDescending(p => p.CreatedAt)

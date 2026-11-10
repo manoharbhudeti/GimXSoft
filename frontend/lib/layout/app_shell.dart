@@ -112,24 +112,31 @@ class _OfflineBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: const Color(0xFFDC2626), // Strong danger red for high visibility
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8,
+        runSpacing: 4,
         children: [
-          const Icon(
-            Icons.wifi_off_rounded,
-            color: Colors.white,
-            size: 16,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(
+                Icons.wifi_off_rounded,
+                color: Colors.white,
+                size: 16,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'You are offline. Live sync paused.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 8),
-          const Text(
-            'You are offline. Live synchronization is paused.',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(width: 16),
           InkWell(
             onTap: isChecking ? null : onRetry,
             borderRadius: BorderRadius.circular(4),

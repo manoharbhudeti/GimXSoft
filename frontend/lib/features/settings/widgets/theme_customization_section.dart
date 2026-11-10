@@ -27,11 +27,14 @@ class ThemeCustomizationSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Section Header with Reset Action
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.start,
+          spacing: 16,
+          runSpacing: 12,
           children: [
-            Expanded(
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -51,7 +54,6 @@ class ThemeCustomizationSection extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 16),
             AppButton(
               label: 'Reset to Defaults',
               icon: Icons.restart_alt_rounded,
@@ -75,16 +77,22 @@ class ThemeCustomizationSection extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
                 children: [
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.palette_outlined, size: 20, color: primaryAccent),
                       const SizedBox(width: 8),
-                      Text(
-                        'Theme Selection',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                      Flexible(
+                        child: Text(
+                          'Theme Selection',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                        ),
                       ),
                     ],
                   ),
@@ -140,16 +148,22 @@ class ThemeCustomizationSection extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
                 children: [
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.text_fields_rounded, size: 20, color: primaryAccent),
                       const SizedBox(width: 8),
-                      Text(
-                        'Typography & Font Combinations',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                      Flexible(
+                        child: Text(
+                          'Typography & Font Combinations',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                        ),
                       ),
                     ],
                   ),
@@ -210,9 +224,12 @@ class ThemeCustomizationSection extends ConsumerWidget {
                 children: [
                   Icon(Icons.auto_awesome_rounded, size: 18, color: primaryAccent),
                   const SizedBox(width: 8),
-                  Text(
-                    'Live Component Sandbox Preview',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                  Expanded(
+                    child: Text(
+                      'Live Component Sandbox Preview',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -237,10 +254,14 @@ class ThemeCustomizationSection extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Titan Performance Club',
-                          style: Theme.of(context).textTheme.titleLarge,
+                        Expanded(
+                          child: Text(
+                            'Titan Performance Club',
+                            style: Theme.of(context).textTheme.titleLarge,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         const StatusBadge(status: 'Active'),
                       ],
                     ),
@@ -318,7 +339,10 @@ class ThemeCustomizationSection extends ConsumerWidget {
             final mainContent = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 4,
                   children: [
                     Text(
                       theme.name,
@@ -328,7 +352,6 @@ class ThemeCustomizationSection extends ConsumerWidget {
                         color: AppColors.textPrimary(isDark),
                       ),
                     ),
-                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
@@ -489,6 +512,7 @@ class ThemeCustomizationSection extends ConsumerWidget {
           children: [
             // Row Top: Radio, Title, Category Tag & Active Indicator
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Radio indicator
                 Container(
@@ -515,28 +539,36 @@ class ThemeCustomizationSection extends ConsumerWidget {
                       : null,
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  fontCombo.name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary(isDark),
+                Expanded(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      Text(
+                        fontCombo.name,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary(isDark),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: primaryAccent.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          fontCombo.categoryTag,
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: primaryAccent),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: primaryAccent.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    fontCombo.categoryTag,
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: primaryAccent),
-                  ),
-                ),
-                const Spacer(),
-                if (isSelected)
+                if (isSelected) ...[
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
@@ -555,6 +587,7 @@ class ThemeCustomizationSection extends ConsumerWidget {
                       ],
                     ),
                   ),
+                ],
               ],
             ),
             const SizedBox(height: 6),

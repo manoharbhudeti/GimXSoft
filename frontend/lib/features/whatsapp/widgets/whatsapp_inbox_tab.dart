@@ -154,7 +154,7 @@ class _WhatsAppInboxTabState extends ConsumerState<WhatsAppInboxTab> {
                     Expanded(
                       child: ListView.separated(
                         itemCount: conversations.length,
-                        separatorBuilder: (_, __) => Divider(height: 1, color: AppColors.border(widget.isDark).withOpacity(0.5)),
+                        separatorBuilder: (context, index) => Divider(height: 1, color: AppColors.border(widget.isDark).withOpacity(0.5)),
                         itemBuilder: (context, index) {
                           final conv = conversations[index];
                           if (_searchFilter.isNotEmpty &&

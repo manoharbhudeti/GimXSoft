@@ -94,7 +94,7 @@ class _WorkoutLibraryViewState extends ConsumerState<WorkoutLibraryView>
                         const SizedBox(width: 12),
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            value: difficulty,
+                            initialValue: difficulty,
                             decoration: InputDecoration(
                               labelText: 'Difficulty Level',
                               filled: true,
@@ -138,6 +138,7 @@ class _WorkoutLibraryViewState extends ConsumerState<WorkoutLibraryView>
                           icon: Icons.check_rounded,
                           onPressed: () async {
                             if (nameCtrl.text.trim().isEmpty) return;
+                            final nav = Navigator.of(context);
                             final ok = await ref.read(workoutActionProvider).createExercise({
                               'name': nameCtrl.text.trim(),
                               'category': catCtrl.text.trim(),
@@ -150,8 +151,8 @@ class _WorkoutLibraryViewState extends ConsumerState<WorkoutLibraryView>
                               'instructions': instrCtrl.text.trim(),
                               'safetyNotes': safetyCtrl.text.trim(),
                             });
-                            if (mounted) {
-                              Navigator.of(context).pop();
+                            if (nav.context.mounted) {
+                              nav.pop();
                               if (ok) {
                                 ref.read(toastProvider.notifier).success('Exercise Created', message: '${nameCtrl.text} added to library.');
                               }

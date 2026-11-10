@@ -871,6 +871,14 @@ public static class DbInitializer
             AccessToken = "EAAG_LIVE_SYSTEM_USER_TOKEN_METACLOUD_SECURE",
             ConnectionStatus = WhatsAppConnectionStatus.Connected,
             HealthStatus = "HEALTHY",
+            QualityRating = "GREEN",
+            MessagingLimitTier = "TIER_10K",
+            VerifiedName = "Titan Performance & Fitness",
+            CodeVerificationStatus = "VERIFIED",
+            AppId = "109847291847192",
+            AppSecret = "meta_app_secret_live_hash",
+            CostPerUtilityMessage = 0.0050m,
+            CostPerMarketingMessage = 0.0250m,
             TimeZoneId = "Asia/Kolkata",
             LastSyncedAt = DateTime.UtcNow
         });
@@ -1158,6 +1166,52 @@ public static class DbInitializer
             FirstWeekReviewDoneAt = DateTime.UtcNow.AddMonths(-6).AddDays(10),
             Notes = "Completed full onboarding with flying colors."
         });
+
+        // 20. Seed WhatsApp Broadcast Campaigns
+        var campaign1 = new WhatsAppCampaign
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            Name = "Festival Transformation Flash Sale",
+            Description = "Exclusive 20% discount broadcast to members expiring within 14 days",
+            AudienceSegment = WhatsAppAudienceSegment.ExpiringIn7Days,
+            TemplateName = "membership_renewal_reminder",
+            TemplateLanguage = "en_US",
+            MessageContent = "Hi athlete! Renew your membership this week and get 20% extra validity free plus a complimentary personal training session.",
+            Status = WhatsAppCampaignStatus.Completed,
+            StartedAtUtc = DateTime.UtcNow.AddDays(-2),
+            CompletedAtUtc = DateTime.UtcNow.AddDays(-2).AddMinutes(12),
+            TotalRecipients = 24,
+            SentCount = 24,
+            DeliveredCount = 23,
+            ReadCount = 19,
+            FailedCount = 1,
+            CreatedAt = DateTime.UtcNow.AddDays(-2)
+        };
+
+        var campaign2 = new WhatsAppCampaign
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            BranchId = branchDowntown.Id,
+            Name = "Quarterly Body Composition Review",
+            Description = "Invitations to active members for their complimentary quarterly InBody scan and trainer check-in.",
+            AudienceSegment = WhatsAppAudienceSegment.AllActive,
+            TemplateName = "monthly_fitness_progress_report",
+            TemplateLanguage = "en_US",
+            MessageContent = "Hi athlete, your quarterly body composition scan is due! Book your complimentary slot with your trainer via WhatsApp.",
+            Status = WhatsAppCampaignStatus.Scheduled,
+            ScheduledAtUtc = DateTime.UtcNow.AddDays(3),
+            TotalRecipients = 48,
+            SentCount = 0,
+            DeliveredCount = 0,
+            ReadCount = 0,
+            FailedCount = 0,
+            CreatedAt = DateTime.UtcNow.AddDays(-1)
+        };
+
+        context.WhatsAppCampaigns.AddRange(campaign1, campaign2);
 
         await context.SaveChangesAsync();
     }

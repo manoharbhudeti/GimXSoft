@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/core/states/empty_states/app_empty_state.dart';
-import 'package:frontend/core/states/empty_states/no_data_state.dart';
 import 'package:frontend/core/states/empty_states/search_empty_state.dart';
 import 'package:frontend/core/states/errors/app_error.dart';
 import 'package:frontend/core/states/errors/network_error.dart';

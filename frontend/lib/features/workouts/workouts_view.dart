@@ -204,7 +204,7 @@ class WorkoutsView extends ConsumerWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: plans.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
+                  separatorBuilder: (context, index) => const SizedBox(height: 16),
                   itemBuilder: (context, idx) {
                     final p = plans[idx];
                     List<dynamic> days = [];

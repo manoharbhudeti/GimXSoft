@@ -24,6 +24,7 @@ public class AttendanceController : ControllerBase
         _tenantService = tenantService;
     }
 
+    [HttpGet("today")]
     [HttpGet("today-summary")]
     public async Task<ActionResult<DailyAttendanceSummaryDto>> GetTodaySummary([FromQuery] Guid? branchId)
     {

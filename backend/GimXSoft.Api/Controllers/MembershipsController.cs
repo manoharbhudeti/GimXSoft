@@ -22,12 +22,13 @@ public class MembershipsController : ControllerBase
         _tenantService = tenantService;
     }
 
+    [HttpGet]
     [HttpGet("plans")]
     public async Task<ActionResult<List<MembershipPlanDto>>> GetPlans()
     {
         var plans = await _context.MembershipPlans
             .Include(p => p.Subscriptions)
-            .OrderBy(p => p.Price)
+            .OrderBy(p => (double)p.Price)
             .Select(p => new MembershipPlanDto(
                 p.Id,
                 p.TenantId,

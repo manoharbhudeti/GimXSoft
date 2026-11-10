@@ -51,15 +51,19 @@ public class DashboardController : ControllerBase
         var expiredMembers = await membersQuery.CountAsync(m => m.Status == MemberStatus.Expired);
 
         // 2. Revenue Calculations
-        var monthlyRevenue = await paymentsQuery
+        var monthlyPayments = await paymentsQuery
             .Where(p => p.CreatedAt >= startOfMonth && p.Status == PaymentStatus.Completed)
-            .SumAsync(p => p.Amount);
+            .Select(p => p.Amount)
+            .ToListAsync();
+        var monthlyRevenue = monthlyPayments.Sum();
 
         // Revenue previous month for growth calculation
         var startOfLastMonth = startOfMonth.AddMonths(-1);
-        var lastMonthRevenue = await paymentsQuery
+        var lastMonthPayments = await paymentsQuery
             .Where(p => p.CreatedAt >= startOfLastMonth && p.CreatedAt < startOfMonth && p.Status == PaymentStatus.Completed)
-            .SumAsync(p => p.Amount);
+            .Select(p => p.Amount)
+            .ToListAsync();
+        var lastMonthRevenue = lastMonthPayments.Sum();
 
         var growthPercentage = lastMonthRevenue > 0
             ? Math.Round(((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100, 1)
@@ -97,13 +101,12 @@ public class DashboardController : ControllerBase
             var mStart = new DateTime(mDate.Year, mDate.Month, 1);
             var mEnd = mStart.AddMonths(1);
 
-            var rev = await paymentsQuery
+            var revList = await paymentsQuery
                 .Where(p => p.CreatedAt >= mStart && p.CreatedAt < mEnd && p.Status == PaymentStatus.Completed)
-                .SumAsync(p => p.Amount);
-
-            var count = await paymentsQuery
-                .Where(p => p.CreatedAt >= mStart && p.CreatedAt < mEnd && p.Status == PaymentStatus.Completed)
-                .CountAsync();
+                .Select(p => p.Amount)
+                .ToListAsync();
+            var rev = revList.Sum();
+            var count = revList.Count;
 
             // Provide realistic baseline if empty for older months
             if (rev == 0 && i > 0)
@@ -157,9 +160,11 @@ public class DashboardController : ControllerBase
             var subsCount = await _context.MemberSubscriptions
                 .CountAsync(s => s.MembershipPlanId == plan.Id && s.Status == SubscriptionStatus.Active);
 
-            var planRev = await _context.MemberSubscriptions
+            var planSubs = await _context.MemberSubscriptions
                 .Where(s => s.MembershipPlanId == plan.Id)
-                .SumAsync(s => s.PricePaid);
+                .Select(s => s.PricePaid)
+                .ToListAsync();
+            var planRev = planSubs.Sum();
 
             var count = subsCount > 0 ? subsCount : 1;
             var pct = totalMembers > 0 ? Math.Round((double)count / Math.Max(totalMembers, 1) * 100, 1) : 25.0;
