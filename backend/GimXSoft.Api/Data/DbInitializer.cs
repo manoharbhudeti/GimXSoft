@@ -9,6 +9,15 @@ public static class DbInitializer
     {
         await context.Database.EnsureCreatedAsync();
 
+        // Ensure newly added WhatsApp integration columns exist on SQLite database
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE WhatsAppIntegrations ADD COLUMN VerificationSessionId TEXT;"); } catch {}
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE WhatsAppIntegrations ADD COLUMN VerificationCode TEXT;"); } catch {}
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE WhatsAppIntegrations ADD COLUMN VerificationExpiresAt TEXT;"); } catch {}
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE WhatsAppIntegrations ADD COLUMN VerificationMethod TEXT DEFAULT 'SMS';"); } catch {}
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE WhatsAppIntegrations ADD COLUMN WebhookStatus TEXT DEFAULT 'OPERATIONAL';"); } catch {}
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE WhatsAppIntegrations ADD COLUMN RequiresMigration INTEGER DEFAULT 0;"); } catch {}
+        try { await context.Database.ExecuteSqlRawAsync("ALTER TABLE WhatsAppIntegrations ADD COLUMN CoexistenceEligible INTEGER DEFAULT 1;"); } catch {}
+
         if (await context.Tenants.IgnoreQueryFilters().AnyAsync())
         {
             return; // Already seeded
