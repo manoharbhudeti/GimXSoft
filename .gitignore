@@ -1,6 +1,8 @@
 # Visual Studio / .NET
 [Bb]in/
 [Oo]bj/
+[Pp]ublish/
+backend/publish/
 *.user
 *.suo
 *.userosscache

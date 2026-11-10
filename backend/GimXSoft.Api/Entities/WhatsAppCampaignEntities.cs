@@ -125,3 +125,4 @@ public class WhatsAppWebhookLog
 
     public DateTime ReceivedAt { get; set; } = DateTime.UtcNow;
 }
+

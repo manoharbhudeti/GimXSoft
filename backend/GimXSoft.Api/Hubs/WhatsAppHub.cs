@@ -33,3 +33,4 @@ public class WhatsAppHub : Hub<IWhatsAppHubClient>
         _logger.LogInformation("Connection {ConnectionId} left tenant group {TenantGroup}", Context.ConnectionId, $"Tenant_{tenantId}");
     }
 }
+

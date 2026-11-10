@@ -30,6 +30,47 @@ const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = decodeURIComponent(parsedUrl.pathname);
 
+  // Reverse proxy API and SignalR to ASP.NET Core Backend
+  if (pathname.startsWith('/api/') || pathname.startsWith('/hubs/')) {
+    const proxyReq = http.request({
+      hostname: 'localhost',
+      port: 5128,
+      path: req.url,
+      method: req.method,
+      headers: { ...req.headers, host: 'localhost:5128' }
+    }, (proxyRes) => {
+      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      proxyRes.pipe(res, { end: true });
+    });
+    proxyReq.on('error', (err) => {
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Backend API not reachable on port 5128', details: err.message }));
+    });
+    req.pipe(proxyReq, { end: true });
+    return;
+  }
+
+  // Route / or /landing to landing.html unless query param ?app=true or path is an app subroute
+  if (pathname === '/' || pathname === '/landing' || pathname === '/landing.html') {
+    const landingPath = path.join(WEB_DIR, 'landing.html');
+    if (fs.existsSync(landingPath)) {
+      fs.readFile(landingPath, (err, data) => {
+        if (err) {
+          res.writeHead(500);
+          res.end('Error loading landing page');
+          return;
+        }
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-cache',
+        });
+        res.end(data);
+      });
+      return;
+    }
+  }
+
   let targetFile = path.normalize(path.join(WEB_DIR, pathname));
 
   // Security check to avoid path traversal
