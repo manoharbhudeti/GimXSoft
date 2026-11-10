@@ -5,7 +5,51 @@ import 'app_colors.dart';
 import 'theme_customization_models.dart';
 
 /// ---------------------------------------------------------------------------
-/// THEME MODE NOTIFIER (Dark / Light)
+/// INDEPENDENT THEME SELECTION NOTIFIER (6 Independent Themes)
+/// ---------------------------------------------------------------------------
+class SelectedThemeNotifier extends Notifier<AppIndependentTheme> {
+  static const _prefKey = 'app_selected_theme_id';
+
+  @override
+  AppIndependentTheme build() {
+    _loadFromPrefs();
+    final defaultTheme = AppIndependentTheme.darkMode;
+    AppColors.setPalette(defaultTheme.palette);
+    return defaultTheme;
+  }
+
+  Future<void> _loadFromPrefs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final rawId = prefs.getString(_prefKey);
+      if (rawId != null) {
+        final theme = AppIndependentTheme.fromId(rawId);
+        AppColors.setPalette(theme.palette);
+        state = theme;
+        // Keep themeModeProvider aligned
+        ref.read(themeModeProvider.notifier).setModeSilently(theme.isDark ? ThemeMode.dark : ThemeMode.light);
+      }
+    } catch (_) {}
+  }
+
+  Future<void> setTheme(AppIndependentTheme theme) async {
+    AppColors.setPalette(theme.palette);
+    state = theme;
+    // Align theme mode with the theme's intrinsic brightness
+    ref.read(themeModeProvider.notifier).setModeSilently(theme.isDark ? ThemeMode.dark : ThemeMode.light);
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_prefKey, theme.id.name);
+      await prefs.setString('app_theme_mode', theme.isDark ? 'dark' : 'light');
+    } catch (_) {}
+  }
+}
+
+final selectedThemeProvider = NotifierProvider<SelectedThemeNotifier, AppIndependentTheme>(SelectedThemeNotifier.new);
+
+/// ---------------------------------------------------------------------------
+/// THEME MODE NOTIFIER (Backwards compatibility & Top-Nav quick toggling)
 /// ---------------------------------------------------------------------------
 class ThemeModeNotifier extends Notifier<ThemeMode> {
   static const _prefKey = 'app_theme_mode';
@@ -20,25 +64,30 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final mode = prefs.getString(_prefKey);
-      if (mode == 'light') {
-        state = ThemeMode.light;
-      } else {
-        state = ThemeMode.dark;
-      }
+      state = mode == 'light' ? ThemeMode.light : ThemeMode.dark;
     } catch (_) {}
   }
 
+  void setModeSilently(ThemeMode mode) {
+    state = mode;
+  }
+
   Future<void> toggle() async {
-    final next = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-    await setMode(next);
+    final nextMode = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    if (nextMode == ThemeMode.light) {
+      await ref.read(selectedThemeProvider.notifier).setTheme(AppIndependentTheme.whiteMode);
+    } else {
+      await ref.read(selectedThemeProvider.notifier).setTheme(AppIndependentTheme.darkMode);
+    }
   }
 
   Future<void> setMode(ThemeMode mode) async {
     state = mode;
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_prefKey, mode == ThemeMode.dark ? 'dark' : 'light');
-    } catch (_) {}
+    if (mode == ThemeMode.light) {
+      await ref.read(selectedThemeProvider.notifier).setTheme(AppIndependentTheme.whiteMode);
+    } else {
+      await ref.read(selectedThemeProvider.notifier).setTheme(AppIndependentTheme.darkMode);
+    }
   }
 
   bool get isDark => state == ThemeMode.dark;
@@ -47,47 +96,17 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
 final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(ThemeModeNotifier.new);
 
 /// ---------------------------------------------------------------------------
-/// THEME PALETTE NOTIFIER (Wine & Sand, Orange & Milk, Midnight & Vanilla, Blaze)
+/// PALETTE PROVIDER (Backwards compatibility for existing code)
 /// ---------------------------------------------------------------------------
-class ThemePaletteNotifier extends Notifier<AppThemePalette> {
-  static const _prefKey = 'app_theme_palette_id';
-
-  @override
-  AppThemePalette build() {
-    _loadFromPrefs();
-    // Default palette
-    final defaultPalette = AppThemePalette.orangeAndMilk;
-    AppColors.setPalette(defaultPalette);
-    return defaultPalette;
-  }
-
-  Future<void> _loadFromPrefs() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final rawId = prefs.getString(_prefKey);
-      final palette = AppThemePalette.fromId(rawId);
-      AppColors.setPalette(palette);
-      state = palette;
-    } catch (_) {}
-  }
-
-  Future<void> setPalette(AppThemePalette palette) async {
-    AppColors.setPalette(palette);
-    state = palette;
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_prefKey, palette.id.name);
-    } catch (_) {}
-  }
-}
-
-final themePaletteProvider = NotifierProvider<ThemePaletteNotifier, AppThemePalette>(ThemePaletteNotifier.new);
+final themePaletteProvider = Provider<AppThemePalette>((ref) {
+  return ref.watch(selectedThemeProvider).palette;
+});
 
 /// ---------------------------------------------------------------------------
-/// FONT COMBINATION NOTIFIER (Syne+DM Mono, Gotham+Inter, League Spartan+Inter, Megion+DM Sans, Nofex+Inter)
+/// FONT COMBINATION NOTIFIER (5 Independent Typography Combinations)
 /// ---------------------------------------------------------------------------
 class FontCombinationNotifier extends Notifier<AppFontCombination> {
-  static const _prefKey = 'app_font_combination_id';
+  static const _prefKey = 'app_selected_font_id';
 
   @override
   AppFontCombination build() {
@@ -99,8 +118,9 @@ class FontCombinationNotifier extends Notifier<AppFontCombination> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final rawId = prefs.getString(_prefKey);
-      final fontCombo = AppFontCombination.fromId(rawId);
-      state = fontCombo;
+      if (rawId != null) {
+        state = AppFontCombination.fromId(rawId);
+      }
     } catch (_) {}
   }
 
@@ -116,12 +136,11 @@ class FontCombinationNotifier extends Notifier<AppFontCombination> {
 final fontCombinationProvider = NotifierProvider<FontCombinationNotifier, AppFontCombination>(FontCombinationNotifier.new);
 
 /// ---------------------------------------------------------------------------
-/// RESET HELPER
+/// RESET HELPER (Restores default Dark Mode & League Spartan + Inter)
 /// ---------------------------------------------------------------------------
 extension ThemeResetExtension on WidgetRef {
   Future<void> resetAllCustomizations() async {
-    await read(themePaletteProvider.notifier).setPalette(AppThemePalette.orangeAndMilk);
+    await read(selectedThemeProvider.notifier).setTheme(AppIndependentTheme.darkMode);
     await read(fontCombinationProvider.notifier).setFontCombination(AppFontCombination.leagueSpartanAndInter);
-    await read(themeModeProvider.notifier).setMode(ThemeMode.dark);
   }
 }

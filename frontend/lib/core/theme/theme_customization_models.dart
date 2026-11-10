@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// ---------------------------------------------------------------------------
-/// THEME CUSTOMIZATION: PALETTE CONFIGURATION
+/// THEME PALETTE DEFINITION & PRESETS
 /// ---------------------------------------------------------------------------
 
 enum ThemePaletteId {
+  whiteMode,
+  darkMode,
   wineAndSand,
   orangeAndMilk,
   midnightAndVanilla,
@@ -78,10 +80,80 @@ class AppThemePalette {
   Color textSecondary(bool isDark) => isDark ? darkTextSecondary : lightTextSecondary;
   Color textMuted(bool isDark) => isDark ? darkTextMuted : lightTextMuted;
 
-  // Preset 1: Wine & Sand (Wine Red + Light Sand)
+  // 1. White Mode (Classic Light)
+  static const whiteMode = AppThemePalette(
+    id: ThemePaletteId.whiteMode,
+    name: 'White Mode',
+    description: 'Clean daylight slate surfaces with crisp porcelain contrast and athletic amber accents',
+    primaryColorName: 'Athletic Orange',
+    backgroundColorName: 'Porcelain White',
+    primary: Color(0xFFEA580C),
+    primaryHover: Color(0xFFC2410C),
+    primaryLight: Color(0xFFFFEDD5),
+    primaryDark: Color(0xFF7C2D12),
+    lightBackground: Color(0xFFFAF7F2),
+    darkBackground: Color(0xFF141415),
+    lightSurface: Color(0xFFFFFFFF),
+    darkSurface: Color(0xFF19191B),
+    lightCard: Color(0xFFFFFFFF),
+    darkCard: Color(0xFF19191B),
+    lightRaised: Color(0xFFF4F4F5),
+    darkRaised: Color(0xFF232325),
+    lightBorder: Color(0x14171717),
+    darkBorder: Color(0x14EDEDED),
+    lightTextPrimary: Color(0xFF171717),
+    darkTextPrimary: Color(0xFFEDEDED),
+    lightTextSecondary: Color(0xFF525252),
+    darkTextSecondary: Color(0xFFA1A1A6),
+    lightTextMuted: Color(0xFF737373),
+    darkTextMuted: Color(0xFF85858B),
+    previewSwatches: [
+      Color(0xFFEA580C), // Orange
+      Color(0xFFFAF7F2), // Porcelain White
+      Color(0xFFFFFFFF), // Pure White Card
+      Color(0xFF171717), // Deep Text
+    ],
+  );
+
+  // 2. Dark Mode (Classic Dark)
+  static const darkMode = AppThemePalette(
+    id: ThemePaletteId.darkMode,
+    name: 'Dark Mode',
+    description: 'Deep obsidian graphite void with luminous amber accents and reduced nighttime glare',
+    primaryColorName: 'Athletic Orange',
+    backgroundColorName: 'Obsidian Void',
+    primary: Color(0xFFEA580C),
+    primaryHover: Color(0xFFC2410C),
+    primaryLight: Color(0xFFFFEDD5),
+    primaryDark: Color(0xFF7C2D12),
+    lightBackground: Color(0xFFFAF7F2),
+    darkBackground: Color(0xFF141415),
+    lightSurface: Color(0xFFFFFFFF),
+    darkSurface: Color(0xFF0F0F10),
+    lightCard: Color(0xFFFFFFFF),
+    darkCard: Color(0xFF19191B),
+    lightRaised: Color(0xFFF4F4F5),
+    darkRaised: Color(0xFF232325),
+    lightBorder: Color(0x14171717),
+    darkBorder: Color(0x14EDEDED),
+    lightTextPrimary: Color(0xFF171717),
+    darkTextPrimary: Color(0xFFEDEDED),
+    lightTextSecondary: Color(0xFF525252),
+    darkTextSecondary: Color(0xFFA1A1A6),
+    lightTextMuted: Color(0xFF737373),
+    darkTextMuted: Color(0xFF85858B),
+    previewSwatches: [
+      Color(0xFFEA580C), // Orange
+      Color(0xFF141415), // Obsidian Void
+      Color(0xFF19191B), // Elevated Graphite Card
+      Color(0xFFEDEDED), // Off-white Text
+    ],
+  );
+
+  // 3. Wine Red + Light Sand
   static const wineAndSand = AppThemePalette(
     id: ThemePaletteId.wineAndSand,
-    name: 'Wine & Sand',
+    name: 'Wine Red + Light Sand',
     description: 'Sophisticated wine burgundy accents grounded in warm mineral sand',
     primaryColorName: 'Wine Red',
     backgroundColorName: 'Light Sand',
@@ -109,14 +181,14 @@ class AppThemePalette {
       Color(0xFF881337), // Wine Red
       Color(0xFFF7F4EE), // Light Sand
       Color(0xFFEFE7DC), // Raised Sand
-      Color(0xFF191114), // Dark Wine
+      Color(0xFF2C1318), // Deep Burgundy
     ],
   );
 
-  // Preset 2: Orange & Milk (Athletic Orange + Warm Milk)
+  // 4. Orange + Milk
   static const orangeAndMilk = AppThemePalette(
     id: ThemePaletteId.orangeAndMilk,
-    name: 'Orange & Milk',
+    name: 'Orange + Milk',
     description: 'High-energy athletic orange balanced with creamy milk porcelain surfaces',
     primaryColorName: 'Orange',
     backgroundColorName: 'Milk',
@@ -144,14 +216,14 @@ class AppThemePalette {
       Color(0xFFEA580C), // Orange
       Color(0xFFFAF7F2), // Milk
       Color(0xFFF2ECE1), // Warm Cream
-      Color(0xFF151413), // Charcoal
+      Color(0xFF1C1917), // Charcoal
     ],
   );
 
-  // Preset 3: Midnight & Vanilla (Midnight Indigo + French Vanilla)
+  // 5. Midnight Indigo + Vanilla
   static const midnightAndVanilla = AppThemePalette(
     id: ThemePaletteId.midnightAndVanilla,
-    name: 'Midnight & Vanilla',
+    name: 'Midnight Indigo + Vanilla',
     description: 'Deep celestial midnight indigo contrasted with rich French vanilla',
     primaryColorName: 'Midnight Indigo',
     backgroundColorName: 'Vanilla',
@@ -179,15 +251,15 @@ class AppThemePalette {
       Color(0xFF4F46E5), // Midnight Indigo
       Color(0xFFFDFBF7), // Vanilla
       Color(0xFFF5EFE3), // Cream
-      Color(0xFF0F111A), // Obsidian
+      Color(0xFF1E1B4B), // Deep Indigo
     ],
   );
 
-  // Preset 4: Blaze (Blaze Orange + Pitch Black)
+  // 6. Blaze Orange + Black
   static const blaze = AppThemePalette(
     id: ThemePaletteId.blaze,
-    name: 'Blaze',
-    description: 'Striking pure black high-contrast motorsport stage with electric blaze flame',
+    name: 'Blaze Orange + Black',
+    description: 'Striking pure black motorsport stage with high-contrast electric blaze flame',
     primaryColorName: 'Blaze Orange',
     backgroundColorName: 'Black',
     primary: Color(0xFFFF5722), // Blaze Orange
@@ -213,12 +285,14 @@ class AppThemePalette {
     previewSwatches: [
       Color(0xFFFF5722), // Blaze Orange
       Color(0xFF0A0A0A), // Black
-      Color(0xFF1F1F1F), // Dark Gray
-      Color(0xFFF5F5F5), // Light Gray
+      Color(0xFF171717), // Deep Gray
+      Color(0xFFEDEDED), // Light Gray
     ],
   );
 
   static const List<AppThemePalette> allPalettes = [
+    whiteMode,
+    darkMode,
     wineAndSand,
     orangeAndMilk,
     midnightAndVanilla,
@@ -226,16 +300,170 @@ class AppThemePalette {
   ];
 
   static AppThemePalette fromId(String? rawId) {
-    if (rawId == null) return orangeAndMilk;
+    if (rawId == null) return darkMode;
     for (final p in allPalettes) {
       if (p.id.name.toLowerCase() == rawId.toLowerCase()) return p;
     }
-    return orangeAndMilk;
+    return darkMode;
   }
 }
 
 /// ---------------------------------------------------------------------------
-/// TYPOGRAPHY CUSTOMIZATION: COMBINATIONS & PAIRINGS
+/// INDEPENDENT THEME SELECTION OPTION (6 Options)
+/// ---------------------------------------------------------------------------
+
+enum AppIndependentThemeId {
+  whiteMode,
+  darkMode,
+  wineAndSand,
+  orangeAndMilk,
+  midnightAndVanilla,
+  blaze,
+}
+
+class AppIndependentTheme {
+  final AppIndependentThemeId id;
+  final String name;
+  final String primaryColorName;
+  final String backgroundColorName;
+  final String description;
+  final bool isDark;
+  final AppThemePalette palette;
+  final List<Color> previewSwatches;
+
+  const AppIndependentTheme({
+    required this.id,
+    required this.name,
+    required this.primaryColorName,
+    required this.backgroundColorName,
+    required this.description,
+    required this.isDark,
+    required this.palette,
+    required this.previewSwatches,
+  });
+
+  // 1. White Mode (existing)
+  static const whiteMode = AppIndependentTheme(
+    id: AppIndependentThemeId.whiteMode,
+    name: 'White Mode',
+    primaryColorName: 'Athletic Orange',
+    backgroundColorName: 'Porcelain White',
+    description: 'Clean daylight slate surfaces with crisp porcelain contrast and athletic amber accents',
+    isDark: false,
+    palette: AppThemePalette.whiteMode,
+    previewSwatches: [
+      Color(0xFFEA580C),
+      Color(0xFFFAF7F2),
+      Color(0xFFFFFFFF),
+      Color(0xFF171717),
+    ],
+  );
+
+  // 2. Dark Mode (existing)
+  static const darkMode = AppIndependentTheme(
+    id: AppIndependentThemeId.darkMode,
+    name: 'Dark Mode',
+    primaryColorName: 'Athletic Orange',
+    backgroundColorName: 'Obsidian Void',
+    description: 'Obsidian graphite void with luminous amber accents and reduced nighttime glare',
+    isDark: true,
+    palette: AppThemePalette.darkMode,
+    previewSwatches: [
+      Color(0xFFEA580C),
+      Color(0xFF141415),
+      Color(0xFF19191B),
+      Color(0xFFEDEDED),
+    ],
+  );
+
+  // 3. Wine Red + Light Sand
+  static const wineAndSand = AppIndependentTheme(
+    id: AppIndependentThemeId.wineAndSand,
+    name: 'Wine Red + Light Sand',
+    primaryColorName: 'Wine Red',
+    backgroundColorName: 'Light Sand',
+    description: 'Sophisticated wine burgundy accents grounded in warm mineral sand',
+    isDark: false,
+    palette: AppThemePalette.wineAndSand,
+    previewSwatches: [
+      Color(0xFF881337),
+      Color(0xFFF7F4EE),
+      Color(0xFFEFE7DC),
+      Color(0xFF2C1318),
+    ],
+  );
+
+  // 4. Orange + Milk
+  static const orangeAndMilk = AppIndependentTheme(
+    id: AppIndependentThemeId.orangeAndMilk,
+    name: 'Orange + Milk',
+    primaryColorName: 'Orange',
+    backgroundColorName: 'Milk',
+    description: 'High-energy athletic orange balanced with creamy milk porcelain surfaces',
+    isDark: false,
+    palette: AppThemePalette.orangeAndMilk,
+    previewSwatches: [
+      Color(0xFFEA580C),
+      Color(0xFFFAF7F2),
+      Color(0xFFF2ECE1),
+      Color(0xFF1C1917),
+    ],
+  );
+
+  // 5. Midnight Indigo + Vanilla
+  static const midnightAndVanilla = AppIndependentTheme(
+    id: AppIndependentThemeId.midnightAndVanilla,
+    name: 'Midnight Indigo + Vanilla',
+    primaryColorName: 'Midnight Indigo',
+    backgroundColorName: 'Vanilla',
+    description: 'Deep celestial midnight indigo contrasted with rich French vanilla',
+    isDark: false,
+    palette: AppThemePalette.midnightAndVanilla,
+    previewSwatches: [
+      Color(0xFF4F46E5),
+      Color(0xFFFDFBF7),
+      Color(0xFFF5EFE3),
+      Color(0xFF1E1B4B),
+    ],
+  );
+
+  // 6. Blaze Orange + Black
+  static const blaze = AppIndependentTheme(
+    id: AppIndependentThemeId.blaze,
+    name: 'Blaze Orange + Black',
+    primaryColorName: 'Blaze Orange',
+    backgroundColorName: 'Black',
+    description: 'Striking pure black motorsport stage with electric blaze flame accents',
+    isDark: true,
+    palette: AppThemePalette.blaze,
+    previewSwatches: [
+      Color(0xFFFF5722),
+      Color(0xFF0A0A0A),
+      Color(0xFF171717),
+      Color(0xFFEDEDED),
+    ],
+  );
+
+  static const List<AppIndependentTheme> allThemes = [
+    whiteMode,
+    darkMode,
+    wineAndSand,
+    orangeAndMilk,
+    midnightAndVanilla,
+    blaze,
+  ];
+
+  static AppIndependentTheme fromId(String? rawId) {
+    if (rawId == null) return darkMode;
+    for (final t in allThemes) {
+      if (t.id.name.toLowerCase() == rawId.toLowerCase()) return t;
+    }
+    return darkMode;
+  }
+}
+
+/// ---------------------------------------------------------------------------
+/// TYPOGRAPHY CUSTOMIZATION: COMBINATIONS & PAIRINGS (5 Options)
 /// ---------------------------------------------------------------------------
 
 enum FontCombinationId {
@@ -287,7 +515,7 @@ class AppFontCombination {
     bodyFontName: 'Inter',
     categoryTag: 'Modern Executive',
     description: 'Clean architectural geometric headlines supported by the global SaaS benchmark Inter',
-    headingStyleBuilder: GoogleFonts.montserrat, // Open standard geometric companion for Gotham
+    headingStyleBuilder: GoogleFonts.montserrat,
     bodyStyleBuilder: GoogleFonts.inter,
   );
 
@@ -311,7 +539,7 @@ class AppFontCombination {
     bodyFontName: 'DM Sans',
     categoryTag: 'Luxury Editorial',
     description: 'Refined editorial character headers balanced with warm, human-crafted DM Sans',
-    headingStyleBuilder: GoogleFonts.cinzel, // Classical refined luxury editorial fallback
+    headingStyleBuilder: GoogleFonts.cinzel,
     bodyStyleBuilder: GoogleFonts.dmSans,
   );
 
@@ -323,7 +551,7 @@ class AppFontCombination {
     bodyFontName: 'Inter',
     categoryTag: 'Futuristic Cyber',
     description: 'Next-generation tech headline styling anchored with neutral body proportions',
-    headingStyleBuilder: GoogleFonts.spaceGrotesk, // Modern cyber grotesque display standard
+    headingStyleBuilder: GoogleFonts.spaceGrotesk,
     bodyStyleBuilder: GoogleFonts.inter,
   );
 

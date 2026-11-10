@@ -19,16 +19,15 @@ class GimXSoftApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    final themeMode = ref.watch(themeModeProvider);
-    final palette = ref.watch(themePaletteProvider);
+    final selectedTheme = ref.watch(selectedThemeProvider);
     final fontCombo = ref.watch(fontCombinationProvider);
 
     return MaterialApp.router(
       title: 'GIMXSOFT - Smarter Fitness. Simpler Management.',
       debugShowCheckedModeBanner: false,
-      themeMode: themeMode,
-      theme: AppTheme.buildTheme(isDark: false, palette: palette, fontCombo: fontCombo),
-      darkTheme: AppTheme.buildTheme(isDark: true, palette: palette, fontCombo: fontCombo),
+      themeMode: selectedTheme.isDark ? ThemeMode.dark : ThemeMode.light,
+      theme: AppTheme.buildTheme(isDark: false, palette: selectedTheme.palette, fontCombo: fontCombo),
+      darkTheme: AppTheme.buildTheme(isDark: true, palette: selectedTheme.palette, fontCombo: fontCombo),
       routerConfig: router,
     );
   }
