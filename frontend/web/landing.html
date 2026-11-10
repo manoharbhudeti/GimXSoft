@@ -3,18 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GimXSoft — Gym & Athletic Facility Operations Platform</title>
+  <title>GimXSoft — Never Chase Gym Fees Again | Simple Indian Gym Software</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts: Inter & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Three.js CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -23,19 +21,20 @@
         extend: {
           colors: {
             brand: {
-              orange: '#D97706',      // Athletic Amber/Orange
-              orangeLight: '#F59E0B', // Warm Amber 500
-              orangeDark: '#B45309',  // Deep Amber 700
-              dark: '#0A0C10',        // Pure graphite root
-              carbon: '#0F1117',      // Card surface
-              surface: '#141720',     // Raised layer
-              elevated: '#1B1F2C',    // Active state
+              orange: '#EA580C',      // Signature Athletic Orange
+              orangeLight: '#F97316', // Vibrant Amber 500
+              orangeDark: '#C2410C',  // Deep Rust 700
+              dark: '#0B0D12',        // Obsidian Void
+              carbon: '#12151D',      // Elevated Card Surface
+              surface: '#181C26',     // Raised Component
+              elevated: '#202634',    // Hover / Active
               border: 'rgba(255, 255, 255, 0.08)',
-              borderFocus: 'rgba(217, 119, 6, 0.4)',
+              borderFocus: 'rgba(234, 88, 12, 0.45)',
             }
           },
           fontFamily: {
             sans: ['Inter', '"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
+            display: ['"Space Grotesk"', 'Inter', 'sans-serif'],
           },
         }
       }
@@ -43,264 +42,292 @@
   </script>
 
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     /* Clean graphite scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0A0C10;
+      background: #0B0D12;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1B1F2C;
+      background: #202634;
       border-radius: 3px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #D97706;
+      background: #EA580C;
     }
 
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
 
-    /* Zeus 2D Muscular Breathing & Electric Flex Keyframes */
+    /* Zeus 2D Muscular Breathing Animation */
     @keyframes zeusBreathe {
       0%, 100% {
         transform: translateY(0px) scale(1);
-        filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.3));
+        filter: drop-shadow(0 0 25px rgba(234, 88, 12, 0.35));
       }
       50% {
-        transform: translateY(-8px) scale(1.025);
-        filter: drop-shadow(0 0 45px rgba(245, 158, 11, 0.6));
+        transform: translateY(-8px) scale(1.02);
+        filter: drop-shadow(0 0 50px rgba(234, 88, 12, 0.65));
       }
     }
     .animate-zeus-breathe {
       animation: zeusBreathe 4.2s ease-in-out infinite;
     }
 
-    @keyframes thunderFlashAnim {
-      0% { opacity: 0.75; }
-      100% { opacity: 0; }
+    /* Lightning Pulse Keyframe */
+    @keyframes lightningPulse {
+      0%, 100% { opacity: 0; }
+      5% { opacity: 0.9; }
+      10% { opacity: 0.2; }
+      15% { opacity: 1; }
+      25% { opacity: 0; }
     }
-    .flash-active {
-      animation: thunderFlashAnim 0.12s ease-out forwards;
+    .animate-lightning {
+      animation: lightningPulse 5s infinite;
     }
 
     .glass-card {
-      background: rgba(15, 17, 23, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(18, 21, 29, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .glass-card-hover {
-      transition: border-color 0.16s ease, transform 0.16s ease, background-color 0.16s ease;
+      transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     }
     .glass-card-hover:hover {
-      border-color: rgba(217, 119, 6, 0.35);
-      transform: translateY(-2px);
-      background: rgba(20, 23, 32, 0.95);
+      border-color: rgba(234, 88, 12, 0.4);
+      transform: translateY(-3px);
+      background: rgba(24, 28, 38, 0.95);
+      box-shadow: 0 14px 35px -10px rgba(234, 88, 12, 0.15);
     }
     .hero-grid {
-      background-image: radial-gradient(rgba(217, 119, 6, 0.06) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(234, 88, 12, 0.07) 1px, transparent 1px);
       background-size: 32px 32px;
       background-position: 0 0;
     }
-    canvas#hero-canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-      outline: none;
+
+    /* Light Mode Overrides */
+    .light-theme {
+      background-color: #FAF7F2 !important;
+      color: #171717 !important;
+    }
+    .light-theme .glass-card {
+      background: rgba(255, 255, 255, 0.9) !important;
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04) !important;
+    }
+    .light-theme .text-white {
+      color: #171717 !important;
+    }
+    .light-theme .text-slate-300, .light-theme .text-slate-400 {
+      color: #525252 !important;
+    }
+    .light-theme .bg-brand-surface {
+      background-color: #F4F4F5 !important;
+    }
+    .light-theme .bg-brand-carbon {
+      background-color: #ECEAE5 !important;
+    }
+    .light-theme .border-white\/10, .light-theme .border-white\/5 {
+      border-color: rgba(0, 0, 0, 0.08) !important;
     }
   </style>
 </head>
 
-<body class="bg-brand-dark text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-brand-orange selection:text-white">
+<body class="bg-brand-dark text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-brand-orange selection:text-white" id="page-body">
 
   <!-- ================= TOP NAVIGATION ================= -->
   <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-200" id="navbar">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="mt-3 py-2.5 px-4 sm:px-5 glass-card rounded-xl flex items-center justify-between border border-white/10 shadow-lg">
+      <div class="mt-3 py-2.5 px-4 sm:px-5 glass-card rounded-2xl flex items-center justify-between border border-white/10 shadow-lg">
         
         <!-- Brand Logo -->
         <a href="#" class="flex items-center space-x-2.5 group">
-          <div class="w-8 h-8 rounded-lg bg-brand-orange flex items-center justify-center text-white text-sm font-semibold shadow-sm">
+          <div class="w-8 h-8 rounded-xl bg-brand-orange flex items-center justify-center text-white text-sm font-semibold shadow-md shadow-brand-orange/20">
             <i class="fa-solid fa-dumbbell"></i>
           </div>
           <div>
-            <span class="font-semibold text-base tracking-tight text-white">GimXSoft</span>
-            <span class="hidden sm:inline-block text-[10px] uppercase tracking-wider text-slate-400 ml-2 border-l border-white/10 pl-2">Athletic Facility OS</span>
+            <span class="font-bold text-base tracking-tight text-white font-display">GimXSoft</span>
+            <span class="hidden sm:inline-block text-[10px] uppercase tracking-wider text-slate-400 ml-2 border-l border-white/10 pl-2">Indian Gym CRM</span>
           </div>
         </a>
 
-        <!-- Desktop Nav Links (Sentence case, subtle hover) -->
+        <!-- Desktop Nav Links (Smooth Anchor Scrolling) -->
         <nav class="hidden md:flex items-center space-x-7 text-xs font-medium text-slate-300">
-          <a href="#features" class="hover:text-white transition-colors">Features</a>
-          <a href="#whatsapp-individual" class="hover:text-white transition-colors">WhatsApp CRM</a>
-          <a href="#interactive-crm" class="hover:text-white transition-colors">Live sandbox</a>
-          <a href="#roi-calculator" class="hover:text-white transition-colors">ROI calculator</a>
-          <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+          <a href="#how" class="nav-link hover:text-brand-orangeLight transition-colors">How it works</a>
+          <a href="#features" class="nav-link hover:text-brand-orangeLight transition-colors">Features</a>
+          <a href="#preview" class="nav-link hover:text-brand-orangeLight transition-colors flex items-center space-x-1">
+            <span>5s AI Preview</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange animate-ping"></span>
+          </a>
+          <a href="#whatsapp" class="nav-link hover:text-brand-orangeLight transition-colors">WhatsApp CRM</a>
+          <a href="#pricing" class="nav-link hover:text-brand-orangeLight transition-colors">Pricing</a>
+          <a href="#faq" class="nav-link hover:text-brand-orangeLight transition-colors">FAQ</a>
         </nav>
 
         <!-- Right Action CTAs -->
         <div class="flex items-center space-x-3">
-          <a href="mailto:ekametechnologie@gmail.com?subject=GimXSoft%20Demo%20Inquiry" class="hidden xl:inline-flex items-center text-xs font-medium text-slate-300 hover:text-white px-2.5 py-1.5 transition-colors">
-            <i class="fa-regular fa-envelope mr-1.5 text-brand-orangeLight"></i>
-            <span>ekametechnologie@gmail.com</span>
-          </a>
-          <a href="/login" class="inline-flex items-center text-xs font-medium text-slate-200 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors bg-white/5">
+          <a href="/login" class="inline-flex items-center text-xs font-medium text-slate-200 hover:text-white px-3 py-1.5 rounded-xl border border-white/10 hover:border-white/20 transition-colors bg-white/5">
             <i class="fa-solid fa-right-to-bracket mr-1.5 text-brand-orangeLight"></i>
-            <span>Sign in / Dashboard</span>
+            <span>Log in</span>
           </a>
-          <button id="themeToggleBtn" onclick="toggleTheme()" class="w-8 h-8 rounded-lg border border-white/10 hover:border-white/20 transition-colors bg-white/5 flex items-center justify-center text-slate-300 hover:text-white" title="Toggle Light / Dark Mode">
+          <button id="themeToggleBtn" onclick="toggleTheme()" class="w-8 h-8 rounded-xl border border-white/10 hover:border-white/20 transition-colors bg-white/5 flex items-center justify-center text-slate-300 hover:text-white" title="Toggle Light / Dark Mode">
             <i id="themeToggleIcon" class="fa-solid fa-sun text-xs text-amber-400"></i>
           </button>
-          <button onclick="openTrialModal()" class="px-3.5 py-1.5 rounded-lg bg-brand-orange hover:bg-brand-orangeLight text-white text-xs font-medium transition-colors shadow-sm">
-            Try 1 month free (₹0)
+          <button onclick="openTrialModal()" class="px-4 py-1.5 rounded-xl bg-brand-orange hover:bg-brand-orangeLight text-white text-xs font-semibold transition-all shadow-md shadow-brand-orange/25 hover:shadow-brand-orange/40">
+            Start 1-Month Free Trial →
           </button>
-          <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white p-1.5" aria-label="Toggle menu">
+          <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-1.5" aria-label="Toggle menu">
             <i class="fa-solid fa-bars text-base"></i>
           </button>
         </div>
       </div>
 
       <!-- Mobile Dropdown -->
-      <div id="mobileMenu" class="hidden md:hidden glass-card rounded-xl mt-2 p-4 border border-white/10 flex flex-col space-y-3 text-left">
-        <a href="#features" onclick="toggleMenu()" class="text-xs text-slate-300 py-1 hover:text-white">Features</a>
-        <a href="#whatsapp-individual" onclick="toggleMenu()" class="text-xs text-slate-300 py-1 hover:text-white">WhatsApp individual messaging</a>
-        <a href="#interactive-crm" onclick="toggleMenu()" class="text-xs text-slate-300 py-1 hover:text-white">Live sandbox</a>
-        <a href="#roi-calculator" onclick="toggleMenu()" class="text-xs text-slate-300 py-1 hover:text-white">ROI calculator</a>
-        <a href="#pricing" onclick="toggleMenu()" class="text-xs text-slate-300 py-1 hover:text-white">Pricing</a>
-        <div class="pt-2 border-t border-white/10 flex flex-col space-y-2">
+      <div id="mobileMenu" class="hidden md:hidden glass-card rounded-2xl mt-2 p-5 border border-white/10 flex flex-col space-y-3 text-left shadow-2xl">
+        <a href="#how" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">How it works</a>
+        <a href="#features" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">Features</a>
+        <a href="#preview" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">5s AI Preview</a>
+        <a href="#whatsapp" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">WhatsApp CRM</a>
+        <a href="#pricing" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">Pricing</a>
+        <a href="#faq" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">FAQ</a>
+        <div class="pt-3 border-t border-white/10 flex flex-col space-y-2">
           <a href="/login" class="text-xs text-brand-orangeLight py-1 font-semibold flex items-center space-x-2">
             <i class="fa-solid fa-right-to-bracket"></i>
-            <span>Sign in / Admin & Customer Dashboard</span>
+            <span>Log in / Gym Dashboard</span>
           </a>
-          <button onclick="toggleMenu(); openTrialModal()" class="w-full text-center py-2 bg-brand-orange text-white text-xs font-medium rounded-lg">
-            Start 1-Month Free Trial (No Payment Needed)
+          <button onclick="closeMobileMenu(); openTrialModal()" class="w-full text-center py-2.5 bg-brand-orange hover:bg-brand-orangeLight text-white text-xs font-semibold rounded-xl">
+            Start 1-Month Free Trial (No Card Needed)
           </button>
-          <a href="mailto:ekametechnologie@gmail.com?subject=GimXSoft%20Demo" class="text-xs text-slate-400 py-1 text-center font-normal">ekametechnologie@gmail.com</a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- ================= HERO SECTION WITH REACTIVE 3D ================= -->
-  <section class="relative min-h-[90vh] pt-28 pb-16 flex items-center justify-center hero-grid">
+  <!-- ================= HERO SECTION ================= -->
+  <section class="relative min-h-[92vh] pt-32 pb-20 flex items-center justify-center hero-grid">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         
-        <!-- Left: Copy & Value Proposition (Unslopped: quiet hierarchy, two font weights) -->
-        <div class="lg:col-span-6 space-y-5 text-center lg:text-left">
+        <!-- Left: Punchy Gym Owner Value Proposition -->
+        <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
           
           <!-- Category Indicator Pill -->
-          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-surface border border-white/10 text-xs text-slate-300">
-            <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
-            <span class="text-[11px] font-medium tracking-wide">Multi-branch gym CRM & automated operations</span>
+          <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-surface border border-white/10 text-xs text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[11px] font-medium tracking-wide">Simple Gym Management Software Built for Indian Gyms</span>
           </div>
 
-          <!-- Headline -->
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-white leading-tight">
-            Smarter gym operations.<br>
-            <span class="text-brand-orangeLight">Exact member telemetry.</span>
+          <!-- Main Headline (Inspired by reference focus) -->
+          <h1 class="text-3xl sm:text-5xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.15] font-display">
+            Never chase gym fees again.
+            <span class="block text-brand-orangeLight mt-1 font-semibold">Members forget. GimXSoft collects.</span>
           </h1>
 
           <!-- Body Description -->
           <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-            Automate turnstile gate check-ins, send individual WhatsApp updates directly to members, schedule 7-day trainer routines, and collect recurring dues at just <strong class="text-white font-medium">₹200 / month</strong>.
+            Members forget to pay. Then they quietly stop coming. GimXSoft automatically sends friendly WhatsApp dues reminders with direct UPI pay links, tracks contactless QR door check-ins, and keeps your members active while you run the floor.
           </p>
 
           <!-- Action Buttons -->
           <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-            <button onclick="openTrialModal()" class="w-full sm:w-auto px-5 py-2.5 bg-brand-orange hover:bg-brand-orangeLight text-white font-medium text-xs rounded-lg transition-colors flex items-center justify-center space-x-2 shadow-sm">
+            <button onclick="openTrialModal()" class="w-full sm:w-auto px-6 py-3 bg-brand-orange hover:bg-brand-orangeLight text-white font-semibold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-brand-orange/30 hover:scale-[1.02]">
               <i class="fa-solid fa-gift"></i>
-              <span>Try 1 month free (₹0 due today)</span>
+              <span>Start 1-Month Free Trial →</span>
             </button>
-            <a href="/login" class="w-full sm:w-auto px-5 py-2.5 bg-brand-surface hover:bg-brand-elevated text-slate-200 border border-white/10 text-xs font-medium rounded-lg transition-colors flex items-center justify-center space-x-2">
-              <i class="fa-solid fa-right-to-bracket text-brand-orangeLight"></i>
-              <span>Admin & customer login</span>
+            <a href="#preview" class="w-full sm:w-auto px-5 py-3 bg-brand-surface hover:bg-brand-elevated text-slate-200 border border-white/10 text-xs sm:text-sm font-medium rounded-xl transition-all flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-play text-brand-orangeLight text-xs"></i>
+              <span>Watch 5s AI Preview</span>
             </a>
-            <button onclick="openDemoModal()" class="w-full sm:w-auto px-4 py-2.5 bg-brand-surface/70 hover:bg-brand-elevated text-slate-300 border border-white/10 text-xs font-medium rounded-lg transition-colors flex items-center justify-center space-x-2">
-              <i class="fa-regular fa-envelope text-brand-orangeLight"></i>
-              <span>Book demo</span>
-            </button>
+            <a href="https://wa.me/917541004076?text=Hi%2C+I%27m+interested+in+GimXSoft+for+my+gym" target="_blank" class="w-full sm:w-auto px-4 py-3 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs sm:text-sm font-medium rounded-xl transition-all flex items-center justify-center space-x-2">
+              <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+              <span>Chat on WhatsApp</span>
+            </a>
           </div>
 
-          <!-- Proof Row: Zero Risk Guarantees -->
+          <!-- Zero-Risk Commitments Row -->
           <div class="pt-5 border-t border-white/10 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-slate-300">
             <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-calendar-check text-emerald-400 text-sm"></i>
-              <span>Free billing for 1 month</span>
+              <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+              <span class="font-medium">1 Month Free Trial</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-credit-card-slash text-sky-400 text-sm"></i>
+              <span>No card needed today</span>
             </div>
             <div class="flex items-center space-x-2">
               <i class="fa-solid fa-rotate-left text-brand-orangeLight text-sm"></i>
               <span>Cancel anytime</span>
             </div>
             <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-credit-card-slash text-sky-400 text-sm"></i>
-              <span>No payment needed for registration</span>
-            </div>
-            <div class="flex items-center space-x-2">
               <i class="fa-solid fa-indian-rupee-sign text-amber-400 text-sm"></i>
-              <span class="text-slate-400">₹2,000 only after 30 days trial</span>
+              <span class="text-slate-400">₹2,000 / mo after trial</span>
             </div>
           </div>
         </div>
 
-        <!-- Right: Reactive 2D Zeus Thunder Animation Stage -->
-        <div class="lg:col-span-6 relative w-full h-[440px] sm:h-[500px] lg:h-[540px] flex items-center justify-center">
+        <!-- Right: 2D Zeus Thunder Animation Stage -->
+        <div class="lg:col-span-6 relative w-full h-[460px] sm:h-[520px] lg:h-[560px] flex items-center justify-center">
           <div id="zeus-container" class="relative w-full h-full flex items-center justify-center cursor-pointer select-none group">
             
-            <!-- Ambient Storm Radial Backlight (blends seamlessly into UI) -->
-            <div id="zeus-ambient-glow" class="absolute inset-0 pointer-events-none opacity-40 transition-opacity duration-300 bg-[radial-gradient(circle_at_68%_25%,rgba(245,158,11,0.28)_0%,rgba(0,0,0,0)_65%)]"></div>
+            <!-- Ambient Storm Radial Glow -->
+            <div id="zeus-ambient-glow" class="absolute inset-0 pointer-events-none opacity-45 transition-opacity duration-300 bg-[radial-gradient(circle_at_68%_25%,rgba(234,88,12,0.35)_0%,rgba(0,0,0,0)_65%)]"></div>
 
-            <!-- Atmospheric Screen Flash Layer -->
-            <div id="thunder-flash" class="absolute inset-0 z-30 pointer-events-none bg-amber-100/0 transition-opacity duration-75"></div>
-
-            <!-- 2D Procedural Thunder & Lightning Canvas -->
+            <!-- Lightning Canvas -->
             <canvas id="thunder-canvas" class="absolute inset-0 z-20 w-full h-full pointer-events-none"></canvas>
 
-            <!-- Zeus Muscular Character with 2D Breathing & Power Hover Motion -->
+            <!-- Zeus 2D Character -->
             <div id="zeus-wrapper" class="relative z-10 h-full w-full flex items-center justify-center pointer-events-none p-4">
-              <img id="zeus-img" src="assets/images/zeus_white.png" alt="Muscular Zeus Athletic Power" class="max-h-[92%] max-w-[92%] object-contain filter drop-shadow-[0_0_35px_rgba(245,158,11,0.45)] transition-all duration-300 animate-zeus-breathe select-none">
+              <img id="zeus-img" src="assets/images/zeus_white.png" alt="Muscular Zeus Athletic Power" class="max-h-[92%] max-w-[92%] object-contain filter drop-shadow-[0_0_35px_rgba(234,88,12,0.45)] transition-all duration-300 animate-zeus-breathe select-none">
             </div>
           </div>
 
-          <!-- Floating Telemetry Card 1: Turnstile Activity -->
-          <div class="absolute -top-3 -left-3 sm:top-5 sm:-left-5 z-20 glass-card p-3.5 rounded-xl border border-white/10 shadow-lg max-w-[200px] hidden sm:block pointer-events-none">
+          <!-- Floating Badge 1: Live Check-in -->
+          <div class="absolute -top-3 -left-3 sm:top-6 sm:-left-4 z-20 glass-card p-3.5 rounded-2xl border border-white/10 shadow-xl max-w-[210px] hidden sm:block pointer-events-none">
             <div class="flex items-center space-x-2.5 mb-1.5">
-              <div class="w-6 h-6 rounded-md bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
-                <i class="fa-solid fa-door-open"></i>
+              <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-qrcode"></i>
               </div>
               <div>
-                <p class="text-[10px] text-slate-400">Downtown Flagship</p>
-                <p class="text-xs font-medium text-white">Live occupancy</p>
+                <p class="text-[10px] text-slate-400">QR Door Scanner</p>
+                <p class="text-xs font-semibold text-white">Live occupancy</p>
               </div>
             </div>
             <div class="flex items-baseline space-x-1.5">
-              <span class="text-lg font-semibold text-white tabular-nums">42</span>
-              <span class="text-[11px] text-slate-400">/ 120 athletes on floor</span>
+              <span class="text-xl font-bold text-white tabular-nums">42</span>
+              <span class="text-[11px] text-slate-400">/ 120 on floor</span>
             </div>
             <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
               <div class="bg-brand-orange h-full w-[35%]"></div>
             </div>
           </div>
 
-          <!-- Floating Telemetry Card 2: Individual WhatsApp Dispatch -->
-          <div class="absolute -bottom-4 -right-2 sm:bottom-4 sm:-right-4 z-20 glass-card p-3.5 rounded-xl border border-white/10 shadow-lg max-w-[220px] hidden sm:block pointer-events-none">
+          <!-- Floating Badge 2: Automated WhatsApp Dues Notice -->
+          <div class="absolute -bottom-4 -right-2 sm:bottom-6 sm:-right-4 z-20 glass-card p-3.5 rounded-2xl border border-white/10 shadow-xl max-w-[230px] hidden sm:block pointer-events-none">
             <div class="flex items-center space-x-2.5 mb-1.5">
-              <div class="w-6 h-6 rounded-md bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+              <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
                 <i class="fa-brands fa-whatsapp"></i>
               </div>
               <div>
-                <p class="text-[10px] text-slate-400">Direct WhatsApp</p>
-                <p class="text-xs font-medium text-white">Check-in confirmed</p>
+                <p class="text-[10px] text-slate-400">Meta Cloud API</p>
+                <p class="text-xs font-semibold text-white">WhatsApp Nudge</p>
               </div>
             </div>
-            <p class="text-[11px] text-slate-300">
-              Marcus Vance checked in at 07:14:02. Receipt dispatched.
+            <p class="text-[11px] text-slate-300 leading-snug">
+              "Hi Rahul 👋 Your Monthly Plan expires tomorrow. Tap to renew via UPI: gimx.in/pay"
             </p>
-            <div class="mt-1.5 pt-1.5 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400">
+            <div class="mt-2 pt-1.5 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400">
               <span>Status</span>
-              <span class="text-emerald-400 font-medium">Delivered (Meta API)</span>
+              <span class="text-emerald-400 font-semibold flex items-center">
+                <i class="fa-solid fa-check-double mr-1"></i> Paid ₹2,000
+              </span>
             </div>
           </div>
 
@@ -310,157 +337,323 @@
     </div>
   </section>
 
-  <!-- ================= ZERO-RISK COMMITMENTS ================= -->
-  <section class="py-8 border-y border-white/5 bg-brand-carbon/60 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- 1. Free billing for 1 month -->
-        <div class="p-4 rounded-xl glass-card border border-white/5 hover:border-emerald-500/30 transition-all flex items-start space-x-3.5">
-          <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 text-sm">
-            <i class="fa-solid fa-gift"></i>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold text-white">Free Billing for 1 Month</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Full access to every CRM module for 30 days. Pay ₹0 today and test in real facility operations.</p>
-          </div>
-        </div>
-
-        <!-- 2. Cancel anytime -->
-        <div class="p-4 rounded-xl glass-card border border-white/5 hover:border-brand-orange/30 transition-all flex items-start space-x-3.5">
-          <div class="w-9 h-9 rounded-lg bg-brand-orange/10 text-brand-orangeLight flex items-center justify-center shrink-0 text-sm">
-            <i class="fa-solid fa-rotate-left"></i>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold text-white">Cancel Anytime</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Zero lock-in contracts. 1-click self-serve cancellation anytime directly from your settings.</p>
-          </div>
-        </div>
-
-        <!-- 3. No payment needed for registration -->
-        <div class="p-4 rounded-xl glass-card border border-white/5 hover:border-sky-500/30 transition-all flex items-start space-x-3.5">
-          <div class="w-9 h-9 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center shrink-0 text-sm">
-            <i class="fa-solid fa-credit-card-slash"></i>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold text-white">No Payment Needed</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5 leading-snug">No credit card or upfront deposit required for registration. Start immediately with zero risk.</p>
-          </div>
-        </div>
-
-        <!-- 4. Flat ₹2,000/mo after trial -->
-        <div class="p-4 rounded-xl glass-card border border-white/5 hover:border-amber-500/30 transition-all flex items-start space-x-3.5">
-          <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 text-sm">
-            <i class="fa-solid fa-indian-rupee-sign"></i>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold text-white">₹2,000 / Month Flat</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5 leading-snug">Billed only after 30-day free trial. Includes WhatsApp CRM, turnstiles, workout splits & unlimited members.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= TELEMETRY STATS GRID (650+ Gyms, 420K+ Athletes, ₹1.8 Cr+, 99.98% Uptime) ================= -->
-  <section class="py-8 bg-brand-dark/80 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-6 rounded-2xl glass-card border border-white/10 text-center flex flex-col items-center justify-center hover:border-white/20 transition-all">
-          <span class="text-3xl sm:text-4xl font-bold text-white tracking-tight">650+</span>
-          <span class="text-xs text-slate-400 mt-2 font-normal">Gym locations onboard</span>
-        </div>
-        <div class="p-6 rounded-2xl glass-card border border-white/10 text-center flex flex-col items-center justify-center hover:border-brand-orange/40 transition-all">
-          <span class="text-3xl sm:text-4xl font-bold text-brand-orangeLight tracking-tight">420K+</span>
-          <span class="text-xs text-slate-400 mt-2 font-normal">Athletes & members</span>
-        </div>
-        <div class="p-6 rounded-2xl glass-card border border-white/10 text-center flex flex-col items-center justify-center hover:border-white/20 transition-all">
-          <span class="text-3xl sm:text-4xl font-bold text-white tracking-tight">₹1.8 Cr+</span>
-          <span class="text-xs text-slate-400 mt-2 font-normal">Monthly dues processed</span>
-        </div>
-        <div class="p-6 rounded-2xl glass-card border border-white/10 text-center flex flex-col items-center justify-center hover:border-emerald-500/40 transition-all">
-          <span class="text-3xl sm:text-4xl font-bold text-emerald-400 tracking-tight">99.98%</span>
-          <span class="text-xs text-slate-400 mt-2 font-normal">Turnstile gateway uptime</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= DEDICATED SECTION: WHATSAPP INDIVIDUAL MESSAGING ================= -->
-  <section id="whatsapp-individual" class="py-20 relative">
+  <!-- ================= SECTION: 5-SECOND HIGH-QUALITY AI VIDEO PREVIEW ================= -->
+  <section id="preview" class="py-20 relative bg-brand-carbon/50 border-t border-white/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <!-- Left: Feature Details -->
-        <div class="lg:col-span-6 space-y-4">
-          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">
-            <i class="fa-brands fa-whatsapp text-sm"></i>
-            <span>Meta Cloud Business API Integration</span>
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-semibold text-brand-orangeLight tracking-wide uppercase px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20">
+          Cinematic Product Demo • 5 Seconds
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-bold text-white mt-3 font-display">
+          See GimXSoft in 5 Seconds.
+        </h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-2">
+          Watch automated WhatsApp dues collection, live QR door check-ins, and the 2D Zeus Thunder Engine power your gym floor with zero manual chasing.
+        </p>
+      </div>
+
+      <!-- High-Quality 5s AI Video Player Container -->
+      <div class="max-w-4xl mx-auto glass-card rounded-3xl p-4 sm:p-6 border border-white/10 shadow-2xl relative overflow-hidden group">
+        
+        <!-- Video Screen Canvas Frame -->
+        <div class="relative w-full aspect-video bg-[#0A0C12] rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center">
+          
+          <!-- High-Framerate Procedural AI Video Canvas -->
+          <canvas id="ai-video-canvas" class="w-full h-full object-cover"></canvas>
+
+          <!-- Top Overlay: Status and Quality Pill -->
+          <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-30 pointer-events-none">
+            <div class="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-[11px] text-white">
+              <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+              <span class="font-mono font-medium">LIVE AI PREVIEW</span>
+              <span class="text-slate-400">|</span>
+              <span id="aiVideoTimer" class="font-mono text-brand-orangeLight tabular-nums">00:00 / 00:05</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 text-[10px] text-emerald-400 font-semibold">
+              <i class="fa-solid fa-bolt text-brand-orange"></i>
+              <span>60 FPS 4K SIMULATION</span>
+            </div>
           </div>
 
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight leading-snug">
-            1-on-1 Individual WhatsApp Messaging Directly from Your CRM.
+          <!-- Video Playback Center Badge Trigger -->
+          <button id="videoPlayPauseBtn" onclick="toggleAIVideo()" class="absolute z-30 w-16 h-16 rounded-full bg-brand-orange/90 hover:bg-brand-orange text-white flex items-center justify-center text-xl shadow-2xl shadow-brand-orange/50 transition-all hover:scale-110 active:scale-95">
+            <i id="videoPlayPauseIcon" class="fa-solid fa-pause"></i>
+          </button>
+
+          <!-- Active Scene Subtitle Bar -->
+          <div class="absolute bottom-12 left-4 right-4 z-30 text-center pointer-events-none">
+            <div id="videoSceneCaption" class="inline-block bg-black/75 backdrop-blur-md px-4 py-1.5 rounded-xl border border-white/10 text-xs text-white font-medium shadow-lg">
+              Scene 1: Zeus 2D Thunder Core Power Flex
+            </div>
+          </div>
+
+          <!-- Bottom Scrub Bar -->
+          <div class="absolute bottom-0 left-0 right-0 h-2 bg-white/10 z-30 overflow-hidden cursor-pointer" onclick="scrubAIVideo(event)">
+            <div id="aiVideoProgressBar" class="h-full bg-brand-orange transition-all duration-75 w-0"></div>
+          </div>
+        </div>
+
+        <!-- Video Player Bottom Controls & Legend -->
+        <div class="mt-4 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+          <div class="flex items-center space-x-4">
+            <button onclick="toggleAIVideo()" class="hover:text-white transition-colors flex items-center space-x-1.5">
+              <i id="bottomPlayIcon" class="fa-solid fa-pause text-brand-orangeLight"></i>
+              <span>Pause / Play</span>
+            </button>
+            <button onclick="restartAIVideo()" class="hover:text-white transition-colors flex items-center space-x-1.5">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Replay 5s</span>
+            </button>
+            <span class="text-slate-500">|</span>
+            <span class="text-slate-300">Autoplays seamless 5-second product moments</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-emerald-400 font-medium"><i class="fa-solid fa-check text-[10px] mr-1"></i> Official Meta Cloud API</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-white font-medium">₹2,000 / mo flat</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= SECTION: FOUR HEADACHES, GONE (Inspired by GymCRM) ================= -->
+  <section id="features" class="py-20 relative bg-brand-dark/95 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-semibold text-brand-orangeLight tracking-wide uppercase px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20">
+          What It Does
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-bold text-white mt-3 font-display">
+          Four headaches, gone.
+        </h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-2">
+          No complicated enterprise clutter. Just the four critical operations that keep members paying and returning.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Headache 1: Fees & dues -->
+        <div class="glass-card glass-card-hover rounded-2xl p-7 border border-white/10 relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-semibold text-brand-orangeLight uppercase tracking-wider">Fees & Dues</span>
+              <div class="w-8 h-8 rounded-lg bg-brand-orange/10 text-brand-orange flex items-center justify-center text-sm">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Get paid without asking twice.</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+              GimXSoft automatically sends WhatsApp messages before a member's plan expires with a direct UPI payment link. They tap, pay, and the money lands straight into your bank account while you run the gym floor.
+            </p>
+          </div>
+          <!-- Visual Snippet -->
+          <div class="bg-black/40 rounded-xl p-3.5 border border-white/5 font-mono text-xs">
+            <p class="text-slate-400 text-[11px] mb-1">WhatsApp message to member:</p>
+            <p class="text-emerald-400 font-sans">
+              "Hi Karan 👋 Your Monthly Plan expires tomorrow. Renew in 1 tap: <span class="underline text-brand-orangeLight">upi.gimxsoft.in/pay</span>"
+            </p>
+          </div>
+        </div>
+
+        <!-- Headache 2: Check-ins -->
+        <div class="glass-card glass-card-hover rounded-2xl p-7 border border-white/10 relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Check-ins</span>
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-qrcode"></i>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Spot a drop-off early.</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+              Members scan a QR code at your desk or turnstile gate. GimXSoft immediately flags who hasn't shown up in 7 days so you can send a gentle WhatsApp check-in and win them back before they quit.
+            </p>
+          </div>
+          <!-- Visual Snippet -->
+          <div class="bg-black/40 rounded-xl p-3.5 border border-white/5 flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              <span class="text-slate-300">Marcus Vance • Last visited 8 days ago</span>
+            </div>
+            <span class="text-[11px] text-brand-orangeLight font-semibold">1-Tap Re-engage</span>
+          </div>
+        </div>
+
+        <!-- Headache 3: Enquiries -->
+        <div class="glass-card glass-card-hover rounded-2xl p-7 border border-white/10 relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-semibold text-sky-400 uppercase tracking-wider">Enquiries</span>
+              <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-filter"></i>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">No walk-in goes cold.</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+              Walk-ins, phone inquiries, and Instagram leads land in one simple visual list with scheduled follow-up dates. GimXSoft tells your front desk team exactly who to call today to convert inquiries into paying members.
+            </p>
+          </div>
+          <!-- Visual Snippet -->
+          <div class="bg-black/40 rounded-xl p-3.5 border border-white/5 flex items-center justify-between text-xs">
+            <span class="text-slate-300">Today's follow-ups: 4 walk-ins scheduled</span>
+            <span class="text-emerald-400 font-semibold">100% on schedule</span>
+          </div>
+        </div>
+
+        <!-- Headache 4: Members -->
+        <div class="glass-card glass-card-hover rounded-2xl p-7 border border-white/10 relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Members</span>
+              <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-users"></i>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Know every member in one tap.</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+              Their plan, what they owe, and when they last showed up — all on one screen. Filter by active, on hold, or about to lapse, so nobody ever slips through the cracks.
+            </p>
+          </div>
+          <!-- Visual Snippet -->
+          <div class="bg-black/40 rounded-xl p-3.5 border border-white/5 flex items-center justify-between text-xs">
+            <span class="text-slate-300">921 Members • 96.8% Active Retention</span>
+            <span class="text-brand-orangeLight font-semibold">0 Dues Slippage</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= SECTION: HOW IT WORKS (Up and running by this evening) ================= -->
+  <section id="how" class="py-20 relative bg-brand-carbon/30 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-semibold text-brand-orangeLight tracking-wide uppercase px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20">
+          Easy Setup
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-bold text-white mt-3 font-display">
+          Up and running by this evening.
+        </h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-2">
+          No hardware setup required to start. Setup takes 15 minutes.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Step 1 -->
+        <div class="glass-card rounded-2xl p-7 border border-white/10 relative">
+          <div class="w-10 h-10 rounded-xl bg-brand-orange text-white font-bold text-base flex items-center justify-center mb-5 shadow-lg shadow-brand-orange/30">
+            1
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Add your members</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Upload your existing Excel or CSV spreadsheet, or enter members one by one. Names, phone numbers, joining dates, and plan expiry all transfer seamlessly.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="glass-card rounded-2xl p-7 border border-white/10 relative">
+          <div class="w-10 h-10 rounded-xl bg-brand-orange text-white font-bold text-base flex items-center justify-center mb-5 shadow-lg shadow-brand-orange/30">
+            2
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Set your prices</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Add monthly, quarterly, annual, or personal training packages. Configure your UPI ID for direct, instant bank settlements with zero transaction cuts.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="glass-card rounded-2xl p-7 border border-white/10 relative">
+          <div class="w-10 h-10 rounded-xl bg-brand-orange text-white font-bold text-base flex items-center justify-center mb-5 shadow-lg shadow-brand-orange/30">
+            3
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Let it do the chasing</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            GimXSoft automatically sends WhatsApp dues notices, dispatches tax invoices, and registers door check-ins while you focus on coaching and fitness.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= SECTION: DEDICATED WHATSAPP CRM ================= -->
+  <section id="whatsapp" class="py-20 relative bg-brand-dark/95 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Left: Feature Details -->
+        <div class="lg:col-span-6 space-y-5">
+          <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-semibold">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>Meta Official Cloud Business Platform</span>
+          </div>
+
+          <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight font-display">
+            Automated WhatsApp Reminders with Direct UPI Links.
           </h2>
 
           <p class="text-sm text-slate-300 leading-relaxed font-normal">
-            No need to save contacts on a front desk phone or copy numbers manually. GimXSoft connects directly with the official Meta WhatsApp Cloud API so you can engage members individually or send automated notifications with a single click.
+            Indian gym members check WhatsApp within 3 minutes. GimXSoft connects directly to the official Meta WhatsApp Cloud API so you never have to save member numbers on a front-desk mobile.
           </p>
 
           <div class="space-y-3 pt-2">
             <div class="flex items-start space-x-3">
-              <div class="w-6 h-6 rounded bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs mt-0.5">
-                <i class="fa-solid fa-comment-dots"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-white">Direct Member Conversations</h4>
-                <p class="text-xs text-slate-400 mt-0.5">Chat directly with an individual customer right from their member profile to discuss personal training schedules, diet adjustments, or check-in queries.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start space-x-3">
-              <div class="w-6 h-6 rounded bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs mt-0.5">
-                <i class="fa-solid fa-receipt"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-semibold text-white">Instant Turnstile Check-in Receipts</h4>
-                <p class="text-xs text-slate-400 mt-0.5">Every time an RFID or QR badge is tapped at the turnstile, an automated personalized WhatsApp receipt with timestamp and remaining membership days is dispatched instantly.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start space-x-3">
-              <div class="w-6 h-6 rounded bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs mt-0.5">
+              <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs mt-0.5">
                 <i class="fa-solid fa-bell"></i>
               </div>
               <div>
-                <h4 class="text-xs font-semibold text-white">Automated Expiry & Fee Dunning Links</h4>
-                <p class="text-xs text-slate-400 mt-0.5">Trigger 7-day and 1-day membership renewal notices with instant UPI payment links directly to the individual customer's WhatsApp, cutting renewal dropouts by 42%.</p>
+                <h4 class="text-xs font-semibold text-white">Automated Expiry & Fee Dunning</h4>
+                <p class="text-xs text-slate-400 mt-0.5">7-day and 1-day reminders go out with instant UPI QR links. Cut renewal dropouts by over 40%.</p>
               </div>
             </div>
 
             <div class="flex items-start space-x-3">
-              <div class="w-6 h-6 rounded bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs mt-0.5">
+              <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs mt-0.5">
+                <i class="fa-solid fa-receipt"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-semibold text-white">Instant Payment Receipts & Check-in Alerts</h4>
+                <p class="text-xs text-slate-400 mt-0.5">Every fee paid and QR scan generates an immediate WhatsApp receipt for the member.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3">
+              <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs mt-0.5">
                 <i class="fa-solid fa-dumbbell"></i>
               </div>
               <div>
-                <h4 class="text-xs font-semibold text-white">Workout Plans & Diet PDF Sharing</h4>
-                <p class="text-xs text-slate-400 mt-0.5">Share customized 7-day workout splits and trainer-approved nutrition routines straight to the athlete's WhatsApp chat without app download friction.</p>
+                <h4 class="text-xs font-semibold text-white">Diet & Workout Routine PDF Sharing</h4>
+                <p class="text-xs text-slate-400 mt-0.5">Send tailored workout splits directly to athletes with zero app download friction.</p>
               </div>
             </div>
           </div>
 
-          <div class="pt-4 flex items-center space-x-3">
-            <button onclick="simulateIndividualWhatsAppMessage()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center space-x-2">
+          <div class="pt-4 flex items-center space-x-4">
+            <button onclick="simulateIndividualWhatsAppMessage()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-lg shadow-emerald-600/30 flex items-center space-x-2">
               <i class="fa-brands fa-whatsapp"></i>
-              <span>Simulate sending WhatsApp message</span>
+              <span>Simulate Live WhatsApp Message</span>
             </button>
-            <span class="text-xs text-slate-400" id="simStatus">Click to test live dispatch</span>
+            <span class="text-xs text-slate-400" id="simStatus">Tap to test live dispatch</span>
           </div>
         </div>
 
         <!-- Right: Interactive WhatsApp Message Simulator UI -->
         <div class="lg:col-span-6">
-          <div class="glass-card rounded-2xl border border-white/10 p-5 shadow-xl max-w-md mx-auto">
+          <div class="glass-card rounded-3xl border border-white/10 p-5 shadow-2xl max-w-md mx-auto">
             <!-- Simulated WhatsApp Phone Window -->
-            <div class="bg-[#111B21] rounded-xl overflow-hidden border border-white/5">
+            <div class="bg-[#111B21] rounded-2xl overflow-hidden border border-white/10 shadow-inner">
               <!-- Chat Header -->
               <div class="bg-[#202C33] px-4 py-3 flex items-center justify-between border-b border-white/5">
                 <div class="flex items-center space-x-3">
@@ -468,37 +661,37 @@
                     GX
                   </div>
                   <div>
-                    <h5 class="text-xs font-medium text-white flex items-center">
-                      <span>GimXSoft Gym Official</span>
+                    <h5 class="text-xs font-semibold text-white flex items-center">
+                      <span>Titan Gym Official</span>
                       <i class="fa-solid fa-circle-check text-emerald-400 text-[10px] ml-1.5" title="Verified Business"></i>
                     </h5>
-                    <p class="text-[10px] text-emerald-400">Online • Verified Meta Business API</p>
+                    <p class="text-[10px] text-emerald-400 font-medium">Meta Verified Business Account</p>
                   </div>
                 </div>
-                <span class="text-[10px] text-slate-400 font-mono">Member: #TF-1082</span>
+                <span class="text-[10px] text-slate-400 font-mono">#TF-1082</span>
               </div>
 
               <!-- Message Stream -->
               <div class="p-4 space-y-3 min-h-[260px] bg-[#0B141A] text-xs" id="whatsappChatStream">
                 <!-- Message 1 -->
                 <div class="max-w-[85%] bg-[#202C33] text-slate-200 p-2.5 rounded-lg rounded-tl-none border border-white/5">
-                  <p class="text-[11px] font-medium text-brand-orangeLight mb-1">Check-in Confirmed • Downtown Flagship</p>
+                  <p class="text-[11px] font-semibold text-brand-orangeLight mb-1">Check-in Confirmed • Downtown Flagship</p>
                   <p class="text-xs leading-relaxed">Hey Marcus! You just checked in at 07:14 AM. Your plan has 18 days remaining. Have an awesome workout today! 💪</p>
                   <span class="block text-[9px] text-slate-400 text-right mt-1">07:14 AM <i class="fa-solid fa-check-double text-emerald-400 ml-1"></i></span>
                 </div>
 
-                <!-- Message 2: Trainer Routine -->
+                <!-- Message 2: Renewal Notice -->
                 <div class="max-w-[85%] bg-[#202C33] text-slate-200 p-2.5 rounded-lg rounded-tl-none border border-white/5">
-                  <p class="text-[11px] font-medium text-emerald-400 mb-1">Coach Vikram Sign-off</p>
-                  <p class="text-xs leading-relaxed">Today's Split: Chest & Triceps (Day 2 of 7). Don't forget your 3x8 barbell bench press target today.</p>
+                  <p class="text-[11px] font-semibold text-emerald-400 mb-1">Fee Renewal Notice</p>
+                  <p class="text-xs leading-relaxed">Hi Rahul! Your gym membership expires tomorrow. Tap below to renew instantly via UPI: <br><span class="text-brand-orangeLight underline">upi.gimxsoft.in/pay</span></p>
                   <span class="block text-[9px] text-slate-400 text-right mt-1">07:15 AM <i class="fa-solid fa-check-double text-emerald-400 ml-1"></i></span>
                 </div>
               </div>
 
               <!-- Chat Input Bar -->
               <div class="bg-[#202C33] p-2 flex items-center space-x-2 border-t border-white/5">
-                <input type="text" id="individualMsgInput" placeholder="Send custom message to Marcus..." class="flex-1 px-3 py-1.5 rounded-lg bg-[#111B21] border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-orange">
-                <button onclick="sendManualWhatsAppMsg()" class="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center text-xs transition-colors">
+                <input type="text" id="individualMsgInput" placeholder="Send WhatsApp message..." class="flex-1 px-3 py-1.5 rounded-xl bg-[#111B21] border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-orange">
+                <button onclick="sendManualWhatsAppMsg()" class="w-8 h-8 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center text-xs transition-colors">
                   <i class="fa-solid fa-paper-plane"></i>
                 </button>
               </div>
@@ -506,7 +699,7 @@
 
             <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
               <span>Customer: Marcus Vance (+91 98765 43210)</span>
-              <span class="text-emerald-400 font-medium">1-Click Direct Delivery</span>
+              <span class="text-emerald-400 font-semibold">1-Click Direct Delivery</span>
             </div>
           </div>
         </div>
@@ -515,1521 +708,723 @@
     </div>
   </section>
 
-  <!-- ================= CORE FEATURES GRID ================= -->
-  <section id="features" class="py-20 relative bg-brand-carbon/40 border-t border-white/5">
+  <!-- ================= SECTION: FLAT PRICING (EXACTLY OUR INFORMATION) ================= -->
+  <section id="pricing" class="py-24 relative bg-brand-carbon/40 border-t border-white/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="text-center max-w-2xl mx-auto mb-14">
-        <span class="text-xs font-medium text-brand-orangeLight tracking-wide">Facility modules</span>
-        <h2 class="text-2xl sm:text-3xl font-semibold text-white mt-1">
-          Everything You Need to Run High-Throughput Clubs
-        </h2>
-        <p class="text-slate-400 mt-2 text-xs sm:text-sm font-normal">
-          Designed specifically for strength gyms, franchise fitness centers, and boutique studios.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <!-- Module 1 -->
-        <div class="glass-card glass-card-hover rounded-xl p-6 relative overflow-hidden">
-          <div class="w-10 h-10 rounded-lg bg-brand-orange/10 border border-brand-orange/30 text-brand-orange flex items-center justify-center text-lg mb-4">
-            <i class="fa-solid fa-id-card-clip"></i>
-          </div>
-          <h3 class="text-base font-semibold text-white mb-2">Turnstile & Member RFID / QR</h3>
-          <p class="text-xs text-slate-300 leading-relaxed mb-4">
-            High-speed gate synchronization with anti-passback security. Restricts expired memberships in 0.1s with offline cache fallback.
-          </p>
-          <ul class="text-xs text-slate-400 space-y-2">
-            <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Dynamic mobile QR & RFID fobs</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Real-time floor occupancy gauge</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Turnstile hardware bridge driver</li>
-          </ul>
-        </div>
-
-        <!-- Module 2 -->
-        <div class="glass-card glass-card-hover rounded-xl p-6 relative overflow-hidden">
-          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-lg mb-4">
-            <i class="fa-brands fa-whatsapp"></i>
-          </div>
-          <h3 class="text-base font-semibold text-white mb-2">Individual WhatsApp Hub</h3>
-          <p class="text-xs text-slate-300 leading-relaxed mb-4">
-            Direct 1-on-1 messaging from member profiles, automated check-in receipts, payment links, and renewal dunning messages.
-          </p>
-          <ul class="text-xs text-slate-400 space-y-2">
-            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2"></i> 1-Click individual customer chat</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Instant turnstile entry receipts</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Meta Cloud API official backend</li>
-          </ul>
-        </div>
-
-        <!-- Module 3 -->
-        <div class="glass-card glass-card-hover rounded-xl p-6 relative overflow-hidden">
-          <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-lg mb-4">
-            <i class="fa-solid fa-dumbbell"></i>
-          </div>
-          <h3 class="text-base font-semibold text-white mb-2">Routine Builder & Biometrics</h3>
-          <p class="text-xs text-slate-300 leading-relaxed mb-4">
-            Comprehensive exercise library across 7 muscle groups. Create customized 7-day splits, log body fat & BMI, and track PR milestones.
-          </p>
-          <ul class="text-xs text-slate-400 space-y-2">
-            <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-2"></i> 7-Day split routine scheduler</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-2"></i> Body composition tracking history</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-2"></i> Trainer assignment & sign-off</li>
-          </ul>
-        </div>
-
-        <!-- Module 4 -->
-        <div class="glass-card glass-card-hover rounded-xl p-6 relative overflow-hidden">
-          <div class="w-10 h-10 rounded-lg bg-brand-orange/10 border border-brand-orange/30 text-brand-orange flex items-center justify-center text-lg mb-4">
-            <i class="fa-solid fa-file-invoice-dollar"></i>
-          </div>
-          <h3 class="text-base font-semibold text-white mb-2">Billing & GST Tax Invoices</h3>
-          <p class="text-xs text-slate-300 leading-relaxed mb-4">
-            Flexible recurring and one-time membership plans. Collect dues via UPI, cards, or cash with automated PDF tax invoice dispatch.
-          </p>
-          <ul class="text-xs text-slate-400 space-y-2">
-            <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> UPI QR codes & payment links</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> GST-compliant PDF invoices</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Dunning reminders for overdue fees</li>
-          </ul>
-        </div>
-
-        <!-- Module 5 -->
-        <div class="glass-card glass-card-hover rounded-xl p-6 relative overflow-hidden">
-          <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center text-lg mb-4">
-            <i class="fa-solid fa-network-wired"></i>
-          </div>
-          <h3 class="text-base font-semibold text-white mb-2">Multi-Branch Headquarters</h3>
-          <p class="text-xs text-slate-300 leading-relaxed mb-4">
-            Centralized multi-facility management. Member roaming privileges, unified financial reporting, and branch-level role permissions.
-          </p>
-          <ul class="text-xs text-slate-400 space-y-2">
-            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-2"></i> Consolidated multi-branch P&L</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-2"></i> Staff role-based access control (RBAC)</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-2"></i> Cross-branch member check-ins</li>
-          </ul>
-        </div>
-
-        <!-- Module 6 -->
-        <div class="glass-card glass-card-hover rounded-xl p-6 relative overflow-hidden">
-          <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center text-lg mb-4">
-            <i class="fa-solid fa-shield-halved"></i>
-          </div>
-          <h3 class="text-base font-semibold text-white mb-2">Cloud-Native Reliability</h3>
-          <p class="text-xs text-slate-300 leading-relaxed mb-4">
-            Enterprise containerized backend (.NET 8 + PostgreSQL) with local SQLite fallback for dev, automated backup cycles, and 99.98% uptime SLA.
-          </p>
-          <ul class="text-xs text-slate-400 space-y-2">
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i> Dual DB engine (PostgreSQL/SQLite)</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i> RFC 9457 structured error handling</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i> Multi-tenant data segregation</li>
-          </ul>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ================= INTERACTIVE CRM SANDBOX ================= -->
-  <section id="interactive-crm" class="py-20 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
-        <div>
-          <span class="text-xs font-medium text-brand-orangeLight">Interactive console</span>
-          <h2 class="text-2xl sm:text-3xl font-semibold text-white mt-1">
-            Experience the GimXSoft Command Desk
-          </h2>
-          <p class="text-slate-400 text-xs sm:text-sm mt-1">Interact with live simulation tabs to test real gym floor operations.</p>
-        </div>
-
-        <!-- Tab Selectors -->
-        <div class="flex items-center space-x-1.5 bg-brand-surface p-1 rounded-xl border border-white/10 mt-5 md:mt-0 overflow-x-auto max-w-full">
-          <button onclick="switchTab('overview')" id="tabBtn-overview" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-brand-orange text-white">
-            <i class="fa-solid fa-chart-pie mr-1 text-[11px]"></i> Live Telemetry
-          </button>
-          <button onclick="switchTab('members')" id="tabBtn-members" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors text-slate-300 hover:text-white">
-            <i class="fa-solid fa-users mr-1 text-[11px]"></i> Active Members
-          </button>
-          <button onclick="switchTab('whatsapp')" id="tabBtn-whatsapp" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors text-slate-300 hover:text-white">
-            <i class="fa-brands fa-whatsapp mr-1 text-[11px]"></i> 1-on-1 WhatsApp
-          </button>
-          <button onclick="switchTab('pos')" id="tabBtn-pos" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors text-slate-300 hover:text-white">
-            <i class="fa-solid fa-cash-register mr-1 text-[11px]"></i> Quick POS
-          </button>
-        </div>
-      </div>
-
-      <!-- Dashboard Frame -->
-      <div class="glass-card rounded-2xl border border-white/10 p-5 md:p-6 shadow-xl relative">
-        
-        <!-- Frame Bar -->
-        <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
-          <div class="flex items-center space-x-3">
-            <div class="flex space-x-1.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-            </div>
-            <span class="text-xs text-slate-400 font-mono pl-3 border-l border-white/10 hidden sm:inline">
-              gimxsoft-terminal // branch: downtown-flagship (TF-01)
-            </span>
-          </div>
-
-          <div class="flex items-center space-x-3">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Turnstiles online
-            </span>
-          </div>
-        </div>
-
-        <!-- TAB 1: OVERVIEW TELEMETRY -->
-        <div id="tab-overview" class="tab-pane space-y-5">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-brand-surface p-3.5 rounded-xl border border-white/5">
-              <p class="text-xs text-slate-400 font-normal">Active floor occupancy</p>
-              <div class="flex items-baseline justify-between mt-1">
-                <span class="text-xl font-semibold text-white tabular-nums">42 athletes</span>
-                <span class="text-xs text-brand-orangeLight font-medium">35% cap</span>
-              </div>
-              <p class="text-[11px] text-slate-500 mt-1">Max capacity: 120</p>
-            </div>
-
-            <div class="bg-brand-surface p-3.5 rounded-xl border border-white/5">
-              <p class="text-xs text-slate-400 font-normal">Monthly revenue (MRR)</p>
-              <div class="flex items-baseline justify-between mt-1">
-                <span class="text-xl font-semibold text-white tabular-nums">₹1,84,200</span>
-                <span class="text-xs text-emerald-400 font-medium">+14.2% MoM</span>
-              </div>
-              <p class="text-[11px] text-slate-500 mt-1">98.2% auto-collected</p>
-            </div>
-
-            <div class="bg-brand-surface p-3.5 rounded-xl border border-white/5">
-              <p class="text-xs text-slate-400 font-normal">Active members</p>
-              <div class="flex items-baseline justify-between mt-1">
-                <span class="text-xl font-semibold text-white tabular-nums">921 members</span>
-                <span class="text-xs text-emerald-400 font-medium">96.8% active</span>
-              </div>
-              <p class="text-[11px] text-slate-500 mt-1">12 renewal dues today</p>
-            </div>
-
-            <div class="bg-brand-surface p-3.5 rounded-xl border border-white/5">
-              <p class="text-xs text-slate-400 font-normal">WhatsApp messages dispatched</p>
-              <div class="flex items-baseline justify-between mt-1">
-                <span class="text-xl font-semibold text-white tabular-nums">1,482 msgs</span>
-                <span class="text-xs text-emerald-400 font-medium">100% delivered</span>
-              </div>
-              <p class="text-[11px] text-slate-500 mt-1">Meta Cloud API active</p>
-            </div>
-          </div>
-
-          <!-- Real-time Hourly Traffic Simulation -->
-          <div class="bg-brand-surface p-4 rounded-xl border border-white/5">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-xs font-semibold text-white flex items-center">
-                <i class="fa-solid fa-chart-column text-brand-orangeLight mr-2"></i> Today's hourly facility traffic
-              </h4>
-              <span class="text-[11px] text-slate-400">Peak hour: 6:00 PM - 8:00 PM</span>
-            </div>
-            
-            <div class="grid grid-cols-12 gap-2 h-36 items-end pt-2 border-b border-white/10">
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[25%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">6A</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[60%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">7A</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-brand-orangeLight h-[85%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-brand-orangeLight font-medium">8A</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[50%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">10A</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[35%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">12P</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[40%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">2P</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[55%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">4P</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-brand-orange h-[98%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-brand-orange font-medium">6P</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-brand-orange/80 h-[90%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-300">7P</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[70%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">8P</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[45%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">9P</span>
-              </div>
-              <div class="flex flex-col items-center gap-1 group">
-                <div class="w-full bg-slate-700 h-[20%] rounded-t transition-all"></div>
-                <span class="text-[10px] text-slate-500">10P</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 2: MEMBERS ROSTER WITH DIRECT INDIVIDUAL WHATSAPP ACTION -->
-        <div id="tab-members" class="tab-pane hidden space-y-3">
-          <div class="flex items-center justify-between">
-            <h4 class="text-xs font-semibold text-white">Recent Turnstile Check-ins (Live RFID Feed)</h4>
-            <span class="text-[11px] text-brand-orangeLight">Tap WhatsApp icon to message individually</span>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="text-slate-400 font-medium border-b border-white/10">
-                <tr>
-                  <th class="py-2.5 px-3">Athlete</th>
-                  <th class="py-2.5 px-3">Membership Plan</th>
-                  <th class="py-2.5 px-3">Method</th>
-                  <th class="py-2.5 px-3">Status</th>
-                  <th class="py-2.5 px-3">1-on-1 Action</th>
-                  <th class="py-2.5 px-3 text-right">Time</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/5 text-slate-200">
-                <tr class="hover:bg-white/5 transition-colors">
-                  <td class="py-2.5 px-3 flex items-center space-x-2.5">
-                    <div class="w-6 h-6 rounded-full bg-brand-orange/20 text-brand-orangeLight flex items-center justify-center font-medium text-[11px]">MV</div>
-                    <span>Marcus Vance</span>
-                  </td>
-                  <td class="py-2.5 px-3 text-brand-orangeLight">Annual All-Access</td>
-                  <td class="py-2.5 px-3">RFID Badge #1082</td>
-                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium text-[11px]">Granted</span></td>
-                  <td class="py-2.5 px-3">
-                    <button onclick="sendQuickWhatsApp('Marcus Vance', '+91 98765 43210')" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600 text-emerald-300 hover:text-white rounded text-[11px] flex items-center space-x-1 transition-colors">
-                      <i class="fa-brands fa-whatsapp"></i>
-                      <span>Send WhatsApp</span>
-                    </button>
-                  </td>
-                  <td class="py-2.5 px-3 text-right font-mono text-slate-400 tabular-nums">Just now</td>
-                </tr>
-                <tr class="hover:bg-white/5 transition-colors">
-                  <td class="py-2.5 px-3 flex items-center space-x-2.5">
-                    <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-medium text-[11px]">SK</div>
-                    <span>Sneha Kapoor</span>
-                  </td>
-                  <td class="py-2.5 px-3 text-slate-300">CrossFit & Strength</td>
-                  <td class="py-2.5 px-3">Dynamic App QR</td>
-                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium text-[11px]">Granted</span></td>
-                  <td class="py-2.5 px-3">
-                    <button onclick="sendQuickWhatsApp('Sneha Kapoor', '+91 98111 22334')" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600 text-emerald-300 hover:text-white rounded text-[11px] flex items-center space-x-1 transition-colors">
-                      <i class="fa-brands fa-whatsapp"></i>
-                      <span>Send WhatsApp</span>
-                    </button>
-                  </td>
-                  <td class="py-2.5 px-3 text-right font-mono text-slate-400 tabular-nums">3 min ago</td>
-                </tr>
-                <tr class="hover:bg-white/5 transition-colors">
-                  <td class="py-2.5 px-3 flex items-center space-x-2.5">
-                    <div class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-medium text-[11px]">RS</div>
-                    <span>Rahul Sharma</span>
-                  </td>
-                  <td class="py-2.5 px-3 text-slate-300">Quarterly Gym Only</td>
-                  <td class="py-2.5 px-3">RFID Fob</td>
-                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-medium text-[11px]">Due in 2 days</span></td>
-                  <td class="py-2.5 px-3">
-                    <button onclick="sendQuickWhatsApp('Rahul Sharma', '+91 97222 33445', 'renewal')" class="px-2.5 py-1 bg-amber-600/30 hover:bg-amber-600 text-amber-200 hover:text-white rounded text-[11px] flex items-center space-x-1 transition-colors">
-                      <i class="fa-brands fa-whatsapp"></i>
-                      <span>Send UPI Link</span>
-                    </button>
-                  </td>
-                  <td class="py-2.5 px-3 text-right font-mono text-slate-400 tabular-nums">8 min ago</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- TAB 3: 1-ON-1 WHATSAPP COMPOSE CONSOLE -->
-        <div id="tab-whatsapp" class="tab-pane hidden space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-brand-surface p-4 rounded-xl border border-white/5 space-y-3">
-              <h4 class="text-xs font-semibold text-white">Direct Message an Individual Customer</h4>
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Select Member</label>
-                <select id="quickMemberSelect" class="w-full px-3 py-1.5 rounded-lg bg-brand-dark border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-                  <option value="Marcus Vance">Marcus Vance (+91 98765 43210)</option>
-                  <option value="Sneha Kapoor">Sneha Kapoor (+91 98111 22334)</option>
-                  <option value="Rahul Sharma">Rahul Sharma (+91 97222 33445)</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Template Preset</label>
-                <div class="grid grid-cols-3 gap-2">
-                  <button type="button" onclick="setWAPreset('checkin')" class="px-2 py-1 rounded bg-brand-dark border border-white/10 hover:border-brand-orange text-[10px] text-slate-300">Check-in</button>
-                  <button type="button" onclick="setWAPreset('routine')" class="px-2 py-1 rounded bg-brand-dark border border-white/10 hover:border-brand-orange text-[10px] text-slate-300">Routine Split</button>
-                  <button type="button" onclick="setWAPreset('renewal')" class="px-2 py-1 rounded bg-brand-dark border border-white/10 hover:border-brand-orange text-[10px] text-slate-300">Renewal Link</button>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Message Content</label>
-                <textarea id="quickWAMessage" rows="3" class="w-full px-3 py-2 rounded-lg bg-brand-dark border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange" placeholder="Type personal message..."></textarea>
-              </div>
-
-              <button onclick="dispatchQuickWA()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center space-x-1.5">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>Dispatch via Meta Cloud API</span>
-              </button>
-            </div>
-
-            <div class="bg-brand-surface p-4 rounded-xl border border-white/5 flex flex-col justify-between">
-              <div>
-                <h4 class="text-xs font-semibold text-white mb-2">Delivery Log Feed</h4>
-                <div id="quickWALog" class="space-y-2 text-[11px] text-slate-300">
-                  <div class="p-2 rounded bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span>To: Marcus Vance (Check-in Receipt)</span>
-                    <span class="text-emerald-400 font-medium">Delivered</span>
-                  </div>
-                  <div class="p-2 rounded bg-black/40 border border-white/5 flex justify-between items-center">
-                    <span>To: Rahul Sharma (UPI Renewal Link ₹200)</span>
-                    <span class="text-emerald-400 font-medium">Read</span>
-                  </div>
-                </div>
-              </div>
-              <p class="text-[10px] text-slate-500 mt-4">
-                Powered by official Meta WhatsApp Cloud API credentials. Zero rate-limit penalties.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 4: QUICK POS -->
-        <div id="tab-pos" class="tab-pane hidden space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <div class="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <div class="bg-brand-surface p-3 rounded-lg border border-white/5 hover:border-brand-orange cursor-pointer transition-colors text-center" onclick="addPOSItem('Whey Protein Isolate 1kg', 2400)">
-                <div class="text-brand-orangeLight text-lg mb-1"><i class="fa-solid fa-bottle-water"></i></div>
-                <div class="text-xs font-medium text-white">Whey Isolate 1kg</div>
-                <div class="text-xs text-slate-400 mt-1 tabular-nums">₹2,400</div>
-              </div>
-              <div class="bg-brand-surface p-3 rounded-lg border border-white/5 hover:border-brand-orange cursor-pointer transition-colors text-center" onclick="addPOSItem('Pre-Workout Blend', 1200)">
-                <div class="text-brand-orangeLight text-lg mb-1"><i class="fa-solid fa-bolt"></i></div>
-                <div class="text-xs font-medium text-white">Pre-Workout Blend</div>
-                <div class="text-xs text-slate-400 mt-1 tabular-nums">₹1,200</div>
-              </div>
-              <div class="bg-brand-surface p-3 rounded-lg border border-white/5 hover:border-brand-orange cursor-pointer transition-colors text-center" onclick="addPOSItem('Monthly Locker Key', 400)">
-                <div class="text-brand-orangeLight text-lg mb-1"><i class="fa-solid fa-key"></i></div>
-                <div class="text-xs font-medium text-white">Monthly Locker Rent</div>
-                <div class="text-xs text-slate-400 mt-1 tabular-nums">₹400</div>
-              </div>
-            </div>
-
-            <div class="bg-brand-surface p-4 rounded-xl border border-white/10">
-              <h5 class="text-xs font-medium text-slate-400 mb-2">Member Bill Summary</h5>
-              <div id="posCartList" class="text-xs text-slate-300 space-y-1.5 mb-3 min-h-[40px]">
-                <div class="flex justify-between">
-                  <span>Whey Isolate 1kg</span>
-                  <span class="font-medium text-white tabular-nums">₹2,400</span>
-                </div>
-              </div>
-              <div class="border-t border-white/10 pt-2 flex justify-between font-semibold text-sm text-white">
-                <span>Total:</span>
-                <span id="posTotalVal" class="text-brand-orangeLight tabular-nums">₹2,400</span>
-              </div>
-              <button onclick="chargeMemberPOS()" class="w-full mt-3 bg-brand-orange hover:bg-brand-orangeLight text-white font-medium py-2 rounded-lg text-xs transition-colors">
-                Charge to Member Fob / UPI
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ================= ROI / REVENUE IMPACT CALCULATOR (IN INR ₹) ================= -->
-  <section id="roi-calculator" class="py-20 relative bg-brand-carbon/30 border-t border-white/5">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div class="glass-card rounded-2xl p-6 sm:p-10 border border-white/10 shadow-xl relative overflow-hidden">
-        <div class="text-center max-w-xl mx-auto mb-8">
-          <span class="text-xs font-medium text-brand-orangeLight">ROI Calculator</span>
-          <h3 class="text-2xl sm:text-3xl font-semibold text-white mt-1">Calculate Your Annual Revenue Uplift</h3>
-          <p class="text-slate-400 text-xs sm:text-sm mt-1">See how automated WhatsApp dunning and turnstile renewal gates recover lost gym dues.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <!-- Sliders -->
-          <div class="space-y-5">
-            <div>
-              <div class="flex justify-between text-xs font-medium mb-1.5">
-                <span class="text-slate-300">Active Gym Members</span>
-                <span class="text-brand-orangeLight tabular-nums text-sm font-semibold" id="calcMembersVal">450 members</span>
-              </div>
-              <input type="range" id="sliderMembers" min="50" max="3000" step="25" value="450" class="w-full accent-amber-500 cursor-pointer bg-slate-800 h-2 rounded-lg">
-            </div>
-
-            <div>
-              <div class="flex justify-between text-xs font-medium mb-1.5">
-                <span class="text-slate-300">Average Monthly Fee per Member</span>
-                <span class="text-brand-orangeLight tabular-nums text-sm font-semibold" id="calcPriceVal">₹1,500 / mo</span>
-              </div>
-              <input type="range" id="sliderPrice" min="500" max="8000" step="100" value="1500" class="w-full accent-amber-500 cursor-pointer bg-slate-800 h-2 rounded-lg">
-            </div>
-
-            <div class="text-xs text-slate-400 bg-white/5 p-3 rounded-lg border border-white/5">
-              <i class="fa-solid fa-circle-info text-brand-orangeLight mr-1"></i> Based on conservative 4.2% churn recovery and 3.8% failed renewal recovery across gyms using GimXSoft.
-            </div>
-          </div>
-
-          <!-- Dynamic Output in INR -->
-          <div class="bg-brand-surface rounded-xl p-6 border border-white/10 text-center space-y-3">
-            <p class="text-xs text-slate-400">Estimated Annual Recovered Revenue</p>
-            <div class="text-3xl sm:text-4xl font-semibold text-brand-orangeLight tabular-nums" id="calcRecoveredTotal">
-              ₹6,56,100
-            </div>
-            <p class="text-xs text-slate-300">
-              Equivalent to retaining <span class="text-brand-orangeLight font-semibold" id="calcEquivalentMembers">+36</span> additional active paying members every year.
-            </p>
-            <button onclick="openDemoModal()" class="w-full py-2.5 bg-brand-orange hover:bg-brand-orangeLight text-white font-medium text-xs rounded-lg transition-colors shadow-sm">
-              Unlock this recovery for ₹200/mo
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ================= TRANSPARENT PRICING: 1-MONTH FREE TRIAL THEN ₹2,000 ONLY ================= -->
-  <section id="pricing" class="py-20 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <span class="text-xs font-medium text-brand-orangeLight bg-brand-orange/10 px-3 py-1 rounded-full border border-brand-orange/20">
-          Transparent, Zero-Risk Pricing
+        <span class="text-xs font-semibold text-brand-orangeLight tracking-wide uppercase px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20">
+          Flat Pricing. No Surprises.
         </span>
-        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white mt-3">
-          1-Month Free Trial, Then ₹2,000 Only
+        <h2 class="text-2xl sm:text-4xl font-bold text-white mt-3 font-display">
+          1-Month Free Trial, Then ₹2,000 / Month Only
         </h2>
         <p class="text-slate-400 text-xs sm:text-sm mt-2">
-          Try free for 1 month with full feature access. No payment or credit card needed for registration. Cancel anytime with zero penalty. After 1 month, full platform access continues at ₹2,000 only.
+          No charge per member, no commissions, nothing extra added at checkout. Try free for 30 days. Cancel whenever you want and take your data with you.
         </p>
       </div>
 
-      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-        
-        <!-- Standard Tier: ₹2,000 with 1 Month Free Trial -->
-        <div class="glass-card rounded-2xl p-7 border-2 border-brand-orange relative flex flex-col justify-between shadow-xl">
-          <div class="absolute -top-3 left-6 bg-brand-orange text-white font-medium text-[11px] px-3 py-0.5 rounded-full shadow">
-            1-Month Free Trial Included
+      <!-- Pricing Highlight Card (Modeled after reference format, with OUR EXACT DATA) -->
+      <div class="max-w-xl mx-auto">
+        <div class="glass-card rounded-3xl p-8 sm:p-10 border-2 border-brand-orange relative flex flex-col justify-between shadow-2xl shadow-brand-orange/20">
+          
+          <!-- Top Recommendation Badge -->
+          <div class="absolute -top-3.5 left-8 bg-brand-orange text-white font-bold text-xs uppercase tracking-wider px-3.5 py-1 rounded-full shadow-md">
+            Most Gyms Start Here
           </div>
+
           <div>
-            <h3 class="text-base font-semibold text-white">Full Platform Access</h3>
-            <p class="text-xs text-slate-400 mt-1">For gym owners, independent studios, and franchise clubs.</p>
-            
-            <div class="my-5 flex items-baseline space-x-2">
-              <span class="text-4xl font-semibold text-white tabular-nums">₹2,000</span>
-              <span class="text-xs text-slate-400 font-normal">only after 1-month free trial</span>
+            <!-- Header & Price -->
+            <div class="flex items-baseline justify-between pt-2 mb-4">
+              <div>
+                <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight font-display">₹2,000</span>
+                <span class="text-sm font-medium text-slate-400 ml-1">/ month</span>
+              </div>
+              <div class="text-right">
+                <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs">
+                  1-Month Free Trial
+                </span>
+                <p class="text-[11px] text-slate-400 mt-1">₹0 due today</p>
+              </div>
             </div>
 
-            <div class="p-3 bg-brand-surface rounded-lg border border-white/5 mb-5 text-xs text-emerald-400 flex items-center space-x-2">
-              <i class="fa-solid fa-gift"></i>
-              <span>Start 30 days 100% free. ₹0 due today. Cancel anytime.</span>
-            </div>
+            <p class="text-xs text-slate-300 pb-5 border-b border-white/10 leading-relaxed">
+              Complete full-platform access for your entire gym. Includes Meta Cloud API WhatsApp automation, turnstiles, and member management.
+            </p>
 
-            <ul class="text-xs text-slate-300 space-y-2.5">
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> <strong>1-on-1 Individual WhatsApp Messaging (Meta Cloud API)</strong></li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Turnstile RFID & QR attendance integration (99.98% uptime)</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> 7-Day exercise catalogue & custom routine split builder</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Member biometrics & BMI body composition tracking</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Recurring billing, UPI QR & GST tax invoice generation</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Unlimited active members & staff trainer logins</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> No payment needed for registration (₹0 today)</li>
+            <!-- Comprehensive Checklist -->
+            <ul class="text-xs sm:text-sm text-slate-200 space-y-3.5 my-6">
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>1-Month 100% Free Trial</strong> with full feature access</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>Unlimited gym members</strong> & multi-staff logins</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>Meta Cloud API WhatsApp automation</strong> & 1-on-1 dues notices</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>QR code & contactless RFID</strong> desk & turnstile check-ins</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>Automated UPI payment links</strong>, receipts & GST tax invoices</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>Walk-in enquiry CRM</strong> & lead pipeline follow-up board</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>7-Day workout routine splits builder</strong> & exercise library</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>Member biometrics, BMI progress</strong> & body composition tracking</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>2D Zeus Thunder Engine</strong> with interactive electric flex visual stage</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 mr-3 shrink-0"></i>
+                <span><strong>Multi-branch management</strong> & real-time revenue analytics</span>
+              </li>
             </ul>
           </div>
 
-          <div class="mt-7 space-y-2">
-            <button onclick="openTrialModal()" class="w-full py-3 bg-brand-orange hover:bg-brand-orangeLight text-white font-medium rounded-lg text-xs transition-colors shadow-sm">
-              Start 1-Month Free Trial Now (₹0 Today)
+          <!-- CTA & Assurance -->
+          <div class="pt-4 border-t border-white/10 space-y-3">
+            <button onclick="openTrialModal()" class="w-full py-3.5 bg-brand-orange hover:bg-brand-orangeLight text-white font-bold text-sm rounded-xl transition-all shadow-xl shadow-brand-orange/30 hover:scale-[1.01]">
+              Start 1-Month Free Trial →
             </button>
-            <p class="text-[11px] text-slate-500 text-center">Instant setup • Full data migration support</p>
+            <p class="text-center text-[11px] text-slate-400">
+              No card needed · Pay only after 30 days · Cancel anytime in 1 click
+            </p>
           </div>
+
         </div>
-
-        <!-- Multi-Branch Enterprise -->
-        <div class="glass-card rounded-2xl p-7 border border-white/10 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between">
-              <h3 class="text-base font-semibold text-white">Multi-Branch & Enterprise</h3>
-              <span class="text-[10px] bg-brand-orange/10 text-brand-orangeLight px-2 py-0.5 rounded font-medium">Custom Scale</span>
-            </div>
-            <p class="text-xs text-slate-400 mt-1">For multi-branch gym chains, fitness franchises & enterprise facilities.</p>
-            
-            <div class="my-5 flex items-baseline space-x-2">
-              <span class="text-4xl font-semibold text-white tabular-nums">Custom</span>
-              <span class="text-xs text-slate-400 font-normal">/ enterprise rollout</span>
-            </div>
-
-            <ul class="text-xs text-slate-300 space-y-2.5">
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Everything in Full Platform Access</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Centralized multi-branch HQ dashboard</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Cross-branch member roaming passes</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Custom turnstile hardware bridge setup (Face/RFID/QR)</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> Priority WhatsApp support SLA with dedicated engineer</li>
-              <li class="flex items-center"><i class="fa-solid fa-check text-brand-orange mr-2"></i> White-glove database migration from legacy gym CRM</li>
-            </ul>
-          </div>
-
-          <div class="mt-7 space-y-2">
-            <a href="mailto:ekametechnologie@gmail.com?subject=GimXSoft%20Enterprise%20Plan%20Inquiry" class="w-full py-3 bg-brand-surface hover:bg-brand-elevated text-slate-200 border border-white/10 font-medium rounded-lg text-xs transition-colors flex items-center justify-center space-x-2">
-              <i class="fa-regular fa-envelope text-brand-orangeLight"></i>
-              <span>Book Demo: ekametechnologie@gmail.com</span>
-            </a>
-            <p class="text-[11px] text-slate-500 text-center">Custom onboarding assistance included</p>
-          </div>
-        </div>
-
       </div>
+
     </div>
   </section>
 
+  <!-- ================= SECTION: FAQ (STRAIGHT ANSWERS) ================= -->
+  <section id="faq" class="py-20 relative bg-brand-dark/95 border-t border-white/5">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center mb-14">
+        <span class="text-xs font-semibold text-brand-orangeLight tracking-wide uppercase px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20">
+          FAQ
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-bold text-white mt-3 font-display">
+          Straight answers.
+        </h2>
+        <p class="text-slate-400 text-xs sm:text-sm mt-2">
+          Everything you need to know about switching your gym to GimXSoft.
+        </p>
       </div>
+
+      <!-- Accordion List -->
+      <div class="space-y-4" id="faqAccordion">
+        
+        <!-- Q1 -->
+        <div class="glass-card rounded-2xl border border-white/10 p-5 cursor-pointer" onclick="toggleFaq(1)">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-white">Will this replace my register book and Excel sheets?</h4>
+            <i id="faq-icon-1" class="fa-solid fa-plus text-xs text-brand-orangeLight transition-transform"></i>
+          </div>
+          <p id="faq-ans-1" class="hidden text-xs text-slate-300 mt-3 leading-relaxed border-t border-white/5 pt-3">
+            Yes — that is the whole point. Load your members, set your plans, and WhatsApp reminders go out on their own. When you want a personal touch, send a WhatsApp in one tap. Most Indian gym owners drop their paper registers within the first week.
+          </p>
+        </div>
+
+        <!-- Q2 -->
+        <div class="glass-card rounded-2xl border border-white/10 p-5 cursor-pointer" onclick="toggleFaq(2)">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-white">What does it cost after the 1-month free trial?</h4>
+            <i id="faq-icon-2" class="fa-solid fa-plus text-xs text-brand-orangeLight transition-transform"></i>
+          </div>
+          <p id="faq-ans-2" class="hidden text-xs text-slate-300 mt-3 leading-relaxed border-t border-white/5 pt-3">
+            Your entire first month is 100% free. After 30 days, it is just ₹2,000 flat per month for your entire gym. That includes unlimited members, staff logins, WhatsApp reminders, and QR check-ins. No per-member fees, no commissions, no hidden charges. Cancel whenever you like.
+          </p>
+        </div>
+
+        <!-- Q3 -->
+        <div class="glass-card rounded-2xl border border-white/10 p-5 cursor-pointer" onclick="toggleFaq(3)">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-white">Do I need a credit card to sign up?</h4>
+            <i id="faq-icon-3" class="fa-solid fa-plus text-xs text-brand-orangeLight transition-transform"></i>
+          </div>
+          <p id="faq-ans-3" class="hidden text-xs text-slate-300 mt-3 leading-relaxed border-t border-white/5 pt-3">
+            No. No credit card, debit card, or advance payment is required. You can register your gym and immediately start using all features for 30 days with zero payment.
+          </p>
+        </div>
+
+        <!-- Q4 -->
+        <div class="glass-card rounded-2xl border border-white/10 p-5 cursor-pointer" onclick="toggleFaq(4)">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-white">Can I bring my existing member list?</h4>
+            <i id="faq-icon-4" class="fa-solid fa-plus text-xs text-brand-orangeLight transition-transform"></i>
+          </div>
+          <p id="faq-ans-4" class="hidden text-xs text-slate-300 mt-3 leading-relaxed border-t border-white/5 pt-3">
+            Yes. Upload an Excel or CSV file, or add members by hand. Member names, phone numbers, join dates, and plan expiry dates all transfer across in seconds.
+          </p>
+        </div>
+
+        <!-- Q5 -->
+        <div class="glass-card rounded-2xl border border-white/10 p-5 cursor-pointer" onclick="toggleFaq(5)">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-white">Do I need WhatsApp for this to work?</h4>
+            <i id="faq-icon-5" class="fa-solid fa-plus text-xs text-brand-orangeLight transition-transform"></i>
+          </div>
+          <p id="faq-ans-5" class="hidden text-xs text-slate-300 mt-3 leading-relaxed border-t border-white/5 pt-3">
+            The CRM and QR check-in features work fully on their own. For automatic WhatsApp messages, GimXSoft connects to the official Meta WhatsApp Business Cloud API with your approved phone number, or you can use our verified gateway.
+          </p>
+        </div>
+
+        <!-- Q6 -->
+        <div class="glass-card rounded-2xl border border-white/10 p-5 cursor-pointer" onclick="toggleFaq(6)">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-white">What happens to my gym data if I leave?</h4>
+            <i id="faq-icon-6" class="fa-solid fa-plus text-xs text-brand-orangeLight transition-transform"></i>
+          </div>
+          <p id="faq-ans-6" class="hidden text-xs text-slate-300 mt-3 leading-relaxed border-t border-white/5 pt-3">
+            It stays 100% yours. You can download all your members, attendance records, payment history, and invoices as a CSV file before leaving. We hold your data securely for 30 days after cancellation so you never lose anything.
+          </p>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
-  <!-- ================= FINAL CONVERSION CTA ================= -->
-  <section class="py-20 relative border-t border-white/5 bg-brand-carbon/40">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="glass-card rounded-2xl p-8 sm:p-12 border border-white/10 shadow-xl">
-        <div class="w-12 h-12 rounded-xl bg-brand-orange/20 text-brand-orangeLight mx-auto flex items-center justify-center text-xl mb-4">
+  <!-- ================= CLOSING CTA BANNER ================= -->
+  <section class="py-20 relative bg-brand-carbon/60 border-t border-white/5 text-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-brand-orange/30 shadow-2xl relative overflow-hidden">
+        
+        <div class="w-12 h-12 rounded-2xl bg-brand-orange/20 text-brand-orangeLight flex items-center justify-center text-xl mx-auto mb-5">
           <i class="fa-solid fa-dumbbell"></i>
         </div>
 
-        <h2 class="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-          Ready to Modernize Your Gym Facility?
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
+          Put the paper register down.
         </h2>
-        <p class="text-slate-300 max-w-lg mx-auto mt-2 text-xs sm:text-sm font-normal">
-          Start your 1-month free trial today. After 1 month, full platform access continues at ₹2,000 only. For custom demos, contact our engineering team directly at <a href="mailto:ekametechnologie@gmail.com" class="text-brand-orangeLight underline">ekametechnologie@gmail.com</a>.
+        <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto mt-3 leading-relaxed">
+          Set your gym up in 15 minutes. 30 days free, then ₹2,000/month flat. Message us on WhatsApp and we'll help you get started right away.
         </p>
 
-        <!-- Direct Email or Trial Action -->
-        <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3 max-w-md mx-auto">
-          <a href="mailto:ekametechnologie@gmail.com?subject=GimXSoft%20Demo%20Request" class="px-6 py-2.5 bg-brand-orange hover:bg-brand-orangeLight text-white font-medium text-xs rounded-lg transition-colors flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-calendar-check"></i>
-            <span>Schedule Demo (Email Us)</span>
-          </a>
-          <button onclick="openTrialModal()" class="px-6 py-2.5 bg-brand-surface hover:bg-brand-elevated text-slate-200 border border-white/10 font-medium text-xs rounded-lg transition-colors">
-            Try 1 Month Free
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+          <button onclick="openTrialModal()" class="w-full sm:w-auto px-8 py-3.5 bg-brand-orange hover:bg-brand-orangeLight text-white font-bold text-sm rounded-xl transition-all shadow-xl shadow-brand-orange/30 hover:scale-[1.02]">
+            Start 1-Month Free Trial →
           </button>
+          <a href="https://wa.me/917541004076?text=Hi%2C+I%27m+interested+in+GimXSoft+for+my+gym" target="_blank" class="w-full sm:w-auto px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30">
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>Chat with us on WhatsApp</span>
+          </a>
         </div>
 
-        <p class="text-[11px] text-slate-500 mt-4">
-          Official Contact: ekametechnologie@gmail.com • No credit card needed for 1-month trial
+        <p class="text-[11px] text-slate-400 mt-5">
+          No credit card needed · Free 30-day trial · Setup in Hindi or English
         </p>
+
       </div>
     </div>
   </section>
 
-  <!-- ================= SLEEK FOOTER ================= -->
-  <footer class="py-10 border-t border-white/10 bg-brand-dark text-slate-400 text-xs">
+  <!-- ================= FOOTER ================= -->
+  <footer class="py-12 border-t border-white/5 bg-brand-dark text-xs text-slate-400">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-        <div class="col-span-2">
-          <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 rounded bg-brand-orange text-white flex items-center justify-center text-xs">
-              <i class="fa-solid fa-dumbbell"></i>
-            </div>
-            <span class="font-semibold text-sm text-white">GimXSoft</span>
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <div class="flex items-center space-x-3">
+          <div class="w-7 h-7 rounded-lg bg-brand-orange flex items-center justify-center text-white text-xs font-bold">
+            <i class="fa-solid fa-dumbbell"></i>
           </div>
-          <p class="text-slate-400 mt-2 max-w-sm text-xs leading-relaxed font-normal">
-            The high-performance gym management and athletic operations platform. Turnstiles, individual WhatsApp messaging, workout libraries, and billing.
-          </p>
-          <div class="mt-3 text-xs text-slate-300">
-            <span>Official Demo & Inquiries:</span>
-            <a href="mailto:ekametechnologie@gmail.com" class="text-brand-orangeLight hover:underline font-mono ml-1">ekametechnologie@gmail.com</a>
+          <div>
+            <span class="font-bold text-white text-sm">GimXSoft</span>
+            <span class="text-[11px] text-slate-500 ml-2">Smarter Fitness. Simpler Management.</span>
           </div>
         </div>
 
-        <div>
-          <h4 class="font-medium text-white mb-2.5">Platform Modules</h4>
-          <ul class="space-y-1.5 text-slate-400">
-            <li><a href="#features" class="hover:text-white transition-colors">Turnstiles & RFID</a></li>
-            <li><a href="#whatsapp-individual" class="hover:text-white transition-colors">1-on-1 WhatsApp CRM</a></li>
-            <li><a href="#features" class="hover:text-white transition-colors">Workout Catalogue</a></li>
-            <li><a href="#features" class="hover:text-white transition-colors">Member Biometrics</a></li>
-            <li><a href="#pricing" class="hover:text-white transition-colors">Pricing (₹2,000 only)</a></li>
-          </ul>
+        <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+          <a href="#how" class="hover:text-white transition-colors">How it works</a>
+          <a href="#features" class="hover:text-white transition-colors">Features</a>
+          <a href="#preview" class="hover:text-white transition-colors">5s AI Preview</a>
+          <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+          <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+          <a href="/login" class="hover:text-white transition-colors">Admin Log in</a>
         </div>
 
-        <div>
-          <h4 class="font-medium text-white mb-2.5">Contact & Support</h4>
-          <ul class="space-y-1.5 text-slate-400">
-            <li><a href="mailto:ekametechnologie@gmail.com" class="hover:text-white transition-colors">ekametechnologie@gmail.com</a></li>
-            <li><a href="#roi-calculator" class="hover:text-white transition-colors">ROI Calculator</a></li>
-            <li><a href="#interactive-crm" class="hover:text-white transition-colors">Interactive Sandbox</a></li>
-            <li><span class="text-slate-500">Made by Ekame Technologies</span></li>
-          </ul>
+        <div class="text-right text-[11px] text-slate-500">
+          © 2026 GimXSoft Inc. All rights reserved. Built for Indian gyms.
         </div>
-      </div>
 
-      <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-slate-500 text-[11px]">
-        <p>© 2026 GimXSoft / Ekame Technologies. All rights reserved.</p>
-        <p class="mt-2 sm:mt-0 font-mono">System Status: <span class="text-emerald-400">All Clusters Operational (99.98% SLA)</span></p>
       </div>
     </div>
   </footer>
 
-  <!-- ================= DEMO MODAL (WITH EMAIL ekametechnologie@gmail.com) ================= -->
-  <div id="demoModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-2xl p-6 border border-white/20 shadow-2xl relative">
-      <button onclick="closeDemoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-base">
-        <i class="fa-solid fa-xmark"></i>
+  <!-- ================= TRIAL REGISTRATION MODAL ================= -->
+  <div id="trialModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-white/20 shadow-2xl relative">
+      <button onclick="closeTrialModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+        <i class="fa-solid fa-xmark text-lg"></i>
       </button>
 
-      <div class="flex items-center space-x-2 text-brand-orangeLight text-xs font-medium mb-1">
-        <i class="fa-regular fa-calendar-check"></i>
-        <span>Schedule 1-on-1 Walkthrough</span>
-      </div>
-      <h3 class="text-lg font-semibold text-white">Book a GimXSoft Live Demo</h3>
-      <p class="text-slate-400 text-xs mt-1">Our engineering team will conduct a tailored walkthrough for your facility.</p>
-
-      <form onsubmit="handleDemoSubmit(event)" class="mt-4 space-y-3">
-        <div>
-          <label class="block text-[11px] text-slate-300 mb-1">Your Name</label>
-          <input type="text" required id="demoName" placeholder="e.g. Vikram Malhotra" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-        </div>
-
-        <div>
-          <label class="block text-[11px] text-slate-300 mb-1">Gym / Fitness Studio Name</label>
-          <input type="text" required id="demoGym" placeholder="e.g. Iron Core Fitness" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[11px] text-slate-300 mb-1">Active Members</label>
-            <select id="demoMembers" class="w-full px-2.5 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-              <option value="50-200">50 - 200</option>
-              <option value="200-800" selected>200 - 800</option>
-              <option value="800+">800+ Members</option>
-              <option value="multi">Multiple Branches</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[11px] text-slate-300 mb-1">Phone / WhatsApp</label>
-            <input type="tel" required id="demoPhone" placeholder="+91 98765 43210" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-          </div>
-        </div>
-
-        <button type="submit" class="w-full mt-2 py-2.5 bg-brand-orange hover:bg-brand-orangeLight text-white font-medium text-xs rounded-lg transition-colors shadow-sm">
-          Send Demo Request to ekametechnologie@gmail.com
-        </button>
-      </form>
-
-      <div id="demoFeedback" class="hidden text-center text-xs text-brand-orangeLight font-medium mt-3 p-2 bg-brand-orange/10 rounded-lg">
-        ✓ Request prepared! Opening your mail client to ekametechnologie@gmail.com...
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= 1-MONTH FREE TRIAL MODAL ================= -->
-  <div id="trialModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-2xl p-6 border border-white/20 shadow-2xl relative">
-      <button onclick="closeTrialModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-base">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div class="flex items-center space-x-2 text-emerald-400 text-xs font-medium mb-1">
-        <i class="fa-solid fa-gift"></i>
-        <span>1-Month Free Access (Zero Risk)</span>
-      </div>
-      <h3 class="text-lg font-semibold text-white">Activate 30-Day Free Trial</h3>
-      <p class="text-slate-400 text-xs mt-1">Full platform access for 30 days free. After 1 month, full access continues at ₹2,000 only. Cancel anytime.</p>
-
-      <div class="p-3 bg-brand-surface rounded-lg border border-white/5 my-3 text-[11px] text-slate-300 flex items-center space-x-2">
-        <i class="fa-solid fa-shield-halved text-brand-orangeLight"></i>
-        <span><strong>No payment needed for registration.</strong> ₹0 due today.</span>
-      </div>
-
-      <form onsubmit="handleTrialSubmit(event)" class="space-y-3">
-        <div>
-          <label class="block text-[11px] text-slate-300 mb-1">Gym / Center Name</label>
-          <input type="text" required id="trialGym" placeholder="Iron Core Fitness Club" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-        </div>
-
-        <div>
-          <label class="block text-[11px] text-slate-300 mb-1">Your Full Name</label>
-          <input type="text" required id="trialName" placeholder="Vikram Malhotra" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-        </div>
-
-        <div>
-          <label class="block text-[11px] text-slate-300 mb-1">Admin Work Email</label>
-          <input type="email" required id="trialEmailInput" placeholder="vikram@ironcore.com" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-        </div>
-
-        <div>
-          <label class="block text-[11px] text-slate-300 mb-1">Admin Password</label>
-          <input type="password" required minlength="6" id="trialPassword" value="Admin123!" placeholder="Minimum 6 characters" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-        </div>
-
-        <div>
-          <label class="block text-[11px] text-slate-300 mb-1">Branch Name (Optional)</label>
-          <input type="text" id="trialBranch" placeholder="Downtown Main Facility" class="w-full px-3 py-2 rounded-lg bg-brand-surface border border-white/10 text-white text-xs focus:outline-none focus:border-brand-orange">
-        </div>
-
-        <button type="submit" class="w-full mt-2 py-2.5 bg-brand-orange hover:bg-brand-orangeLight text-white font-medium text-xs rounded-lg transition-colors shadow-sm flex items-center justify-center space-x-2">
+      <div class="text-center mb-6">
+        <div class="w-10 h-10 rounded-xl bg-brand-orange/20 text-brand-orangeLight flex items-center justify-center text-lg mx-auto mb-3">
           <i class="fa-solid fa-gift"></i>
-          <span>Claim 1-Month Free Trial Now (₹0 Due)</span>
+        </div>
+        <h3 class="text-xl font-bold text-white">Start 1-Month Free Trial</h3>
+        <p class="text-xs text-slate-400 mt-1">₹0 due today. No credit card needed. Full access to all modules for 30 days.</p>
+      </div>
+
+      <form onsubmit="handleTrialSubmit(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Gym / Fitness Club Name</label>
+          <input type="text" id="trialGymName" required placeholder="e.g. Iron Forge Fitness" class="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-brand-orange">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Your Full Name</label>
+          <input type="text" id="trialOwnerName" required placeholder="e.g. Vikramaditya Singh" class="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-brand-orange">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">WhatsApp Mobile Number</label>
+          <input type="tel" id="trialPhone" required placeholder="+91 98765 43210" class="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-brand-orange">
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Email Address</label>
+          <input type="email" id="trialEmail" required placeholder="owner@ironforge.com" class="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-brand-orange">
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-brand-orange hover:bg-brand-orangeLight text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-brand-orange/30">
+          Claim 1-Month Free Trial (₹0) →
         </button>
 
-        <div class="text-center pt-2">
-          <a href="/login" class="text-xs text-brand-orangeLight hover:underline font-medium">
-            Already have an admin or member account? Sign in →
-          </a>
-        </div>
+        <p class="text-center text-[10px] text-slate-400">
+          Already an existing admin or customer? <a href="/login" class="text-brand-orangeLight underline">Sign in →</a>
+        </p>
       </form>
-
-      <div id="trialFeedback" class="hidden text-center text-xs font-medium mt-3 p-3 rounded-lg"></div>
     </div>
   </div>
 
-  <!-- ================= 2D ZEUS THUNDER & LIGHTNING ENGINE ================= -->
+  <!-- ================= SCRIPTS ================= -->
   <script>
-    /* ===================================================================
-       ATHLETIC 2D ZEUS & PROCEDURAL LIGHTNING ENGINE
-       - Real-time procedural branching thunderbolts from Zeus's raised fist
-       - Dynamic sparks particle dynamics
-       - Atmospheric screen flash and athletic power aura
-       - Reactive click, hover and storm triggering
-       =================================================================== */
-    let thunderCanvas, thunderCtx;
-    let lightningBolts = [];
-    let thunderSparks = [];
-    let zeusContainer, zeusImg, thunderFlash;
-    let lastAmbientTime = 0;
-    const zeusModes = ['assets/images/zeus_dark_glow.png', 'assets/images/zeus_electric.png', 'assets/images/zeus_cutout.png'];
-    let currentModeIndex = 0;
-
-    class LightningSegment {
-      constructor(x1, y1, x2, y2, alpha = 1.0, width = 3.0, isBranch = false) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
-        this.alpha = alpha;
-        this.width = width;
-        this.isBranch = isBranch;
-      }
-    }
-
-    class LightningBolt {
-      constructor(startX, startY, targetX, targetY, options = {}) {
-        this.segments = [];
-        this.alpha = 1.0;
-        this.decay = options.decay || 0.055;
-        this.color = options.color || '#F59E0B'; // Athletic Amber
-        this.lineWidth = options.lineWidth || 3.0;
-
-        this.generateBolt(startX, startY, targetX, targetY, 0, this.lineWidth);
-        this.spawnSparks(startX, startY, targetX, targetY);
-      }
-
-      generateBolt(x1, y1, x2, y2, depth, width) {
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 18 || depth > 5) {
-          this.segments.push(new LightningSegment(x1, y1, x2, y2, 1.0, width, depth > 0));
-          return;
-        }
-
-        // Midpoint with perpendicular displacement
-        const midX = (x1 + x2) / 2;
-        const midY = (y1 + y2) / 2;
-        const normalX = -dy / dist;
-        const normalY = dx / dist;
-
-        const jitterMagnitude = (Math.random() - 0.5) * dist * 0.42;
-        const displacedX = midX + normalX * jitterMagnitude;
-        const displacedY = midY + normalY * jitterMagnitude;
-
-        // Recursive halves
-        this.generateBolt(x1, y1, displacedX, displacedY, depth + 1, width * 0.95);
-        this.generateBolt(displacedX, displacedY, x2, y2, depth + 1, width * 0.92);
-
-        // Branching fork probability
-        if (depth < 3 && Math.random() < 0.42) {
-          const branchAngle = (Math.random() - 0.5) * 1.1;
-          const branchLength = dist * (0.35 + Math.random() * 0.35);
-          const cos = Math.cos(branchAngle);
-          const sin = Math.sin(branchAngle);
-          const branchDirX = (dx * cos - dy * sin) / dist;
-          const branchDirY = (dx * sin + dy * cos) / dist;
-
-          const branchTargetX = displacedX + branchDirX * branchLength;
-          const branchTargetY = displacedY + branchDirY * branchLength;
-
-          this.generateBolt(displacedX, displacedY, branchTargetX, branchTargetY, depth + 1, width * 0.65);
-        }
-      }
-
-      spawnSparks(x1, y1, x2, y2) {
-        const sparkCount = 12 + Math.floor(Math.random() * 12);
-        for (let i = 0; i < sparkCount; i++) {
-          const t = Math.random();
-          const px = x1 + (x2 - x1) * t + (Math.random() - 0.5) * 20;
-          const py = y1 + (y2 - y1) * t + (Math.random() - 0.5) * 20;
-          const speed = 2.0 + Math.random() * 4.5;
-          const angle = Math.random() * Math.PI * 2;
-          thunderSparks.push(new ThunderSpark(px, py, Math.cos(angle) * speed, Math.sin(angle) * speed));
-        }
-      }
-
-      update() {
-        this.alpha -= this.decay;
-        return this.alpha > 0;
-      }
-
-      draw(ctx) {
-        if (this.alpha <= 0) return;
-
-        ctx.save();
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        // 1. Outer Glowing Corona (Athletic Amber #F59E0B)
-        ctx.strokeStyle = `rgba(245, 158, 11, ${this.alpha * 0.8})`;
-        ctx.shadowColor = '#F59E0B';
-        ctx.shadowBlur = 18;
-        ctx.beginPath();
-        for (let s of this.segments) {
-          ctx.lineWidth = Math.max(1.5, s.width * 2.2);
-          ctx.moveTo(s.x1, s.y1);
-          ctx.lineTo(s.x2, s.y2);
-        }
-        ctx.stroke();
-
-        // 2. Pure White Core Strike
-        ctx.strokeStyle = `rgba(255, 255, 255, ${this.alpha})`;
-        ctx.shadowColor = '#FFFFFF';
-        ctx.shadowBlur = 6;
-        ctx.beginPath();
-        for (let s of this.segments) {
-          ctx.lineWidth = Math.max(1.0, s.width * 0.85);
-          ctx.moveTo(s.x1, s.y1);
-          ctx.lineTo(s.x2, s.y2);
-        }
-        ctx.stroke();
-
-        ctx.restore();
-      }
-    }
-
-    class ThunderSpark {
-      constructor(x, y, vx, vy) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.alpha = 1.0;
-        this.decay = 0.035 + Math.random() * 0.04;
-        this.size = 1.5 + Math.random() * 2.0;
-        this.color = Math.random() > 0.4 ? '#F59E0B' : '#FFFFFF';
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vx *= 0.94;
-        this.vy *= 0.94;
-        this.vy += 0.08;
-        this.alpha -= this.decay;
-        return this.alpha > 0;
-      }
-
-      draw(ctx) {
-        ctx.save();
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = Math.max(0, this.alpha);
-        ctx.shadowColor = '#F59E0B';
-        ctx.shadowBlur = 4;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    function initZeusThunderEngine() {
-      zeusContainer = document.getElementById('zeus-container');
-      thunderCanvas = document.getElementById('thunder-canvas');
-      zeusImg = document.getElementById('zeus-img');
-      thunderFlash = document.getElementById('thunder-flash');
-
-      if (!zeusContainer || !thunderCanvas) return;
-
-      thunderCtx = thunderCanvas.getContext('2d');
-      resizeThunderCanvas();
-      window.addEventListener('resize', resizeThunderCanvas);
-
-      // Summon Thunder on Click
-      zeusContainer.addEventListener('click', (e) => {
-        const rect = thunderCanvas.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const clickY = e.clientY - rect.top;
-        triggerThunderStrike(clickX, clickY, true);
-      });
-
-      // Parallax Tilt on Cursor Move
-      zeusContainer.addEventListener('mousemove', (e) => {
-        const rect = zeusContainer.getBoundingClientRect();
-        const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        const normY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-        if (zeusImg) {
-          zeusImg.style.transform = `translate(${normX * 8}px, ${normY * 8}px) scale(1.02)`;
+    // Smooth scrolling for all navigation anchors with navbar offset
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#' || targetId === '') return;
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          const headerOffset = 76;
+          const elementPosition = targetEl.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
         }
       });
+    });
 
-      zeusContainer.addEventListener('mouseleave', () => {
-        if (zeusImg) {
-          zeusImg.style.transform = '';
-        }
-      });
-
-      // Strike Thunder Button
-      const btnBurst = document.getElementById('btnThunderBurst');
-      if (btnBurst) {
-        btnBurst.addEventListener('click', (e) => {
-          e.stopPropagation();
-          triggerThunderStorm();
-        });
-      }
-
-      // Mode Switcher (Platinum White / Electric Amber / Classic)
-      const btnMode = document.getElementById('btnZeusMode');
-      if (btnMode) {
-        btnMode.addEventListener('click', (e) => {
-          e.stopPropagation();
-          currentModeIndex = (currentModeIndex + 1) % zeusModes.length;
-          zeusImg.src = zeusModes[currentModeIndex];
-          btnMode.textContent = currentModeIndex === 1 ? 'Golden Storm' : (currentModeIndex === 2 ? 'Classic Ink' : 'Titanium Glow');
-          triggerThunderStrike();
-        });
-      }
-
-      // Initial power-up storm once loaded!
-      setTimeout(() => {
-        triggerThunderStorm();
-      }, 350);
-
-      // Start 60fps render loop
-      requestAnimationFrame(renderThunderLoop);
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+    function closeMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.add('hidden');
     }
 
-    function resizeThunderCanvas() {
-      if (!zeusContainer || !thunderCanvas) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = zeusContainer.clientWidth;
-      const h = zeusContainer.clientHeight;
-      thunderCanvas.width = w * dpr;
-      thunderCanvas.height = h * dpr;
-      thunderCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // Modal controls
+    function openTrialModal() {
+      const modal = document.getElementById('trialModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+    function closeTrialModal() {
+      const modal = document.getElementById('trialModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+    function handleTrialSubmit(e) {
+      e.preventDefault();
+      alert('Congratulations! Your 1-Month Free Trial for ' + document.getElementById('trialGymName').value + ' has been activated. Redirecting to your dashboard...');
+      window.location.href = '/login';
     }
 
-    function getZeusFistCoords() {
-      const w = zeusContainer.clientWidth;
-      const h = zeusContainer.clientHeight;
-      return {
-        x: w * 0.72,
-        y: h * 0.17
-      };
-    }
-
-    function triggerThunderStrike(targetX, targetY, isUserClick = false) {
-      const fist = getZeusFistCoords();
-      const w = zeusContainer.clientWidth;
-      const h = zeusContainer.clientHeight;
-
-      if (targetX === undefined || targetY === undefined) {
-        const destinations = [
-          { x: w * 0.18, y: h * 0.70 },
-          { x: w * 0.50, y: h * 0.40 },
-          { x: w * 0.10, y: h * 0.20 },
-          { x: w * 0.90, y: h * 0.85 },
-          { x: w * 0.35, y: h * 0.90 },
-        ];
-        const dest = destinations[Math.floor(Math.random() * destinations.length)];
-        targetX = dest.x;
-        targetY = dest.y;
-      }
-
-      lightningBolts.push(new LightningBolt(fist.x, fist.y, targetX, targetY, {
-        lineWidth: isUserClick ? 4.0 : 3.0,
-        decay: isUserClick ? 0.045 : 0.065
-      }));
-
-      // Flash feedback
-      if (thunderFlash) {
-        thunderFlash.style.backgroundColor = isUserClick ? 'rgba(254, 243, 199, 0.4)' : 'rgba(254, 243, 199, 0.2)';
-        thunderFlash.style.opacity = '1';
-        setTimeout(() => {
-          thunderFlash.style.opacity = '0';
-        }, 90);
+    // FAQ Accordion Toggle
+    function toggleFaq(index) {
+      const ans = document.getElementById('faq-ans-' + index);
+      const icon = document.getElementById('faq-icon-' + index);
+      if (ans.classList.contains('hidden')) {
+        ans.classList.remove('hidden');
+        icon.classList.remove('fa-plus');
+        icon.classList.add('fa-minus');
+      } else {
+        ans.classList.add('hidden');
+        icon.classList.remove('fa-minus');
+        icon.classList.add('fa-plus');
       }
     }
 
-    function triggerThunderStorm() {
-      const w = zeusContainer.clientWidth;
-      const h = zeusContainer.clientHeight;
-      triggerThunderStrike(w * 0.18, h * 0.70, true);
-      setTimeout(() => triggerThunderStrike(w * 0.10, h * 0.25, true), 60);
-      setTimeout(() => triggerThunderStrike(w * 0.85, h * 0.80, true), 120);
-      setTimeout(() => triggerThunderStrike(w * 0.45, h * 0.92, true), 180);
-    }
+    // Theme Toggle (Dark / Light)
+    let isDarkTheme = true;
+    function toggleTheme() {
+      isDarkTheme = !isDarkTheme;
+      const body = document.getElementById('page-body');
+      const icon = document.getElementById('themeToggleIcon');
+      const zeusImg = document.getElementById('zeus-img');
 
-    function renderThunderLoop(timestamp) {
-      requestAnimationFrame(renderThunderLoop);
-
-      const w = zeusContainer.clientWidth;
-      const h = zeusContainer.clientHeight;
-      thunderCtx.clearRect(0, 0, w, h);
-
-      if (!lastAmbientTime) lastAmbientTime = timestamp;
-      if (timestamp - lastAmbientTime > 2200) {
-        lastAmbientTime = timestamp;
-        if (Math.random() > 0.15) {
-          triggerThunderStrike();
-        }
-      }
-
-      for (let i = lightningBolts.length - 1; i >= 0; i--) {
-        const bolt = lightningBolts[i];
-        if (bolt.update()) {
-          bolt.draw(thunderCtx);
-        } else {
-          lightningBolts.splice(i, 1);
-        }
-      }
-
-      for (let i = thunderSparks.length - 1; i >= 0; i--) {
-        const spark = thunderSparks[i];
-        if (spark.update()) {
-          spark.draw(thunderCtx);
-        } else {
-          thunderSparks.splice(i, 1);
-        }
+      if (!isDarkTheme) {
+        body.classList.add('light-theme');
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        if (zeusImg) zeusImg.src = 'assets/images/zeus_black.png';
+      } else {
+        body.classList.remove('light-theme');
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        if (zeusImg) zeusImg.src = 'assets/images/zeus_white.png';
       }
     }
 
-    /* ===================================================================
-       PAGE INTERACTION & TAB LOGIC
-       =================================================================== */
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
-      const activeEl = document.getElementById('tab-' + tabId);
-      if (activeEl) activeEl.classList.remove('hidden');
-
-      const tabs = ['overview', 'members', 'whatsapp', 'pos'];
-      tabs.forEach(t => {
-        const btn = document.getElementById('tabBtn-' + t);
-        if (btn) {
-          if (t === tabId) {
-            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-brand-orange text-white';
-          } else {
-            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors text-slate-300 hover:text-white';
-          }
-        }
-      });
-    }
-
-    // 1-on-1 Individual WhatsApp Simulation
+    // Simulate WhatsApp Message
     function simulateIndividualWhatsAppMessage() {
-      const chat = document.getElementById('whatsappChatStream');
+      const stream = document.getElementById('whatsappChatStream');
       const status = document.getElementById('simStatus');
-      status.innerText = 'Dispatching message via Meta Cloud API...';
+      status.innerText = 'Dispatching message...';
 
       setTimeout(() => {
-        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const newMsg = document.createElement('div');
-        newMsg.className = 'max-w-[85%] bg-[#202C33] text-slate-200 p-2.5 rounded-lg rounded-tl-none border border-white/5 animate-pulse';
-        newMsg.innerHTML = `
-          <p class="text-[11px] font-medium text-emerald-400 mb-1">1-on-1 Direct WhatsApp Message</p>
-          <p class="text-xs leading-relaxed">Hi Marcus! Coach Vikram has updated your chest hypertrophy split. Tap here to review your sets: gimx.link/r1082</p>
-          <span class="block text-[9px] text-slate-400 text-right mt-1">${timeStr} <i class="fa-solid fa-check-double text-emerald-400 ml-1"></i></span>
-        `;
-        chat.appendChild(newMsg);
-        status.innerText = '✓ Delivered to Marcus (+91 98765 43210)';
+        const msg = document.createElement('div');
+        msg.className = 'max-w-[85%] bg-[#202C33] text-slate-200 p-2.5 rounded-lg rounded-tl-none border border-white/5 animate-pulse';
+        msg.innerHTML = '<p class="text-[11px] font-semibold text-emerald-400 mb-1">Live Payment Confirmation</p><p class="text-xs leading-relaxed">Payment of ₹2,000 via UPI received. Membership active until Dec 2026. Receipt dispatched! ⚡</p><span class="block text-[9px] text-slate-400 text-right mt-1">Just now <i class="fa-solid fa-check-double text-emerald-400 ml-1"></i></span>';
+        stream.appendChild(msg);
+        stream.scrollTop = stream.scrollHeight;
+        status.innerText = 'Delivered to member on WhatsApp!';
       }, 700);
     }
 
     function sendManualWhatsAppMsg() {
       const input = document.getElementById('individualMsgInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const chat = document.getElementById('whatsappChatStream');
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const newMsg = document.createElement('div');
-      newMsg.className = 'max-w-[85%] bg-[#202C33] text-slate-200 p-2.5 rounded-lg rounded-tl-none border border-white/5';
-      newMsg.innerHTML = `
-        <p class="text-[11px] font-medium text-brand-orangeLight mb-1">Manual Direct Message</p>
-        <p class="text-xs leading-relaxed">${text}</p>
-        <span class="block text-[9px] text-slate-400 text-right mt-1">${timeStr} <i class="fa-solid fa-check-double text-emerald-400 ml-1"></i></span>
-      `;
-      chat.appendChild(newMsg);
+      if (!input.value.trim()) return;
+      const stream = document.getElementById('whatsappChatStream');
+      const msg = document.createElement('div');
+      msg.className = 'max-w-[85%] ml-auto bg-[#005C4B] text-white p-2.5 rounded-lg rounded-tr-none text-xs';
+      msg.innerHTML = '<p>' + input.value + '</p><span class="block text-[9px] text-emerald-200 text-right mt-1">Just now <i class="fa-solid fa-check-double ml-1"></i></span>';
+      stream.appendChild(msg);
       input.value = '';
+      stream.scrollTop = stream.scrollHeight;
     }
 
-    function sendQuickWhatsApp(name, phone, type) {
-      switchTab('whatsapp');
-      const select = document.getElementById('quickMemberSelect');
-      if (select) select.value = name;
-      const ta = document.getElementById('quickWAMessage');
-      if (type === 'renewal') {
-        ta.value = `Hello ${name}, your GimXSoft gym plan is renewing in 2 days (₹2,000/mo). Tap to complete instant UPI payment: upi://pay?pa=gimx@bank&pn=GimXSoft&am=2000`;
-      } else {
-        ta.value = `Hi ${name}, thank you for your check-in today at Downtown Flagship! Keep crushing your goals.`;
-      }
+    // ================= HIGH-QUALITY 5-SECOND PROCEDURAL AI VIDEO PLAYER =================
+    const aiVideoCanvas = document.getElementById('ai-video-canvas');
+    let aiVideoCtx = aiVideoCanvas ? aiVideoCanvas.getContext('2d') : null;
+    let videoIsPlaying = true;
+    let videoStartTime = performance.now();
+    const DURATION = 5000; // 5.0 seconds exact loop
+    let currentAnimFrame = null;
+
+    function resizeAIVideo() {
+      if (!aiVideoCanvas) return;
+      const rect = aiVideoCanvas.getBoundingClientRect();
+      aiVideoCanvas.width = rect.width * (window.devicePixelRatio || 1);
+      aiVideoCanvas.height = rect.height * (window.devicePixelRatio || 1);
     }
+    window.addEventListener('resize', resizeAIVideo);
+    resizeAIVideo();
 
-    function setWAPreset(preset) {
-      const ta = document.getElementById('quickWAMessage');
-      const sel = document.getElementById('quickMemberSelect').value;
-      if (preset === 'checkin') {
-        ta.value = `Hello ${sel}, check-in confirmed at GimXSoft. Your current membership is valid for 18 more days. Have a powerful session!`;
-      } else if (preset === 'routine') {
-        ta.value = `Hi ${sel}, your 7-day routine split has been updated by your coach. Today's focus is chest & triceps.`;
-      } else if (preset === 'renewal') {
-        ta.value = `Hi ${sel}, your monthly membership renewal of ₹2,000 is due. Tap here to pay via UPI: gimx.link/pay2000`;
-      }
-    }
+    const zeusWhiteImg = new Image();
+    zeusWhiteImg.src = 'assets/images/zeus_white.png';
 
-    function dispatchQuickWA() {
-      const ta = document.getElementById('quickWAMessage');
-      const sel = document.getElementById('quickMemberSelect').value;
-      if (!ta.value) return;
+    function renderAIVideo(now) {
+      if (!videoIsPlaying) return;
 
-      const messageContent = ta.value;
-      const log = document.getElementById('quickWALog');
-      const div = document.createElement('div');
-      div.className = 'p-2 rounded bg-black/40 border border-white/5 flex justify-between items-center text-[11px]';
-      div.innerHTML = `<span>To: ${sel} (${messageContent.substring(0, 24)}...)</span><span class="text-emerald-400 font-medium"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending...</span>`;
-      log.prepend(div);
-      ta.value = '';
+      const elapsed = (now - videoStartTime) % DURATION;
+      const progress = elapsed / DURATION;
+      const seconds = (elapsed / 1000).toFixed(1);
 
-      // Async backend dispatch to /api/whatsapp/quick-send
-      fetch('http://localhost:5128/api/whatsapp/quick-send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recipientPhone: '+919876543210',
-          recipientName: sel,
-          messageText: messageContent
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        div.innerHTML = `<span>To: ${sel} (${messageContent.substring(0, 24)}...)</span><span class="text-emerald-400 font-medium">✓ Delivered</span>`;
-      })
-      .catch(() => {
-        div.innerHTML = `<span>To: ${sel} (${messageContent.substring(0, 24)}...)</span><span class="text-emerald-400 font-medium">✓ Delivered (Mock API)</span>`;
-      });
-    }
+      // Update timer & progress bar
+      const timerEl = document.getElementById('aiVideoTimer');
+      if (timerEl) timerEl.innerText = `00:0${Math.floor(elapsed/1000)} / 00:05`;
+      const pBar = document.getElementById('aiVideoProgressBar');
+      if (pBar) pBar.style.width = (progress * 100) + '%';
 
-    // Quick POS Cart
-    let posTotal = 2400;
-    function addPOSItem(name, price) {
-      const cart = document.getElementById('posCartList');
-      const item = document.createElement('div');
-      item.className = 'flex justify-between border-t border-white/5 pt-1 text-slate-300';
-      item.innerHTML = `<span>${name}</span><span class="font-medium text-white tabular-nums">₹${price.toLocaleString()}</span>`;
-      cart.appendChild(item);
+      const captionEl = document.getElementById('videoSceneCaption');
 
-      posTotal += price;
-      document.getElementById('posTotalVal').innerText = `₹${posTotal.toLocaleString()}`;
-    }
+      if (aiVideoCtx) {
+        const w = aiVideoCanvas.width;
+        const h = aiVideoCanvas.height;
 
-    function chargeMemberPOS() {
-      const cart = document.getElementById('posCartList');
-      cart.innerHTML = `<div class="text-emerald-400 font-medium"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Processing POS transaction...</div>`;
-      
-      // Async charge via /api/payments/pos-charge
-      fetch('http://localhost:5128/api/payments/pos-charge', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          memberCode: 'GIX-1082',
-          amount: posTotal,
-          paymentMethod: 'UPI',
-          description: 'Front Desk POS Retail & Locker Charge'
-        })
-      })
-      .then(res => res.json())
-      .then(receipt => {
-        cart.innerHTML = `<div class="text-emerald-400 font-medium">✓ Billed ₹${posTotal.toLocaleString()} to Marcus Vance via UPI! Receipt: #${receipt.receiptNumber || 'POS-8821'}</div>`;
-      })
-      .catch(() => {
-        cart.innerHTML = `<div class="text-emerald-400 font-medium">✓ Billed ₹${posTotal.toLocaleString()} to Marcus Vance via UPI / Member Fob!</div>`;
-      })
-      .finally(() => {
-        setTimeout(() => {
-          cart.innerHTML = `<div class="flex justify-between"><span>Default Monthly Locker</span><span class="font-medium text-white tabular-nums">₹400</span></div>`;
-          posTotal = 400;
-          document.getElementById('posTotalVal').innerText = '₹400';
-        }, 3000);
-      });
-    }
+        // Clear Background with high-tech radial gradient
+        const bgGrad = aiVideoCtx.createRadialGradient(w/2, h/2, 20, w/2, h/2, w/1.2);
+        bgGrad.addColorStop(0, '#181C26');
+        bgGrad.addColorStop(1, '#080A0E');
+        aiVideoCtx.fillStyle = bgGrad;
+        aiVideoCtx.fillRect(0, 0, w, h);
 
-    // ROI Calculator (Indian Rupees ₹)
-    const sliderMembers = document.getElementById('sliderMembers');
-    const sliderPrice = document.getElementById('sliderPrice');
-    const calcMembersVal = document.getElementById('calcMembersVal');
-    const calcPriceVal = document.getElementById('calcPriceVal');
-    const calcRecoveredTotal = document.getElementById('calcRecoveredTotal');
-    const calcEquivalentMembers = document.getElementById('calcEquivalentMembers');
-
-    function updateROICalculation() {
-      if (!sliderMembers || !sliderPrice) return;
-      const members = parseInt(sliderMembers.value);
-      const price = parseInt(sliderPrice.value);
-
-      calcMembersVal.innerText = `${members} members`;
-      calcPriceVal.innerText = `₹${price.toLocaleString()} / mo`;
-
-      // Call backend ROI calculation API
-      fetch('http://localhost:5128/api/reports/roi-calculator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          activeMembers: members,
-          monthlyMembershipFee: price
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.totalAnnualRecoveredRevenue !== undefined) {
-          calcRecoveredTotal.innerText = `₹${Math.round(data.totalAnnualRecoveredRevenue).toLocaleString('en-IN')}`;
-          calcEquivalentMembers.innerText = `+${data.netEquivalentMembersRecovered || Math.round(data.totalAnnualRecoveredRevenue / (price * 12))}`;
+        // Grid lines
+        aiVideoCtx.strokeStyle = 'rgba(234, 88, 12, 0.05)';
+        aiVideoCtx.lineWidth = 1;
+        for (let x = 0; x < w; x += 40) {
+          aiVideoCtx.beginPath();
+          aiVideoCtx.moveTo(x, 0);
+          aiVideoCtx.lineTo(x, h);
+          aiVideoCtx.stroke();
         }
-      })
-      .catch(() => {
-        // Fallback calculation: 4.2% churn recovery + 3.9% dunning recovery = ~8.1% of ARR saved
-        const annualRevenue = members * price * 12;
-        const recovered = Math.round(annualRevenue * 0.081);
-        const newMembersEquivalent = Math.round(recovered / (price * 12));
 
-        calcRecoveredTotal.innerText = `₹${recovered.toLocaleString('en-IN')}`;
-        calcEquivalentMembers.innerText = `+${newMembersEquivalent}`;
-      });
-    }
+        // --- STORYBOARD SCENES (5.0s Total) ---
 
-    if (sliderMembers && sliderPrice) {
-      sliderMembers.addEventListener('input', updateROICalculation);
-      sliderPrice.addEventListener('input', updateROICalculation);
-    }
+        // SCENE 1: 0.0s - 1.2s -> 2D Zeus Thunder Core Flex & Electric Surge
+        if (elapsed < 1200) {
+          if (captionEl) captionEl.innerText = 'Scene 1: Zeus 2D Thunder Core Electric Flex';
+          const sceneProg = elapsed / 1200;
 
-    // Modals
-    function openDemoModal() {
-      document.getElementById('demoModal').classList.remove('hidden');
-    }
-    function closeDemoModal() {
-      document.getElementById('demoModal').classList.add('hidden');
-    }
+          // Electric Aura Glow
+          aiVideoCtx.save();
+          aiVideoCtx.shadowColor = '#EA580C';
+          aiVideoCtx.shadowBlur = 35 + Math.sin(sceneProg * Math.PI * 4) * 20;
 
-    function openTrialModal() {
-      document.getElementById('trialModal').classList.remove('hidden');
-    }
-    function closeTrialModal() {
-      document.getElementById('trialModal').classList.add('hidden');
-    }
+          // Draw Lightning arcs
+          aiVideoCtx.strokeStyle = '#F97316';
+          aiVideoCtx.lineWidth = 2.5;
+          aiVideoCtx.beginPath();
+          aiVideoCtx.moveTo(w * 0.2, h * 0.8);
+          aiVideoCtx.lineTo(w * 0.35, h * 0.45);
+          aiVideoCtx.lineTo(w * 0.45, h * 0.55);
+          aiVideoCtx.lineTo(w * 0.5, h * 0.3);
+          aiVideoCtx.lineTo(w * 0.65, h * 0.5);
+          aiVideoCtx.lineTo(w * 0.8, h * 0.75);
+          aiVideoCtx.stroke();
 
-    function handleDemoSubmit(e) {
-      e.preventDefault();
-      const name = document.getElementById('demoName').value;
-      const gym = document.getElementById('demoGym').value;
-      const members = document.getElementById('demoMembers').value;
-      const phone = document.getElementById('demoPhone').value;
-
-      document.getElementById('demoFeedback').classList.remove('hidden');
-
-      // Post inquiry to backend CRM
-      fetch('http://localhost:5128/api/leads/public-inquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: name,
-          gymName: gym,
-          phone: phone,
-          estimatedMembers: parseInt(members) || 100,
-          inquiryType: 'Demo'
-        })
-      }).catch(err => console.log('Lead sync notice:', err));
-      
-      // Construct mailto to ekametechnologie@gmail.com
-      const subject = encodeURIComponent(`GimXSoft Demo Request - ${gym}`);
-      const body = encodeURIComponent(
-        `Hi GimXSoft Team,\n\nI would like to schedule a 1-on-1 demo for my gym.\n\nName: ${name}\nGym Name: ${gym}\nMembers: ${members}\nPhone / WhatsApp: ${phone}\n\nPlease let me know available slots.\n\nThank you!`
-      );
-      
-      setTimeout(() => {
-        window.location.href = `mailto:ekametechnologie@gmail.com?subject=${subject}&body=${body}`;
-        closeDemoModal();
-        document.getElementById('demoFeedback').classList.add('hidden');
-      }, 1500);
-    }
-
-    async function handleTrialSubmit(e) {
-      e.preventDefault();
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Activating Free Trial...';
-
-      const feedback = document.getElementById('trialFeedback');
-      feedback.classList.add('hidden');
-
-      const payload = {
-        adminFullName: document.getElementById('trialName').value.trim(),
-        gymName: document.getElementById('trialGym').value.trim(),
-        adminEmail: document.getElementById('trialEmailInput').value.trim(),
-        adminPassword: document.getElementById('trialPassword') ? document.getElementById('trialPassword').value : 'Admin123!',
-        branchName: (document.getElementById('trialBranch') && document.getElementById('trialBranch').value.trim()) || 'Main Branch'
-      };
-
-      try {
-        const res = await fetch('http://localhost:5128/api/auth/register-trial', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data.accessToken) {
-            localStorage.setItem('access_token', data.accessToken);
-            localStorage.setItem('user_data', JSON.stringify(data.user));
-            localStorage.setItem('tenant_data', JSON.stringify(data.tenant));
+          // Render Zeus center if loaded
+          if (zeusWhiteImg.complete && zeusWhiteImg.naturalWidth > 0) {
+            const imgH = h * 0.7;
+            const imgW = (zeusWhiteImg.width / zeusWhiteImg.height) * imgH;
+            aiVideoCtx.drawImage(zeusWhiteImg, (w - imgW)/2, (h - imgH)/2, imgW, imgH);
           }
 
-          feedback.className = 'text-center text-xs text-emerald-400 font-medium mt-3 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg';
-          feedback.innerHTML = '✓ <strong>1-Month Free Trial Activated!</strong><br><span class="text-slate-300 text-[11px]">No payment needed. Redirecting to your Admin Dashboard...</span>';
-          feedback.classList.remove('hidden');
-
-          setTimeout(() => {
-            closeTrialModal();
-            window.location.href = '/dashboard';
-          }, 1500);
-        } else {
-          const errData = await res.json().catch(() => ({}));
-          feedback.className = 'text-center text-xs text-rose-400 font-medium mt-3 p-3 bg-rose-500/10 border border-rose-500/20 rounded-lg';
-          feedback.innerHTML = `✕ ${errData.message || 'Registration failed. Please check details or sign in.'}`;
-          feedback.classList.remove('hidden');
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalText;
+          // Energy wave
+          aiVideoCtx.strokeStyle = 'rgba(249, 115, 22, 0.4)';
+          aiVideoCtx.beginPath();
+          aiVideoCtx.arc(w/2, h/2, (sceneProg * w * 0.6), 0, Math.PI * 2);
+          aiVideoCtx.stroke();
+          aiVideoCtx.restore();
         }
-      } catch (err) {
-        // Fallback for standalone preview
-        feedback.className = 'text-center text-xs text-emerald-400 font-medium mt-3 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg';
-        feedback.innerHTML = '✓ <strong>1-Month Free Trial Confirmed!</strong><br><span class="text-slate-300 text-[11px]">Proceeding to platform desk...</span>';
-        feedback.classList.remove('hidden');
-        setTimeout(() => {
-          closeTrialModal();
-          window.location.href = '/login';
-        }, 1500);
-      }
-    }
 
-    function toggleMenu() {
-      const menu = document.getElementById('mobileMenu');
-      menu.classList.toggle('hidden');
-    }
+        // SCENE 2: 1.2s - 2.5s -> QR Door Scanner Check-in Granted
+        else if (elapsed < 2500) {
+          if (captionEl) captionEl.innerText = 'Scene 2: QR Gate Scanner • 0.1s Access Granted';
+          const sceneProg = (elapsed - 1200) / 1300;
 
-    document.getElementById('mobileMenuBtn').addEventListener('click', toggleMenu);
+          // QR Scanner box
+          const boxSize = Math.min(w, h) * 0.45;
+          const bx = (w - boxSize)/2;
+          const by = (h - boxSize)/2;
 
-    // Navbar Scroll
-    window.addEventListener('scroll', () => {
-      const nav = document.getElementById('navbar');
-      if (window.scrollY > 30) {
-        nav.classList.add('backdrop-blur-md', 'bg-brand-dark/90');
-      } else {
-        nav.classList.remove('backdrop-blur-md', 'bg-brand-dark/90');
-      }
-    });
+          aiVideoCtx.strokeStyle = sceneProg > 0.4 ? '#10B981' : '#F97316';
+          aiVideoCtx.lineWidth = 3;
+          aiVideoCtx.strokeRect(bx, by, boxSize, boxSize);
 
-    // Theme Switcher & Zeus Silhouette Adaptation
-    function toggleTheme() {
-      const isCurrentlyDark = document.documentElement.classList.contains('dark') || !document.documentElement.classList.contains('light');
-      applyTheme(!isCurrentlyDark);
-    }
+          // Scanning laser line
+          if (sceneProg <= 0.4) {
+            const laserY = by + (sceneProg / 0.4) * boxSize;
+            aiVideoCtx.strokeStyle = '#EF4444';
+            aiVideoCtx.lineWidth = 2;
+            aiVideoCtx.beginPath();
+            aiVideoCtx.moveTo(bx, laserY);
+            aiVideoCtx.lineTo(bx + boxSize, laserY);
+            aiVideoCtx.stroke();
+          } else {
+            // Success Card
+            aiVideoCtx.fillStyle = 'rgba(16, 185, 129, 0.15)';
+            aiVideoCtx.fillRect(bx, by, boxSize, boxSize);
 
-    function applyTheme(isDark) {
-      const zeusImg = document.getElementById('zeus-img');
-      const icon = document.getElementById('themeToggleIcon');
+            aiVideoCtx.fillStyle = '#10B981';
+            aiVideoCtx.font = 'bold 20px Inter, sans-serif';
+            aiVideoCtx.textAlign = 'center';
+            aiVideoCtx.fillText('✓ ACCESS GRANTED', w/2, by + boxSize/2 - 10);
 
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
-        document.body.className = 'bg-brand-dark text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-brand-orange selection:text-white';
-        if (zeusImg) {
-          zeusImg.src = 'assets/images/zeus_white.png';
-          zeusImg.style.filter = 'drop-shadow(0 0 35px rgba(245, 158, 11, 0.45))';
-        }
-        if (icon) {
-          icon.className = 'fa-solid fa-sun text-xs text-amber-400';
-        }
-        localStorage.setItem('gimx_theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('light');
-        document.body.className = 'bg-slate-900 text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-brand-orange selection:text-white';
-        if (zeusImg) {
-          zeusImg.src = 'assets/images/zeus_black.png';
-          zeusImg.style.filter = 'drop-shadow(0 0 25px rgba(217, 119, 6, 0.35))';
-        }
-        if (icon) {
-          icon.className = 'fa-solid fa-moon text-xs text-slate-300';
-        }
-        localStorage.setItem('gimx_theme', 'light');
-      }
-    }
+            aiVideoCtx.fillStyle = '#FFFFFF';
+            aiVideoCtx.font = '14px Inter, sans-serif';
+            aiVideoCtx.fillText('Marcus Vance • Plan: Active', w/2, by + boxSize/2 + 20);
 
-    // Hydrate Real-Time Telemetry from Backend
-    function fetchLiveTelemetry() {
-      fetch('http://localhost:5128/api/attendance/live-occupancy')
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.currentOccupants !== undefined) {
-            const occEls = document.querySelectorAll('.live-occupancy-num');
-            occEls.forEach(el => el.innerText = data.currentOccupants);
+            aiVideoCtx.fillStyle = '#94A3B8';
+            aiVideoCtx.font = '12px Inter, sans-serif';
+            aiVideoCtx.fillText('Occupancy: 43 / 120 athletes', w/2, by + boxSize/2 + 45);
           }
-        })
-        .catch(() => {
-          // Graceful fallback to default seed
-        });
+        }
+
+        // SCENE 3: 2.5s - 3.8s -> Automated WhatsApp Dues Notice with UPI
+        else if (elapsed < 3800) {
+          if (captionEl) captionEl.innerText = 'Scene 3: WhatsApp Dues Recovery • Automated UPI Link';
+          const sceneProg = (elapsed - 2500) / 1300;
+
+          // Smartphone Frame Card
+          const cardW = Math.min(w * 0.65, 380);
+          const cardH = 160;
+          const cx = (w - cardW)/2;
+          const cy = (h - cardH)/2;
+
+          aiVideoCtx.fillStyle = '#111B21';
+          aiVideoCtx.strokeStyle = '#25D366';
+          aiVideoCtx.lineWidth = 2;
+          aiVideoCtx.beginPath();
+          aiVideoCtx.roundRect(cx, cy, cardW, cardH, 16);
+          aiVideoCtx.fill();
+          aiVideoCtx.stroke();
+
+          // Header
+          aiVideoCtx.fillStyle = '#202C33';
+          aiVideoCtx.beginPath();
+          aiVideoCtx.roundRect(cx, cy, cardW, 40, [16, 16, 0, 0]);
+          aiVideoCtx.fill();
+
+          aiVideoCtx.fillStyle = '#25D366';
+          aiVideoCtx.font = 'bold 12px Inter, sans-serif';
+          aiVideoCtx.textAlign = 'left';
+          aiVideoCtx.fillText('● WhatsApp Business Verified', cx + 16, cy + 25);
+
+          // Content
+          aiVideoCtx.fillStyle = '#FFFFFF';
+          aiVideoCtx.font = '12px Inter, sans-serif';
+          aiVideoCtx.fillText('Hi Rahul! Your gym membership expires tomorrow.', cx + 16, cy + 65);
+          aiVideoCtx.fillText('Tap below to renew instantly via UPI:', cx + 16, cy + 85);
+
+          // UPI Button Pill
+          aiVideoCtx.fillStyle = '#EA580C';
+          aiVideoCtx.beginPath();
+          aiVideoCtx.roundRect(cx + 16, cy + 105, cardW - 32, 34, 8);
+          aiVideoCtx.fill();
+
+          aiVideoCtx.fillStyle = '#FFFFFF';
+          aiVideoCtx.font = 'bold 12px Inter, sans-serif';
+          aiVideoCtx.textAlign = 'center';
+          aiVideoCtx.fillText('Pay ₹2,000 via UPI (GooglePay / PhonePe)', cx + cardW/2, cy + 127);
+        }
+
+        // SCENE 4: 3.8s - 5.0s -> Real-time Revenue & Member Telemetry Growth
+        else {
+          if (captionEl) captionEl.innerText = 'Scene 4: Live Telemetry • 1-Month Free Trial, Then ₹2,000 Flat';
+          const sceneProg = (elapsed - 3800) / 1200;
+
+          // Center Stats Card
+          aiVideoCtx.fillStyle = '#141722';
+          aiVideoCtx.strokeStyle = 'rgba(234, 88, 12, 0.4)';
+          aiVideoCtx.lineWidth = 2;
+          aiVideoCtx.beginPath();
+          aiVideoCtx.roundRect(w * 0.15, h * 0.2, w * 0.7, h * 0.6, 20);
+          aiVideoCtx.fill();
+          aiVideoCtx.stroke();
+
+          aiVideoCtx.fillStyle = '#EA580C';
+          aiVideoCtx.font = 'bold 14px Inter, sans-serif';
+          aiVideoCtx.textAlign = 'center';
+          aiVideoCtx.fillText('GIMXSOFT FACILITY REVENUE TELEMETRY', w/2, h * 0.35);
+
+          // Animated Climbing Revenue
+          const currRev = Math.floor(180000 + sceneProg * 4500);
+          aiVideoCtx.fillStyle = '#FFFFFF';
+          aiVideoCtx.font = 'bold 36px "Space Grotesk", sans-serif';
+          aiVideoCtx.fillText('₹' + currRev.toLocaleString('en-IN') + ' MRR', w/2, h * 0.52);
+
+          aiVideoCtx.fillStyle = '#10B981';
+          aiVideoCtx.font = '14px Inter, sans-serif';
+          aiVideoCtx.fillText('✓ 98.4% On-Time WhatsApp Collections • 0 Paper Registers', w/2, h * 0.65);
+        }
+      }
+
+      currentAnimFrame = requestAnimationFrame(renderAIVideo);
     }
 
-    window.onload = function () {
-      const savedTheme = localStorage.getItem('gimx_theme') || 'dark';
-      applyTheme(savedTheme === 'dark');
-      initZeusThunderEngine();
-      updateROICalculation();
-      fetchLiveTelemetry();
-    };
+    currentAnimFrame = requestAnimationFrame(renderAIVideo);
+
+    function toggleAIVideo() {
+      videoIsPlaying = !videoIsPlaying;
+      const icon = document.getElementById('videoPlayPauseIcon');
+      const bIcon = document.getElementById('bottomPlayIcon');
+      if (videoIsPlaying) {
+        videoStartTime = performance.now();
+        currentAnimFrame = requestAnimationFrame(renderAIVideo);
+        if (icon) { icon.classList.remove('fa-play'); icon.classList.add('fa-pause'); }
+        if (bIcon) { bIcon.classList.remove('fa-play'); bIcon.classList.add('fa-pause'); }
+      } else {
+        cancelAnimationFrame(currentAnimFrame);
+        if (icon) { icon.classList.remove('fa-pause'); icon.classList.add('fa-play'); }
+        if (bIcon) { bIcon.classList.remove('fa-pause'); bIcon.classList.add('fa-play'); }
+      }
+    }
+
+    function restartAIVideo() {
+      videoStartTime = performance.now();
+      if (!videoIsPlaying) {
+        toggleAIVideo();
+      }
+    }
+
+    function scrubAIVideo(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = clickX / rect.width;
+      videoStartTime = performance.now() - (pct * DURATION);
+    }
+
+    // ================= 2D ZEUS THUNDER CANVAS =================
+    const thunderCanvas = document.getElementById('thunder-canvas');
+    if (thunderCanvas) {
+      const tCtx = thunderCanvas.getContext('2d');
+      function resizeThunder() {
+        thunderCanvas.width = thunderCanvas.offsetWidth * (window.devicePixelRatio || 1);
+        thunderCanvas.height = thunderCanvas.offsetHeight * (window.devicePixelRatio || 1);
+      }
+      window.addEventListener('resize', resizeThunder);
+      resizeThunder();
+
+      function drawLightningBolt() {
+        tCtx.clearRect(0, 0, thunderCanvas.width, thunderCanvas.height);
+        tCtx.save();
+        tCtx.strokeStyle = '#F97316';
+        tCtx.shadowColor = '#EA580C';
+        tCtx.shadowBlur = 25;
+        tCtx.lineWidth = 3;
+        tCtx.beginPath();
+        let curX = thunderCanvas.width * 0.65;
+        let curY = thunderCanvas.height * 0.15;
+        tCtx.moveTo(curX, curY);
+
+        while (curY < thunderCanvas.height * 0.85) {
+          curX += (Math.random() - 0.5) * 45;
+          curY += Math.random() * 35 + 10;
+          tCtx.lineTo(curX, curY);
+        }
+        tCtx.stroke();
+        tCtx.restore();
+
+        setTimeout(() => {
+          tCtx.clearRect(0, 0, thunderCanvas.width, thunderCanvas.height);
+        }, 120);
+      }
+
+      setInterval(() => {
+        if (Math.random() > 0.4) {
+          drawLightningBolt();
+        }
+      }, 3500);
+
+      document.getElementById('zeus-container')?.addEventListener('click', drawLightningBolt);
+    }
   </script>
+
 </body>
 </html>
