@@ -1,239 +1,189 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 import 'design_tokens.dart';
+import 'theme_customization_models.dart';
 
-/// Unslopped App Theme conforming to heydamir/unslop specifications:
-/// - Inter typography with tabular figures
-/// - Strict weight discipline: 400 (regular) and 500 (medium), max 600
-/// - Zero negative letter spacing under 16px
-/// - Hairline borders at 8% opacity
+/// Dynamic App Theme for GimXSoft
+/// Builds cohesive ThemeData matching the customer's selected AppThemePalette and AppFontCombination.
 class AppTheme {
-  static ThemeData get darkTheme {
-    final baseText = GoogleFonts.interTextTheme(ThemeData.dark().textTheme);
+  static ThemeData buildTheme({
+    required bool isDark,
+    required AppThemePalette palette,
+    required AppFontCombination fontCombo,
+  }) {
+    final textPrimary = palette.textPrimary(isDark);
+    final textSecondary = palette.textSecondary(isDark);
+    final textMuted = palette.textMuted(isDark);
 
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.darkBackground,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.primary,
-        onPrimary: Color(0xFF141415),
-        secondary: AppColors.secondary,
-        onSecondary: Colors.white,
-        surface: AppColors.darkSurface,
-        onSurface: AppColors.darkTextPrimary,
-        error: AppColors.error,
-        onError: Colors.white,
-      ),
-      textTheme: baseText.copyWith(
-        displayLarge: baseText.displayLarge?.copyWith(
-          color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w500,
-          fontFeatures: const [FontFeature.tabularFigures()],
-          letterSpacing: -0.5,
-        ),
-        headlineLarge: baseText.headlineLarge?.copyWith(
-          color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w500,
-          fontFeatures: const [FontFeature.tabularFigures()],
-          letterSpacing: -0.3,
-        ),
-        headlineMedium: baseText.headlineMedium?.copyWith(
-          color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w500,
-          letterSpacing: -0.2,
-        ),
-        titleLarge: baseText.titleLarge?.copyWith(
-          color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0,
-        ),
-        titleMedium: baseText.titleMedium?.copyWith(
-          color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0,
-        ),
-        titleSmall: baseText.titleSmall?.copyWith(
-          color: AppColors.darkTextSecondary,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-        bodyLarge: baseText.bodyLarge?.copyWith(
-          color: AppColors.darkTextPrimary,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-        bodyMedium: baseText.bodyMedium?.copyWith(
-          color: AppColors.darkTextSecondary,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-        bodySmall: baseText.bodySmall?.copyWith(
-          color: AppColors.darkTextMuted,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-      ),
-      cardTheme: CardThemeData(
-        color: AppColors.darkCard,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: DesignTokens.borderLg,
-          side: const BorderSide(color: AppColors.darkBorder, width: 1),
-        ),
-      ),
-      dividerTheme: const DividerThemeData(
-        color: AppColors.darkBorder,
-        thickness: 1,
-        space: 1,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: AppColors.darkCard,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        hintStyle: const TextStyle(color: AppColors.darkTextMuted, fontSize: 13),
-        border: OutlineInputBorder(
-          borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.darkBorder, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.darkBorder, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.error, width: 1),
-        ),
-      ),
-      tooltipTheme: TooltipThemeData(
-        decoration: BoxDecoration(
-          color: AppColors.darkRaised,
-          borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
-          border: Border.all(color: AppColors.darkBorder),
-        ),
-        textStyle: const TextStyle(color: AppColors.darkTextPrimary, fontSize: 11),
-      ),
+    // Build heading text styles with Heading Font
+    final displayLarge = fontCombo.headingStyleBuilder(
+      fontSize: 32,
+      fontWeight: FontWeight.w700,
+      color: textPrimary,
+      letterSpacing: -0.5,
     );
-  }
+    final headlineLarge = fontCombo.headingStyleBuilder(
+      fontSize: 24,
+      fontWeight: FontWeight.w700,
+      color: textPrimary,
+      letterSpacing: -0.3,
+    );
+    final headlineMedium = fontCombo.headingStyleBuilder(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: textPrimary,
+      letterSpacing: -0.2,
+    );
+    final titleLarge = fontCombo.headingStyleBuilder(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: textPrimary,
+      letterSpacing: 0,
+    );
+    final titleMedium = fontCombo.headingStyleBuilder(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: textPrimary,
+      letterSpacing: 0,
+    );
 
-  static ThemeData get lightTheme {
-    final baseText = GoogleFonts.interTextTheme(ThemeData.light().textTheme);
+    // Build body and supporting styles with Body Font
+    final titleSmall = fontCombo.bodyStyleBuilder(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: textSecondary,
+      letterSpacing: 0,
+    );
+    final bodyLarge = fontCombo.bodyStyleBuilder(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: textPrimary,
+      letterSpacing: 0,
+    );
+    final bodyMedium = fontCombo.bodyStyleBuilder(
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      color: textSecondary,
+      letterSpacing: 0,
+    );
+    final bodySmall = fontCombo.bodyStyleBuilder(
+      fontSize: 11,
+      fontWeight: FontWeight.w400,
+      color: textMuted,
+      letterSpacing: 0,
+    );
+    final labelLarge = fontCombo.bodyStyleBuilder(
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      color: textPrimary,
+      letterSpacing: 0,
+    );
+    final labelMedium = fontCombo.bodyStyleBuilder(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      color: textSecondary,
+      letterSpacing: 0,
+    );
+    final labelSmall = fontCombo.bodyStyleBuilder(
+      fontSize: 10,
+      fontWeight: FontWeight.w400,
+      color: textMuted,
+      letterSpacing: 0,
+    );
+
+    final textTheme = TextTheme(
+      displayLarge: displayLarge,
+      headlineLarge: headlineLarge,
+      headlineMedium: headlineMedium,
+      titleLarge: titleLarge,
+      titleMedium: titleMedium,
+      titleSmall: titleSmall,
+      bodyLarge: bodyLarge,
+      bodyMedium: bodyMedium,
+      bodySmall: bodySmall,
+      labelLarge: labelLarge,
+      labelMedium: labelMedium,
+      labelSmall: labelSmall,
+    );
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.light,
-      primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.lightBackground,
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.primary,
+      brightness: isDark ? Brightness.dark : Brightness.light,
+      primaryColor: palette.primary,
+      scaffoldBackgroundColor: palette.background(isDark),
+      colorScheme: ColorScheme(
+        brightness: isDark ? Brightness.dark : Brightness.light,
+        primary: palette.primary,
         onPrimary: Colors.white,
         secondary: AppColors.secondary,
         onSecondary: Colors.white,
-        surface: AppColors.lightSurface,
-        onSurface: AppColors.lightTextPrimary,
+        surface: palette.surface(isDark),
+        onSurface: textPrimary,
         error: AppColors.error,
         onError: Colors.white,
       ),
-      textTheme: baseText.copyWith(
-        displayLarge: baseText.displayLarge?.copyWith(
-          color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w500,
-          fontFeatures: const [FontFeature.tabularFigures()],
-          letterSpacing: -0.5,
-        ),
-        headlineLarge: baseText.headlineLarge?.copyWith(
-          color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w500,
-          fontFeatures: const [FontFeature.tabularFigures()],
-          letterSpacing: -0.3,
-        ),
-        headlineMedium: baseText.headlineMedium?.copyWith(
-          color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w500,
-          letterSpacing: -0.2,
-        ),
-        titleLarge: baseText.titleLarge?.copyWith(
-          color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0,
-        ),
-        titleMedium: baseText.titleMedium?.copyWith(
-          color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0,
-        ),
-        titleSmall: baseText.titleSmall?.copyWith(
-          color: AppColors.lightTextSecondary,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-        bodyLarge: baseText.bodyLarge?.copyWith(
-          color: AppColors.lightTextPrimary,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-        bodyMedium: baseText.bodyMedium?.copyWith(
-          color: AppColors.lightTextSecondary,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-        bodySmall: baseText.bodySmall?.copyWith(
-          color: AppColors.lightTextMuted,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0,
-        ),
-      ),
+      textTheme: textTheme,
       cardTheme: CardThemeData(
-        color: AppColors.lightCard,
+        color: palette.card(isDark),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: DesignTokens.borderLg,
-          side: const BorderSide(color: AppColors.lightBorder, width: 1),
+          side: BorderSide(color: palette.border(isDark), width: 1),
         ),
       ),
-      dividerTheme: const DividerThemeData(
-        color: AppColors.lightBorder,
+      dividerTheme: DividerThemeData(
+        color: palette.border(isDark),
         thickness: 1,
         space: 1,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.lightRaised,
+        fillColor: palette.raised(isDark),
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        hintStyle: const TextStyle(color: AppColors.lightTextMuted, fontSize: 13),
+        hintStyle: TextStyle(color: textMuted, fontSize: 13),
         border: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.lightBorder, width: 1),
+          borderSide: BorderSide(color: palette.border(isDark), width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.lightBorder, width: 1),
+          borderSide: BorderSide(color: palette.border(isDark), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.2),
+          borderSide: BorderSide(color: palette.primary, width: 1.5),
         ),
-        errorBorder: OutlineInputBorder(
+        errorBorder: const OutlineInputBorder(
           borderRadius: DesignTokens.borderMd,
-          borderSide: const BorderSide(color: AppColors.error, width: 1),
+          borderSide: BorderSide(color: AppColors.error, width: 1),
         ),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: palette.primary,
+        indicatorColor: palette.primary,
+        unselectedLabelColor: textSecondary,
       ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: AppColors.lightCard,
+          color: palette.raised(isDark),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
-          border: Border.all(color: AppColors.lightBorder),
-          boxShadow: DesignTokens.shadowSm(false),
+          border: Border.all(color: palette.border(isDark)),
         ),
-        textStyle: const TextStyle(color: AppColors.lightTextPrimary, fontSize: 11),
+        textStyle: TextStyle(color: textPrimary, fontSize: 11),
       ),
     );
   }
+
+  static ThemeData get darkTheme => buildTheme(
+        isDark: true,
+        palette: AppColors.activePalette,
+        fontCombo: AppFontCombination.leagueSpartanAndInter,
+      );
+
+  static ThemeData get lightTheme => buildTheme(
+        isDark: false,
+        palette: AppColors.activePalette,
+        fontCombo: AppFontCombination.leagueSpartanAndInter,
+      );
 }

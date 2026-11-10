@@ -10,6 +10,7 @@ import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/status_badge.dart';
 import '../auth/auth_provider.dart';
+import 'widgets/theme_customization_section.dart';
 
 class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
@@ -65,7 +66,6 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final authState = ref.watch(authProvider);
-    final themeNotifier = ref.watch(themeModeProvider.notifier);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -128,50 +128,8 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
             ),
             const SizedBox(height: DesignTokens.space24),
 
-            // 2. Theme & Appearance
-            GlassCard(
-              padding: const EdgeInsets.all(DesignTokens.space24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Visual Interface & Theme Preferences',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary(isDark)),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Toggle between high-contrast dark mode and clean daylight mode',
-                    style: TextStyle(fontSize: 12, color: AppColors.textMuted(isDark)),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      _themeCard(
-                        title: 'Dark Mode (Default)',
-                        subtitle: 'Deep obsidian void with electric indigo accents',
-                        isSelected: isDark,
-                        icon: Icons.dark_mode_rounded,
-                        onTap: () {
-                          if (!isDark) themeNotifier.toggle();
-                        },
-                        isDark: isDark,
-                      ),
-                      const SizedBox(width: 16),
-                      _themeCard(
-                        title: 'Light Mode',
-                        subtitle: 'Crisp clean slate surfaces and high readability',
-                        isSelected: !isDark,
-                        icon: Icons.light_mode_rounded,
-                        onTap: () {
-                          if (isDark) themeNotifier.toggle();
-                        },
-                        isDark: isDark,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            // 2. Interface Theme & Typography Customization Studio
+            ThemeCustomizationSection(isDark: isDark),
             const SizedBox(height: DesignTokens.space24),
 
             // 3. Security & Password Change
@@ -236,49 +194,6 @@ class _SettingsViewState extends ConsumerState<SettingsView> {
           const SizedBox(height: 4),
           Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark))),
         ],
-      ),
-    );
-  }
-
-  Widget _themeCard({
-    required String title,
-    required String subtitle,
-    required bool isSelected,
-    required IconData icon,
-    required VoidCallback onTap,
-    required bool isDark,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: DesignTokens.borderLg,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCard : const Color(0xFFF8FAFC),
-            borderRadius: DesignTokens.borderLg,
-            border: Border.all(
-              color: isSelected ? AppColors.primary : AppColors.border(isDark),
-              width: isSelected ? 2 : 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(icon, color: isSelected ? AppColors.primary : AppColors.textMuted(isDark), size: 24),
-              const SizedBox(width: DesignTokens.space12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.textPrimary(isDark))),
-                    Text(subtitle, style: TextStyle(fontSize: 11, color: AppColors.textSecondary(isDark))),
-                  ],
-                ),
-              ),
-              if (isSelected) const Icon(Icons.check_circle_rounded, color: AppColors.primary, size: 18),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -703,7 +703,36 @@ In strict compliance with Meta's official WhatsApp Business Platform specificati
 
 ---
 
-## 15. Future Roadmap & Operations Reference
+## 15. Phase 16 — Dynamic Theme & Typography Customization Studio in Settings
+
+### 1. Architectural Overview & State Integration
+- **Dynamic Theme Palette Engine (`theme_customization_models.dart`)**:
+  - Implemented 4 curated signature palettes (`Wine & Sand`, `Orange & Milk`, `Midnight & Vanilla`, `Blaze`), providing full token ramps across light and dark surfaces, primary accents, borders, cards, and textual hierarchies.
+  - Dynamically connected to `AppColors` through `_activePalette` and theme-aware helpers (`background(isDark)`, `surface(isDark)`, `card(isDark)`, `raised(isDark)`, `border(isDark)`, `textPrimary(isDark)`).
+- **Typography Pairings Studio (`AppFontCombination`)**:
+  - Configured 5 balanced typography pairings targeting distinct branding personas:
+    1. **Syne + DM Mono**: Avant-garde geometric display paired with disciplined monospace data body.
+    2. **Gotham + Inter**: Modern executive geometric headlines anchored by standard Inter body text.
+    3. **League Spartan + Inter**: Bold athletic display typography designed for gym dashboards.
+    4. **Megion + DM Sans**: Editorial luxury display with warm, human-crafted DM Sans.
+    5. **Nofex + Inter**: Futuristic cyber grotesque headers supported by neutral body proportions.
+- **Persistence & Session Restoration (`theme_provider.dart`)**:
+  - Preferences for `app_theme_palette_id`, `app_font_combination_id`, and `app_theme_mode` are stored asynchronously in `SharedPreferences`.
+  - Seamlessly re-hydrated on application launch and dynamically applied across the entire widget tree without requiring a page refresh.
+  - Included a **"Reset to Defaults"** action restoring `Orange & Milk`, `League Spartan + Inter`, and `Dark Mode`.
+
+### 2. Settings Panel UI/UX (`theme_customization_section.dart`)
+- **Theme Palette Cards**: Rendered with live color swatches (Primary, Background, Raised, Dark), descriptive branding copy, and interactive mini-component mockups.
+- **Typography Preview Cards**: Feature live font renders of both heading and body typefaces with visual category tags (`Bold Athletic`, `Modern Executive`, etc.).
+- **Live Component Sandbox**: Live demonstration container rendering real buttons, status pills, and cards that immediately react to theme changes.
+
+### 3. Automated Test Coverage
+- **Flutter Test Suite**: 57/57 tests passing (`flutter test`), including 8 dedicated tests in `theme_customization_test.dart` validating palette resolution, typography models, widget rendering, and tap interactions.
+- **ASP.NET Core xUnit Test Suite**: 20/20 integration tests passing.
+
+---
+
+## 16. Future Roadmap & Operations Reference
 
 ### Recommended Development Tasks:
 - **Phase 3: Real-Time WebSockets / SignalR**:
