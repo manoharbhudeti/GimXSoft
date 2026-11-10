@@ -1,10 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// ===========================================================================
+/// GIMXSOFT DYNAMIC THEME & TYPOGRAPHY MASTER CONFIGURATION FILE
+/// ===========================================================================
+///
+/// SINGLE SOURCE OF TRUTH for all visual themes, color palettes, and typography
+/// pairings across the entire CRM application.
+///
 /// ---------------------------------------------------------------------------
-/// THEME PALETTE DEFINITION & PRESETS
+/// QUICK GUIDE FOR FUTURE DYNAMIC MODIFICATIONS:
 /// ---------------------------------------------------------------------------
+///
+/// 1. TO ADD A NEW THEME:
+///    a) Add a preset in [AppThemePalette] below with your custom hex colors.
+///    b) Add an entry in [AppIndependentTheme] with `isDark` set to true/false.
+///    c) Add it to [AppIndependentTheme.allThemes].
+///    (OR use `AppThemeRegistry.registerTheme(...)` dynamically at runtime).
+///
+/// 2. TO ADD A NEW TYPOGRAPHY COMBINATION:
+///    a) Add a preset in [AppFontCombination] pairing any Google Fonts.
+///    b) Add it to [AppFontCombination.allCombinations].
+///    (OR use `AppFontRegistry.registerFont(...)` dynamically at runtime).
+///
+/// 3. ALL COMPONENTS AUTOMATICALLY INHERIT:
+///    Any new theme or font added here immediately surfaces in the Settings
+///    Panel, persists across sessions, and applies globally across all screens.
+/// ===========================================================================
 
+/// ---------------------------------------------------------------------------
+/// 1. THEME PALETTE IDENTIFIERS
+/// ---------------------------------------------------------------------------
 enum ThemePaletteId {
   whiteMode,
   darkMode,
@@ -12,8 +38,12 @@ enum ThemePaletteId {
   orangeAndMilk,
   midnightAndVanilla,
   blaze,
+  custom,
 }
 
+/// ---------------------------------------------------------------------------
+/// 2. THEME PALETTE SPECIFICATION
+/// ---------------------------------------------------------------------------
 class AppThemePalette {
   final ThemePaletteId id;
   final String name;
@@ -80,7 +110,9 @@ class AppThemePalette {
   Color textSecondary(bool isDark) => isDark ? darkTextSecondary : lightTextSecondary;
   Color textMuted(bool isDark) => isDark ? darkTextMuted : lightTextMuted;
 
-  // 1. White Mode (Classic Light)
+  // --- BUILT-IN PALETTE PRESETS ---
+
+  // Preset 1: White Mode (Classic Light)
   static const whiteMode = AppThemePalette(
     id: ThemePaletteId.whiteMode,
     name: 'White Mode',
@@ -115,7 +147,7 @@ class AppThemePalette {
     ],
   );
 
-  // 2. Dark Mode (Classic Dark)
+  // Preset 2: Dark Mode (Classic Dark)
   static const darkMode = AppThemePalette(
     id: ThemePaletteId.darkMode,
     name: 'Dark Mode',
@@ -150,19 +182,19 @@ class AppThemePalette {
     ],
   );
 
-  // 3. Wine Red + Light Sand
+  // Preset 3: Wine Red + Light Sand
   static const wineAndSand = AppThemePalette(
     id: ThemePaletteId.wineAndSand,
     name: 'Wine Red + Light Sand',
     description: 'Sophisticated wine burgundy accents grounded in warm mineral sand',
     primaryColorName: 'Wine Red',
     backgroundColorName: 'Light Sand',
-    primary: Color(0xFF881337), // Rich Wine Red
+    primary: Color(0xFF881337),
     primaryHover: Color(0xFF9F1239),
     primaryLight: Color(0xFFFCE7F3),
     primaryDark: Color(0xFF4C0519),
-    lightBackground: Color(0xFFF7F4EE), // Light Sand
-    darkBackground: Color(0xFF191114), // Deep Wine Dark
+    lightBackground: Color(0xFFF7F4EE),
+    darkBackground: Color(0xFF191114),
     lightSurface: Color(0xFFFFFFFF),
     darkSurface: Color(0xFF22161B),
     lightCard: Color(0xFFFFFFFF),
@@ -185,19 +217,19 @@ class AppThemePalette {
     ],
   );
 
-  // 4. Orange + Milk
+  // Preset 4: Orange + Milk
   static const orangeAndMilk = AppThemePalette(
     id: ThemePaletteId.orangeAndMilk,
     name: 'Orange + Milk',
     description: 'High-energy athletic orange balanced with creamy milk porcelain surfaces',
     primaryColorName: 'Orange',
     backgroundColorName: 'Milk',
-    primary: Color(0xFFEA580C), // Athletic Orange
+    primary: Color(0xFFEA580C),
     primaryHover: Color(0xFFC2410C),
     primaryLight: Color(0xFFFFEDD5),
     primaryDark: Color(0xFF7C2D12),
-    lightBackground: Color(0xFFFAF7F2), // Creamy Milk
-    darkBackground: Color(0xFF151413), // Roasted Graphite
+    lightBackground: Color(0xFFFAF7F2),
+    darkBackground: Color(0xFF151413),
     lightSurface: Color(0xFFFFFFFF),
     darkSurface: Color(0xFF1E1B19),
     lightCard: Color(0xFFFFFFFF),
@@ -220,19 +252,19 @@ class AppThemePalette {
     ],
   );
 
-  // 5. Midnight Indigo + Vanilla
+  // Preset 5: Midnight Indigo + Vanilla
   static const midnightAndVanilla = AppThemePalette(
     id: ThemePaletteId.midnightAndVanilla,
     name: 'Midnight Indigo + Vanilla',
     description: 'Deep celestial midnight indigo contrasted with rich French vanilla',
     primaryColorName: 'Midnight Indigo',
     backgroundColorName: 'Vanilla',
-    primary: Color(0xFF4F46E5), // Midnight Indigo
+    primary: Color(0xFF4F46E5),
     primaryHover: Color(0xFF4338CA),
     primaryLight: Color(0xFFEEF2FF),
     primaryDark: Color(0xFF312E81),
-    lightBackground: Color(0xFFFDFBF7), // French Vanilla
-    darkBackground: Color(0xFF0F111A), // Deep Midnight
+    lightBackground: Color(0xFFFDFBF7),
+    darkBackground: Color(0xFF0F111A),
     lightSurface: Color(0xFFFFFFFF),
     darkSurface: Color(0xFF161926),
     lightCard: Color(0xFFFFFFFF),
@@ -255,19 +287,19 @@ class AppThemePalette {
     ],
   );
 
-  // 6. Blaze Orange + Black
+  // Preset 6: Blaze Orange + Black
   static const blaze = AppThemePalette(
     id: ThemePaletteId.blaze,
     name: 'Blaze Orange + Black',
     description: 'Striking pure black motorsport stage with high-contrast electric blaze flame',
     primaryColorName: 'Blaze Orange',
     backgroundColorName: 'Black',
-    primary: Color(0xFFFF5722), // Blaze Orange
+    primary: Color(0xFFFF5722),
     primaryHover: Color(0xFFE64A19),
     primaryLight: Color(0xFFFFCCBC),
     primaryDark: Color(0xFFBF360C),
     lightBackground: Color(0xFFF5F5F5),
-    darkBackground: Color(0xFF0A0A0A), // Pure Pitch Black
+    darkBackground: Color(0xFF0A0A0A),
     lightSurface: Color(0xFFFFFFFF),
     darkSurface: Color(0xFF121212),
     lightCard: Color(0xFFFFFFFF),
@@ -309,9 +341,8 @@ class AppThemePalette {
 }
 
 /// ---------------------------------------------------------------------------
-/// INDEPENDENT THEME SELECTION OPTION (6 Options)
+/// 3. INDEPENDENT THEME SELECTION OPTION (6 Independent Themes)
 /// ---------------------------------------------------------------------------
-
 enum AppIndependentThemeId {
   whiteMode,
   darkMode,
@@ -319,129 +350,80 @@ enum AppIndependentThemeId {
   orangeAndMilk,
   midnightAndVanilla,
   blaze,
+  custom,
 }
 
 class AppIndependentTheme {
   final AppIndependentThemeId id;
-  final String name;
-  final String primaryColorName;
-  final String backgroundColorName;
-  final String description;
   final bool isDark;
   final AppThemePalette palette;
-  final List<Color> previewSwatches;
+  final String? _customName;
+  final String? _customPrimaryColorName;
+  final String? _customBackgroundColorName;
+  final String? _customDescription;
+  final List<Color>? _customPreviewSwatches;
 
   const AppIndependentTheme({
     required this.id,
-    required this.name,
-    required this.primaryColorName,
-    required this.backgroundColorName,
-    required this.description,
     required this.isDark,
     required this.palette,
-    required this.previewSwatches,
-  });
+    String? name,
+    String? primaryColorName,
+    String? backgroundColorName,
+    String? description,
+    List<Color>? previewSwatches,
+  })  : _customName = name,
+        _customPrimaryColorName = primaryColorName,
+        _customBackgroundColorName = backgroundColorName,
+        _customDescription = description,
+        _customPreviewSwatches = previewSwatches;
 
-  // 1. White Mode (existing)
+  String get name => _customName ?? palette.name;
+  String get primaryColorName => _customPrimaryColorName ?? palette.primaryColorName;
+  String get backgroundColorName => _customBackgroundColorName ?? palette.backgroundColorName;
+  String get description => _customDescription ?? palette.description;
+  List<Color> get previewSwatches => _customPreviewSwatches ?? palette.previewSwatches;
+
+  // 1. White Mode (Classic Light)
   static const whiteMode = AppIndependentTheme(
     id: AppIndependentThemeId.whiteMode,
-    name: 'White Mode',
-    primaryColorName: 'Athletic Orange',
-    backgroundColorName: 'Porcelain White',
-    description: 'Clean daylight slate surfaces with crisp porcelain contrast and athletic amber accents',
     isDark: false,
     palette: AppThemePalette.whiteMode,
-    previewSwatches: [
-      Color(0xFFEA580C),
-      Color(0xFFFAF7F2),
-      Color(0xFFFFFFFF),
-      Color(0xFF171717),
-    ],
   );
 
-  // 2. Dark Mode (existing)
+  // 2. Dark Mode (Classic Dark)
   static const darkMode = AppIndependentTheme(
     id: AppIndependentThemeId.darkMode,
-    name: 'Dark Mode',
-    primaryColorName: 'Athletic Orange',
-    backgroundColorName: 'Obsidian Void',
-    description: 'Obsidian graphite void with luminous amber accents and reduced nighttime glare',
     isDark: true,
     palette: AppThemePalette.darkMode,
-    previewSwatches: [
-      Color(0xFFEA580C),
-      Color(0xFF141415),
-      Color(0xFF19191B),
-      Color(0xFFEDEDED),
-    ],
   );
 
   // 3. Wine Red + Light Sand
   static const wineAndSand = AppIndependentTheme(
     id: AppIndependentThemeId.wineAndSand,
-    name: 'Wine Red + Light Sand',
-    primaryColorName: 'Wine Red',
-    backgroundColorName: 'Light Sand',
-    description: 'Sophisticated wine burgundy accents grounded in warm mineral sand',
     isDark: false,
     palette: AppThemePalette.wineAndSand,
-    previewSwatches: [
-      Color(0xFF881337),
-      Color(0xFFF7F4EE),
-      Color(0xFFEFE7DC),
-      Color(0xFF2C1318),
-    ],
   );
 
   // 4. Orange + Milk
   static const orangeAndMilk = AppIndependentTheme(
     id: AppIndependentThemeId.orangeAndMilk,
-    name: 'Orange + Milk',
-    primaryColorName: 'Orange',
-    backgroundColorName: 'Milk',
-    description: 'High-energy athletic orange balanced with creamy milk porcelain surfaces',
     isDark: false,
     palette: AppThemePalette.orangeAndMilk,
-    previewSwatches: [
-      Color(0xFFEA580C),
-      Color(0xFFFAF7F2),
-      Color(0xFFF2ECE1),
-      Color(0xFF1C1917),
-    ],
   );
 
   // 5. Midnight Indigo + Vanilla
   static const midnightAndVanilla = AppIndependentTheme(
     id: AppIndependentThemeId.midnightAndVanilla,
-    name: 'Midnight Indigo + Vanilla',
-    primaryColorName: 'Midnight Indigo',
-    backgroundColorName: 'Vanilla',
-    description: 'Deep celestial midnight indigo contrasted with rich French vanilla',
     isDark: false,
     palette: AppThemePalette.midnightAndVanilla,
-    previewSwatches: [
-      Color(0xFF4F46E5),
-      Color(0xFFFDFBF7),
-      Color(0xFFF5EFE3),
-      Color(0xFF1E1B4B),
-    ],
   );
 
   // 6. Blaze Orange + Black
   static const blaze = AppIndependentTheme(
     id: AppIndependentThemeId.blaze,
-    name: 'Blaze Orange + Black',
-    primaryColorName: 'Blaze Orange',
-    backgroundColorName: 'Black',
-    description: 'Striking pure black motorsport stage with electric blaze flame accents',
     isDark: true,
     palette: AppThemePalette.blaze,
-    previewSwatches: [
-      Color(0xFFFF5722),
-      Color(0xFF0A0A0A),
-      Color(0xFF171717),
-      Color(0xFFEDEDED),
-    ],
   );
 
   static const List<AppIndependentTheme> allThemes = [
@@ -463,15 +445,15 @@ class AppIndependentTheme {
 }
 
 /// ---------------------------------------------------------------------------
-/// TYPOGRAPHY CUSTOMIZATION: COMBINATIONS & PAIRINGS (5 Options)
+/// 4. TYPOGRAPHY CUSTOMIZATION: COMBINATIONS & PAIRINGS (5 Options)
 /// ---------------------------------------------------------------------------
-
 enum FontCombinationId {
   syneAndDmMono,
   gothamAndInter,
   leagueSpartanAndInter,
   megionAndDmSans,
   nofexAndInter,
+  custom,
 }
 
 class AppFontCombination {
@@ -569,5 +551,59 @@ class AppFontCombination {
       if (f.id.name.toLowerCase() == rawId.toLowerCase()) return f;
     }
     return leagueSpartanAndInter;
+  }
+}
+
+/// ---------------------------------------------------------------------------
+/// 5. DYNAMIC REGISTRY FOR RUNTIME EXTENSIBILITY
+/// ---------------------------------------------------------------------------
+/// Allows dynamic registration of custom themes and typography pairings at
+/// runtime (e.g. from an API, tenant branding plugin, or user configuration).
+class DynamicThemeRegistry {
+  static final List<AppIndependentTheme> _customThemes = [];
+  static final List<AppFontCombination> _customFonts = [];
+
+  /// Get all available themes (built-in presets + custom registered themes)
+  static List<AppIndependentTheme> get themes => [
+        ...AppIndependentTheme.allThemes,
+        ..._customThemes,
+      ];
+
+  /// Get all available typography pairings (built-in presets + custom registered fonts)
+  static List<AppFontCombination> get fonts => [
+        ...AppFontCombination.allCombinations,
+        ..._customFonts,
+      ];
+
+  /// Register a dynamic custom theme at runtime
+  static void registerTheme(AppIndependentTheme theme) {
+    if (!_customThemes.any((t) => t.id.name == theme.id.name)) {
+      _customThemes.add(theme);
+    }
+  }
+
+  /// Register a dynamic custom font combination at runtime
+  static void registerFont(AppFontCombination fontCombo) {
+    if (!_customFonts.any((f) => f.id.name == fontCombo.id.name)) {
+      _customFonts.add(fontCombo);
+    }
+  }
+
+  /// Resolve theme by ID from presets or registered custom themes
+  static AppIndependentTheme findTheme(String? id) {
+    if (id == null) return AppIndependentTheme.darkMode;
+    for (final theme in themes) {
+      if (theme.id.name.toLowerCase() == id.toLowerCase()) return theme;
+    }
+    return AppIndependentTheme.darkMode;
+  }
+
+  /// Resolve font combination by ID from presets or registered custom fonts
+  static AppFontCombination findFont(String? id) {
+    if (id == null) return AppFontCombination.leagueSpartanAndInter;
+    for (final font in fonts) {
+      if (font.id.name.toLowerCase() == id.toLowerCase()) return font;
+    }
+    return AppFontCombination.leagueSpartanAndInter;
   }
 }

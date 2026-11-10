@@ -103,6 +103,75 @@ void main() {
     });
   });
 
+  group('Dynamic Theme & Typography Registry Extensibility', () {
+    test('DynamicThemeRegistry allows registering custom themes and fonts dynamically', () {
+      final initialThemeCount = DynamicThemeRegistry.themes.length;
+      final initialFontCount = DynamicThemeRegistry.fonts.length;
+
+      expect(initialThemeCount, greaterThanOrEqualTo(6));
+      expect(initialFontCount, greaterThanOrEqualTo(5));
+
+      // Register a dynamic custom theme
+      const customTheme = AppIndependentTheme(
+        id: AppIndependentThemeId.custom,
+        isDark: true,
+        palette: AppThemePalette(
+          id: ThemePaletteId.custom,
+          name: 'Cyberpunk Neon',
+          description: 'Electric neon cyan and hot pink on deep obsidian void',
+          primaryColorName: 'Electric Cyan',
+          backgroundColorName: 'Obsidian Void',
+          primary: Color(0xFF00E5FF),
+          primaryHover: Color(0xFF00B0FF),
+          primaryLight: Color(0xFFE0F7FA),
+          primaryDark: Color(0xFF0097A7),
+          lightBackground: Color(0xFFFAF7F2),
+          darkBackground: Color(0xFF08080A),
+          lightSurface: Color(0xFFFFFFFF),
+          darkSurface: Color(0xFF101014),
+          lightCard: Color(0xFFFFFFFF),
+          darkCard: Color(0xFF141418),
+          lightRaised: Color(0xFFF4F4F5),
+          darkRaised: Color(0xFF1C1C22),
+          lightBorder: Color(0x14171717),
+          darkBorder: Color(0x2800E5FF),
+          lightTextPrimary: Color(0xFF171717),
+          darkTextPrimary: Color(0xFFEDEDED),
+          lightTextSecondary: Color(0xFF525252),
+          darkTextSecondary: Color(0xFFA1A1A6),
+          lightTextMuted: Color(0xFF737373),
+          darkTextMuted: Color(0xFF85858B),
+          previewSwatches: [
+            Color(0xFF00E5FF),
+            Color(0xFF08080A),
+            Color(0xFF141418),
+            Color(0xFFEDEDED),
+          ],
+        ),
+      );
+
+      DynamicThemeRegistry.registerTheme(customTheme);
+      expect(DynamicThemeRegistry.themes.length, equals(initialThemeCount + 1));
+      expect(DynamicThemeRegistry.findTheme('custom').name, equals('Cyberpunk Neon'));
+
+      // Register a dynamic custom font combination
+      final customFont = AppFontCombination(
+        id: FontCombinationId.custom,
+        name: 'Cinzel + Roboto',
+        headingFontName: 'Cinzel',
+        bodyFontName: 'Roboto',
+        categoryTag: 'Classical Editorial',
+        description: 'Classical Roman serifs supported by versatile modern sans',
+        headingStyleBuilder: GoogleFonts.cinzel,
+        bodyStyleBuilder: GoogleFonts.roboto,
+      );
+
+      DynamicThemeRegistry.registerFont(customFont);
+      expect(DynamicThemeRegistry.fonts.length, equals(initialFontCount + 1));
+      expect(DynamicThemeRegistry.findFont('custom').name, equals('Cinzel + Roboto'));
+    });
+  });
+
   group('Dynamic AppTheme Builder', () {
     test('AppTheme.buildTheme builds cohesive ThemeData for Dark & Light modes', () {
       final darkTheme = AppTheme.buildTheme(
