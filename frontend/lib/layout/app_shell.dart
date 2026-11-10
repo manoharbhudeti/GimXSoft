@@ -5,8 +5,8 @@ import '../core/states/loading/app_loading.dart';
 import '../core/states/loading/full_screen_loader.dart';
 import '../core/states/network/connectivity_service.dart';
 import '../core/states/success/app_toast.dart';
-import '../core/theme/app_colors.dart';
 import '../core/theme/design_tokens.dart';
+import '../core/theme/theme_provider.dart';
 import 'sidebar.dart';
 import 'top_nav_bar.dart';
 
@@ -25,6 +25,8 @@ class _AppShellState extends ConsumerState<AppShell> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedTheme = ref.watch(selectedThemeProvider);
+    final palette = selectedTheme.palette;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final width = MediaQuery.of(context).size.width;
     final isMobile = width < DesignTokens.breakpointTablet;
@@ -47,8 +49,8 @@ class _AppShellState extends ConsumerState<AppShell> {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: AppColors.background(isDark),
-      drawer: isMobile ? const Drawer(child: AppSidebar()) : null,
+      backgroundColor: palette.background(isDark),
+      drawer: isMobile ? Drawer(backgroundColor: palette.surface(isDark), child: const AppSidebar()) : null,
       body: Stack(
         children: [
           // Main Application Shell

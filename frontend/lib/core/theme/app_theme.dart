@@ -106,9 +106,13 @@ class AppTheme {
       labelSmall: labelSmall,
     );
 
+    final baseBodyStyle = fontCombo.bodyStyleBuilder();
+
     return ThemeData(
       useMaterial3: true,
       brightness: isDark ? Brightness.dark : Brightness.light,
+      fontFamily: baseBodyStyle.fontFamily,
+      fontFamilyFallback: baseBodyStyle.fontFamilyFallback,
       primaryColor: palette.primary,
       scaffoldBackgroundColor: palette.background(isDark),
       colorScheme: ColorScheme(
@@ -121,6 +125,16 @@ class AppTheme {
         onSurface: textPrimary,
         error: AppColors.error,
         onError: Colors.white,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: palette.surface(isDark),
+        foregroundColor: textPrimary,
+        elevation: 0,
+        centerTitle: false,
+      ),
+      drawerTheme: DrawerThemeData(
+        backgroundColor: palette.surface(isDark),
+        elevation: 0,
       ),
       textTheme: textTheme,
       cardTheme: CardThemeData(

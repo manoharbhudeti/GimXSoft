@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../core/theme/app_colors.dart';
 import '../core/theme/design_tokens.dart';
 import '../core/theme/theme_customization_models.dart';
+import '../core/theme/theme_provider.dart';
 import '../features/auth/auth_provider.dart';
 import 'navigation_items.dart';
 
@@ -27,6 +27,9 @@ class AppSidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedTheme = ref.watch(selectedThemeProvider);
+    final fontCombo = ref.watch(fontCombinationProvider);
+    final palette = selectedTheme.palette;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isCollapsed = ref.watch(sidebarCollapsedProvider);
     final authState = ref.watch(authProvider);
@@ -42,9 +45,9 @@ class AppSidebar extends ConsumerWidget {
       curve: DesignTokens.easeOutStandard,
       width: width,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkDeepest : AppColors.lightCard,
+        color: palette.surface(isDark),
         border: Border(
-          right: BorderSide(color: AppColors.border(isDark), width: 1),
+          right: BorderSide(color: palette.border(isDark), width: 1),
         ),
       ),
       child: Column(
@@ -57,7 +60,7 @@ class AppSidebar extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: AppColors.border(isDark), width: 1),
+                bottom: BorderSide(color: palette.border(isDark), width: 1),
               ),
             ),
             child: Row(
@@ -71,15 +74,15 @@ class AppSidebar extends ConsumerWidget {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                            color: palette.id == ThemePaletteId.wineAndSand
                                 ? const Color(0xFFF7F4EE)
-                                : AppColors.primary,
+                                : palette.primary,
                             borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
                           ),
                           child: Center(
                             child: Icon(
                               Icons.fitness_center_rounded,
-                              color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                              color: palette.id == ThemePaletteId.wineAndSand
                                   ? const Color(0xFF380811)
                                   : Colors.white,
                               size: 16,
@@ -96,21 +99,21 @@ class AppSidebar extends ConsumerWidget {
                                 'GimXSoft',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: fontCombo.headingStyleBuilder(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   letterSpacing: -0.2,
-                                  color: AppColors.textPrimary(isDark),
+                                  color: palette.textPrimary(isDark),
                                 ),
                               ),
                               Text(
                                 'Gym Operations',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: fontCombo.bodyStyleBuilder(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w400,
-                                  color: AppColors.textMuted(isDark),
+                                  color: palette.textMuted(isDark),
                                 ),
                               ),
                             ],
@@ -123,7 +126,7 @@ class AppSidebar extends ConsumerWidget {
                     icon: Icon(
                       Icons.chevron_left_rounded,
                       size: 18,
-                      color: AppColors.textMuted(isDark),
+                      color: palette.textMuted(isDark),
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
@@ -138,15 +141,15 @@ class AppSidebar extends ConsumerWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                        color: palette.id == ThemePaletteId.wineAndSand
                             ? const Color(0xFFF7F4EE)
-                            : AppColors.primary,
+                            : palette.primary,
                         borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
                       ),
                       child: Center(
                         child: Icon(
                           Icons.fitness_center_rounded,
-                          color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                          color: palette.id == ThemePaletteId.wineAndSand
                               ? const Color(0xFF380811)
                               : Colors.white,
                           size: 16,
@@ -177,6 +180,8 @@ class AppSidebar extends ConsumerWidget {
                   item: item,
                   isActive: isActive,
                   isCollapsed: isCollapsed,
+                  palette: palette,
+                  fontCombo: fontCombo,
                   onTap: () => context.go(item.path),
                 );
               },
@@ -188,13 +193,13 @@ class AppSidebar extends ConsumerWidget {
             padding: const EdgeInsets.all(DesignTokens.space12),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: AppColors.border(isDark), width: 1),
+                top: BorderSide(color: palette.border(isDark), width: 1),
               ),
             ),
             child: isCollapsed
                 ? Center(
                     child: IconButton(
-                      icon: Icon(Icons.chevron_right_rounded, color: AppColors.textMuted(isDark), size: 18),
+                      icon: Icon(Icons.chevron_right_rounded, color: palette.textMuted(isDark), size: 18),
                       splashRadius: 16,
                       onPressed: () => ref.read(sidebarCollapsedProvider.notifier).expand(),
                     ),
@@ -205,19 +210,19 @@ class AppSidebar extends ConsumerWidget {
                         width: 28,
                         height: 28,
                         decoration: BoxDecoration(
-                          color: AppColors.raised(isDark),
+                          color: palette.raised(isDark),
                           borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
-                          border: Border.all(color: AppColors.border(isDark)),
+                          border: Border.all(color: palette.border(isDark)),
                         ),
                         child: Center(
                           child: Text(
                             authState.tenant?.name.isNotEmpty == true
                                 ? authState.tenant!.name[0].toUpperCase()
                                 : 'T',
-                            style: TextStyle(
+                            style: fontCombo.headingStyleBuilder(
                               fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textPrimary(isDark),
+                              fontWeight: FontWeight.w700,
+                              color: palette.textPrimary(isDark),
                             ),
                           ),
                         ),
@@ -231,19 +236,19 @@ class AppSidebar extends ConsumerWidget {
                               authState.tenant?.name ?? 'Titan Performance',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
+                              style: fontCombo.bodyStyleBuilder(
                                 fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.textPrimary(isDark),
+                                fontWeight: FontWeight.w600,
+                                color: palette.textPrimary(isDark),
                               ),
                             ),
                             Text(
                               authState.selectedBranch?.name ?? 'Downtown Flagship',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
+                              style: fontCombo.bodyStyleBuilder(
                                 fontSize: 11,
-                                color: AppColors.textMuted(isDark),
+                                color: palette.textMuted(isDark),
                               ),
                             ),
                           ],
@@ -263,12 +268,16 @@ class _SidebarTile extends StatefulWidget {
   final bool isActive;
   final bool isCollapsed;
   final VoidCallback onTap;
+  final AppThemePalette palette;
+  final AppFontCombination fontCombo;
 
   const _SidebarTile({
     required this.item,
     required this.isActive,
     required this.isCollapsed,
     required this.onTap,
+    required this.palette,
+    required this.fontCombo,
   });
 
   @override
@@ -284,18 +293,22 @@ class _SidebarTileState extends State<_SidebarTile> {
 
     // Active item uses small surface step and hairline; inactive hover uses light raised
     final bgColor = widget.isActive
-        ? AppColors.raised(isDark)
+        ? widget.palette.raised(isDark)
         : (_isHovered
-            ? (isDark ? const Color(0x1F232325) : const Color(0xFFF4F4F5))
+            ? (isDark
+                ? widget.palette.raised(isDark).withOpacity(0.5)
+                : widget.palette.raised(isDark).withOpacity(0.7))
             : Colors.transparent);
 
     final iconColor = widget.isActive
-        ? AppColors.textPrimary(isDark)
-        : (_isHovered ? AppColors.textPrimary(isDark) : AppColors.textMuted(isDark));
+        ? (widget.palette.id == ThemePaletteId.wineAndSand
+            ? const Color(0xFFF7F4EE)
+            : widget.palette.primary)
+        : (_isHovered ? widget.palette.textPrimary(isDark) : widget.palette.textMuted(isDark));
 
     final textColor = widget.isActive
-        ? AppColors.textPrimary(isDark)
-        : (_isHovered ? AppColors.textPrimary(isDark) : AppColors.textSecondary(isDark));
+        ? widget.palette.textPrimary(isDark)
+        : (_isHovered ? widget.palette.textPrimary(isDark) : widget.palette.textSecondary(isDark));
 
     Widget tile = MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -314,7 +327,7 @@ class _SidebarTileState extends State<_SidebarTile> {
             color: bgColor,
             borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
             border: widget.isActive
-                ? Border.all(color: AppColors.border(isDark).withOpacity(0.18), width: 1)
+                ? Border.all(color: widget.palette.border(isDark).withOpacity(0.35), width: 1)
                 : null,
           ),
           child: Row(
@@ -326,9 +339,9 @@ class _SidebarTileState extends State<_SidebarTile> {
                 Expanded(
                   child: Text(
                     widget.item.title,
-                    style: TextStyle(
+                    style: widget.fontCombo.bodyStyleBuilder(
                       fontSize: 13,
-                      fontWeight: widget.isActive ? FontWeight.w500 : FontWeight.w400,
+                      fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.w400,
                       color: textColor,
                     ),
                     maxLines: 1,
