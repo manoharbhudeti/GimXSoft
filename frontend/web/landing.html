@@ -163,10 +163,6 @@
         <nav class="hidden md:flex items-center space-x-7 text-xs font-medium text-slate-300">
           <a href="#how" class="nav-link hover:text-brand-orangeLight transition-colors">How it works</a>
           <a href="#features" class="nav-link hover:text-brand-orangeLight transition-colors">Features</a>
-          <a href="#preview" class="nav-link hover:text-brand-orangeLight transition-colors flex items-center space-x-1">
-            <span>5s AI Preview</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange animate-ping"></span>
-          </a>
           <a href="#whatsapp" class="nav-link hover:text-brand-orangeLight transition-colors">WhatsApp CRM</a>
           <a href="#pricing" class="nav-link hover:text-brand-orangeLight transition-colors">Pricing</a>
           <a href="#faq" class="nav-link hover:text-brand-orangeLight transition-colors">FAQ</a>
@@ -194,7 +190,6 @@
       <div id="mobileMenu" class="hidden md:hidden glass-card rounded-2xl mt-2 p-5 border border-white/10 flex flex-col space-y-3 text-left shadow-2xl">
         <a href="#how" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">How it works</a>
         <a href="#features" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">Features</a>
-        <a href="#preview" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">5s AI Preview</a>
         <a href="#whatsapp" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">WhatsApp CRM</a>
         <a href="#pricing" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">Pricing</a>
         <a href="#faq" onclick="closeMobileMenu()" class="text-xs text-slate-300 py-1 hover:text-brand-orangeLight">FAQ</a>
@@ -242,11 +237,7 @@
               <i class="fa-solid fa-gift"></i>
               <span>Start 1-Month Free Trial →</span>
             </button>
-            <a href="#preview" class="w-full sm:w-auto px-5 py-3 bg-brand-surface hover:bg-brand-elevated text-slate-200 border border-white/10 text-xs sm:text-sm font-medium rounded-xl transition-all flex items-center justify-center space-x-2">
-              <i class="fa-solid fa-play text-brand-orangeLight text-xs"></i>
-              <span>Watch 5s AI Preview</span>
-            </a>
-            <a href="https://wa.me/917541004076?text=Hi%2C+I%27m+interested+in+GimXSoft+for+my+gym" target="_blank" class="w-full sm:w-auto px-4 py-3 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs sm:text-sm font-medium rounded-xl transition-all flex items-center justify-center space-x-2">
+            <a href="https://wa.me/917541004076?text=Hi%2C+I%27m+interested+in+GimXSoft+for+my+gym" target="_blank" class="w-full sm:w-auto px-5 py-3 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs sm:text-sm font-medium rounded-xl transition-all flex items-center justify-center space-x-2">
               <i class="fa-brands fa-whatsapp text-emerald-400"></i>
               <span>Chat on WhatsApp</span>
             </a>
@@ -334,89 +325,6 @@
         </div>
 
       </div>
-    </div>
-  </section>
-
-  <!-- ================= SECTION: 5-SECOND HIGH-QUALITY AI VIDEO PREVIEW ================= -->
-  <section id="preview" class="py-20 relative bg-brand-carbon/50 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div class="text-center max-w-2xl mx-auto mb-10">
-        <span class="text-xs font-semibold text-brand-orangeLight tracking-wide uppercase px-3 py-1 rounded-full bg-brand-orange/10 border border-brand-orange/20">
-          Cinematic Product Demo • 5 Seconds
-        </span>
-        <h2 class="text-2xl sm:text-4xl font-bold text-white mt-3 font-display">
-          See GimXSoft in 5 Seconds.
-        </h2>
-        <p class="text-slate-400 text-xs sm:text-sm mt-2">
-          Watch automated WhatsApp dues collection, live QR door check-ins, and the 2D Zeus Thunder Engine power your gym floor with zero manual chasing.
-        </p>
-      </div>
-
-      <!-- High-Quality 5s AI Video Player Container -->
-      <div class="max-w-4xl mx-auto glass-card rounded-3xl p-4 sm:p-6 border border-white/10 shadow-2xl relative overflow-hidden group">
-        
-        <!-- Video Screen Canvas Frame -->
-        <div class="relative w-full aspect-video bg-[#0A0C12] rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center">
-          
-          <!-- High-Framerate Procedural AI Video Canvas -->
-          <canvas id="ai-video-canvas" class="w-full h-full object-cover"></canvas>
-
-          <!-- Top Overlay: Status and Quality Pill -->
-          <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-30 pointer-events-none">
-            <div class="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-[11px] text-white">
-              <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-              <span class="font-mono font-medium">LIVE AI PREVIEW</span>
-              <span class="text-slate-400">|</span>
-              <span id="aiVideoTimer" class="font-mono text-brand-orangeLight tabular-nums">00:00 / 00:05</span>
-            </div>
-            <div class="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 text-[10px] text-emerald-400 font-semibold">
-              <i class="fa-solid fa-bolt text-brand-orange"></i>
-              <span>60 FPS 4K SIMULATION</span>
-            </div>
-          </div>
-
-          <!-- Video Playback Center Badge Trigger -->
-          <button id="videoPlayPauseBtn" onclick="toggleAIVideo()" class="absolute z-30 w-16 h-16 rounded-full bg-brand-orange/90 hover:bg-brand-orange text-white flex items-center justify-center text-xl shadow-2xl shadow-brand-orange/50 transition-all hover:scale-110 active:scale-95">
-            <i id="videoPlayPauseIcon" class="fa-solid fa-pause"></i>
-          </button>
-
-          <!-- Active Scene Subtitle Bar -->
-          <div class="absolute bottom-12 left-4 right-4 z-30 text-center pointer-events-none">
-            <div id="videoSceneCaption" class="inline-block bg-black/75 backdrop-blur-md px-4 py-1.5 rounded-xl border border-white/10 text-xs text-white font-medium shadow-lg">
-              Scene 1: Zeus 2D Thunder Core Power Flex
-            </div>
-          </div>
-
-          <!-- Bottom Scrub Bar -->
-          <div class="absolute bottom-0 left-0 right-0 h-2 bg-white/10 z-30 overflow-hidden cursor-pointer" onclick="scrubAIVideo(event)">
-            <div id="aiVideoProgressBar" class="h-full bg-brand-orange transition-all duration-75 w-0"></div>
-          </div>
-        </div>
-
-        <!-- Video Player Bottom Controls & Legend -->
-        <div class="mt-4 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-          <div class="flex items-center space-x-4">
-            <button onclick="toggleAIVideo()" class="hover:text-white transition-colors flex items-center space-x-1.5">
-              <i id="bottomPlayIcon" class="fa-solid fa-pause text-brand-orangeLight"></i>
-              <span>Pause / Play</span>
-            </button>
-            <button onclick="restartAIVideo()" class="hover:text-white transition-colors flex items-center space-x-1.5">
-              <i class="fa-solid fa-rotate-left"></i>
-              <span>Replay 5s</span>
-            </button>
-            <span class="text-slate-500">|</span>
-            <span class="text-slate-300">Autoplays seamless 5-second product moments</span>
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="text-emerald-400 font-medium"><i class="fa-solid fa-check text-[10px] mr-1"></i> Official Meta Cloud API</span>
-            <span class="text-slate-500">•</span>
-            <span class="text-white font-medium">₹2,000 / mo flat</span>
-          </div>
-        </div>
-
-      </div>
-
     </div>
   </section>
 
@@ -955,7 +863,6 @@
         <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
           <a href="#how" class="hover:text-white transition-colors">How it works</a>
           <a href="#features" class="hover:text-white transition-colors">Features</a>
-          <a href="#preview" class="hover:text-white transition-colors">5s AI Preview</a>
           <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
           <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
           <a href="/login" class="hover:text-white transition-colors">Admin Log in</a>
@@ -1126,258 +1033,6 @@
       stream.appendChild(msg);
       input.value = '';
       stream.scrollTop = stream.scrollHeight;
-    }
-
-    // ================= HIGH-QUALITY 5-SECOND PROCEDURAL AI VIDEO PLAYER =================
-    const aiVideoCanvas = document.getElementById('ai-video-canvas');
-    let aiVideoCtx = aiVideoCanvas ? aiVideoCanvas.getContext('2d') : null;
-    let videoIsPlaying = true;
-    let videoStartTime = performance.now();
-    const DURATION = 5000; // 5.0 seconds exact loop
-    let currentAnimFrame = null;
-
-    function resizeAIVideo() {
-      if (!aiVideoCanvas) return;
-      const rect = aiVideoCanvas.getBoundingClientRect();
-      aiVideoCanvas.width = rect.width * (window.devicePixelRatio || 1);
-      aiVideoCanvas.height = rect.height * (window.devicePixelRatio || 1);
-    }
-    window.addEventListener('resize', resizeAIVideo);
-    resizeAIVideo();
-
-    const zeusWhiteImg = new Image();
-    zeusWhiteImg.src = 'assets/images/zeus_white.png';
-
-    function renderAIVideo(now) {
-      if (!videoIsPlaying) return;
-
-      const elapsed = (now - videoStartTime) % DURATION;
-      const progress = elapsed / DURATION;
-      const seconds = (elapsed / 1000).toFixed(1);
-
-      // Update timer & progress bar
-      const timerEl = document.getElementById('aiVideoTimer');
-      if (timerEl) timerEl.innerText = `00:0${Math.floor(elapsed/1000)} / 00:05`;
-      const pBar = document.getElementById('aiVideoProgressBar');
-      if (pBar) pBar.style.width = (progress * 100) + '%';
-
-      const captionEl = document.getElementById('videoSceneCaption');
-
-      if (aiVideoCtx) {
-        const w = aiVideoCanvas.width;
-        const h = aiVideoCanvas.height;
-
-        // Clear Background with high-tech radial gradient
-        const bgGrad = aiVideoCtx.createRadialGradient(w/2, h/2, 20, w/2, h/2, w/1.2);
-        bgGrad.addColorStop(0, '#181C26');
-        bgGrad.addColorStop(1, '#080A0E');
-        aiVideoCtx.fillStyle = bgGrad;
-        aiVideoCtx.fillRect(0, 0, w, h);
-
-        // Grid lines
-        aiVideoCtx.strokeStyle = 'rgba(234, 88, 12, 0.05)';
-        aiVideoCtx.lineWidth = 1;
-        for (let x = 0; x < w; x += 40) {
-          aiVideoCtx.beginPath();
-          aiVideoCtx.moveTo(x, 0);
-          aiVideoCtx.lineTo(x, h);
-          aiVideoCtx.stroke();
-        }
-
-        // --- STORYBOARD SCENES (5.0s Total) ---
-
-        // SCENE 1: 0.0s - 1.2s -> 2D Zeus Thunder Core Flex & Electric Surge
-        if (elapsed < 1200) {
-          if (captionEl) captionEl.innerText = 'Scene 1: Zeus 2D Thunder Core Electric Flex';
-          const sceneProg = elapsed / 1200;
-
-          // Electric Aura Glow
-          aiVideoCtx.save();
-          aiVideoCtx.shadowColor = '#EA580C';
-          aiVideoCtx.shadowBlur = 35 + Math.sin(sceneProg * Math.PI * 4) * 20;
-
-          // Draw Lightning arcs
-          aiVideoCtx.strokeStyle = '#F97316';
-          aiVideoCtx.lineWidth = 2.5;
-          aiVideoCtx.beginPath();
-          aiVideoCtx.moveTo(w * 0.2, h * 0.8);
-          aiVideoCtx.lineTo(w * 0.35, h * 0.45);
-          aiVideoCtx.lineTo(w * 0.45, h * 0.55);
-          aiVideoCtx.lineTo(w * 0.5, h * 0.3);
-          aiVideoCtx.lineTo(w * 0.65, h * 0.5);
-          aiVideoCtx.lineTo(w * 0.8, h * 0.75);
-          aiVideoCtx.stroke();
-
-          // Render Zeus center if loaded
-          if (zeusWhiteImg.complete && zeusWhiteImg.naturalWidth > 0) {
-            const imgH = h * 0.7;
-            const imgW = (zeusWhiteImg.width / zeusWhiteImg.height) * imgH;
-            aiVideoCtx.drawImage(zeusWhiteImg, (w - imgW)/2, (h - imgH)/2, imgW, imgH);
-          }
-
-          // Energy wave
-          aiVideoCtx.strokeStyle = 'rgba(249, 115, 22, 0.4)';
-          aiVideoCtx.beginPath();
-          aiVideoCtx.arc(w/2, h/2, (sceneProg * w * 0.6), 0, Math.PI * 2);
-          aiVideoCtx.stroke();
-          aiVideoCtx.restore();
-        }
-
-        // SCENE 2: 1.2s - 2.5s -> QR Door Scanner Check-in Granted
-        else if (elapsed < 2500) {
-          if (captionEl) captionEl.innerText = 'Scene 2: QR Gate Scanner • 0.1s Access Granted';
-          const sceneProg = (elapsed - 1200) / 1300;
-
-          // QR Scanner box
-          const boxSize = Math.min(w, h) * 0.45;
-          const bx = (w - boxSize)/2;
-          const by = (h - boxSize)/2;
-
-          aiVideoCtx.strokeStyle = sceneProg > 0.4 ? '#10B981' : '#F97316';
-          aiVideoCtx.lineWidth = 3;
-          aiVideoCtx.strokeRect(bx, by, boxSize, boxSize);
-
-          // Scanning laser line
-          if (sceneProg <= 0.4) {
-            const laserY = by + (sceneProg / 0.4) * boxSize;
-            aiVideoCtx.strokeStyle = '#EF4444';
-            aiVideoCtx.lineWidth = 2;
-            aiVideoCtx.beginPath();
-            aiVideoCtx.moveTo(bx, laserY);
-            aiVideoCtx.lineTo(bx + boxSize, laserY);
-            aiVideoCtx.stroke();
-          } else {
-            // Success Card
-            aiVideoCtx.fillStyle = 'rgba(16, 185, 129, 0.15)';
-            aiVideoCtx.fillRect(bx, by, boxSize, boxSize);
-
-            aiVideoCtx.fillStyle = '#10B981';
-            aiVideoCtx.font = 'bold 20px Inter, sans-serif';
-            aiVideoCtx.textAlign = 'center';
-            aiVideoCtx.fillText('✓ ACCESS GRANTED', w/2, by + boxSize/2 - 10);
-
-            aiVideoCtx.fillStyle = '#FFFFFF';
-            aiVideoCtx.font = '14px Inter, sans-serif';
-            aiVideoCtx.fillText('Marcus Vance • Plan: Active', w/2, by + boxSize/2 + 20);
-
-            aiVideoCtx.fillStyle = '#94A3B8';
-            aiVideoCtx.font = '12px Inter, sans-serif';
-            aiVideoCtx.fillText('Occupancy: 43 / 120 athletes', w/2, by + boxSize/2 + 45);
-          }
-        }
-
-        // SCENE 3: 2.5s - 3.8s -> Automated WhatsApp Dues Notice with UPI
-        else if (elapsed < 3800) {
-          if (captionEl) captionEl.innerText = 'Scene 3: WhatsApp Dues Recovery • Automated UPI Link';
-          const sceneProg = (elapsed - 2500) / 1300;
-
-          // Smartphone Frame Card
-          const cardW = Math.min(w * 0.65, 380);
-          const cardH = 160;
-          const cx = (w - cardW)/2;
-          const cy = (h - cardH)/2;
-
-          aiVideoCtx.fillStyle = '#111B21';
-          aiVideoCtx.strokeStyle = '#25D366';
-          aiVideoCtx.lineWidth = 2;
-          aiVideoCtx.beginPath();
-          aiVideoCtx.roundRect(cx, cy, cardW, cardH, 16);
-          aiVideoCtx.fill();
-          aiVideoCtx.stroke();
-
-          // Header
-          aiVideoCtx.fillStyle = '#202C33';
-          aiVideoCtx.beginPath();
-          aiVideoCtx.roundRect(cx, cy, cardW, 40, [16, 16, 0, 0]);
-          aiVideoCtx.fill();
-
-          aiVideoCtx.fillStyle = '#25D366';
-          aiVideoCtx.font = 'bold 12px Inter, sans-serif';
-          aiVideoCtx.textAlign = 'left';
-          aiVideoCtx.fillText('● WhatsApp Business Verified', cx + 16, cy + 25);
-
-          // Content
-          aiVideoCtx.fillStyle = '#FFFFFF';
-          aiVideoCtx.font = '12px Inter, sans-serif';
-          aiVideoCtx.fillText('Hi Rahul! Your gym membership expires tomorrow.', cx + 16, cy + 65);
-          aiVideoCtx.fillText('Tap below to renew instantly via UPI:', cx + 16, cy + 85);
-
-          // UPI Button Pill
-          aiVideoCtx.fillStyle = '#EA580C';
-          aiVideoCtx.beginPath();
-          aiVideoCtx.roundRect(cx + 16, cy + 105, cardW - 32, 34, 8);
-          aiVideoCtx.fill();
-
-          aiVideoCtx.fillStyle = '#FFFFFF';
-          aiVideoCtx.font = 'bold 12px Inter, sans-serif';
-          aiVideoCtx.textAlign = 'center';
-          aiVideoCtx.fillText('Pay ₹2,000 via UPI (GooglePay / PhonePe)', cx + cardW/2, cy + 127);
-        }
-
-        // SCENE 4: 3.8s - 5.0s -> Real-time Revenue & Member Telemetry Growth
-        else {
-          if (captionEl) captionEl.innerText = 'Scene 4: Live Telemetry • 1-Month Free Trial, Then ₹2,000 Flat';
-          const sceneProg = (elapsed - 3800) / 1200;
-
-          // Center Stats Card
-          aiVideoCtx.fillStyle = '#141722';
-          aiVideoCtx.strokeStyle = 'rgba(234, 88, 12, 0.4)';
-          aiVideoCtx.lineWidth = 2;
-          aiVideoCtx.beginPath();
-          aiVideoCtx.roundRect(w * 0.15, h * 0.2, w * 0.7, h * 0.6, 20);
-          aiVideoCtx.fill();
-          aiVideoCtx.stroke();
-
-          aiVideoCtx.fillStyle = '#EA580C';
-          aiVideoCtx.font = 'bold 14px Inter, sans-serif';
-          aiVideoCtx.textAlign = 'center';
-          aiVideoCtx.fillText('GIMXSOFT FACILITY REVENUE TELEMETRY', w/2, h * 0.35);
-
-          // Animated Climbing Revenue
-          const currRev = Math.floor(180000 + sceneProg * 4500);
-          aiVideoCtx.fillStyle = '#FFFFFF';
-          aiVideoCtx.font = 'bold 36px "Space Grotesk", sans-serif';
-          aiVideoCtx.fillText('₹' + currRev.toLocaleString('en-IN') + ' MRR', w/2, h * 0.52);
-
-          aiVideoCtx.fillStyle = '#10B981';
-          aiVideoCtx.font = '14px Inter, sans-serif';
-          aiVideoCtx.fillText('✓ 98.4% On-Time WhatsApp Collections • 0 Paper Registers', w/2, h * 0.65);
-        }
-      }
-
-      currentAnimFrame = requestAnimationFrame(renderAIVideo);
-    }
-
-    currentAnimFrame = requestAnimationFrame(renderAIVideo);
-
-    function toggleAIVideo() {
-      videoIsPlaying = !videoIsPlaying;
-      const icon = document.getElementById('videoPlayPauseIcon');
-      const bIcon = document.getElementById('bottomPlayIcon');
-      if (videoIsPlaying) {
-        videoStartTime = performance.now();
-        currentAnimFrame = requestAnimationFrame(renderAIVideo);
-        if (icon) { icon.classList.remove('fa-play'); icon.classList.add('fa-pause'); }
-        if (bIcon) { bIcon.classList.remove('fa-play'); bIcon.classList.add('fa-pause'); }
-      } else {
-        cancelAnimationFrame(currentAnimFrame);
-        if (icon) { icon.classList.remove('fa-pause'); icon.classList.add('fa-play'); }
-        if (bIcon) { bIcon.classList.remove('fa-pause'); bIcon.classList.add('fa-play'); }
-      }
-    }
-
-    function restartAIVideo() {
-      videoStartTime = performance.now();
-      if (!videoIsPlaying) {
-        toggleAIVideo();
-      }
-    }
-
-    function scrubAIVideo(e) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const pct = clickX / rect.width;
-      videoStartTime = performance.now() - (pct * DURATION);
     }
 
     // ================= 2D ZEUS THUNDER CANVAS =================
