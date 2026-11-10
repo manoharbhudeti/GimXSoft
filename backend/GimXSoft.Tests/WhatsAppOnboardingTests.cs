@@ -224,3 +224,4 @@ public class WhatsAppOnboardingTests
         Assert.Equal("DISCONNECTED", integration.HealthStatus);
     }
 }
+

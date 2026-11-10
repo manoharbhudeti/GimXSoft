@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/theme/theme_provider.dart';
@@ -90,17 +92,17 @@ class _LandingViewState extends ConsumerState<LandingView> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: const Color(0xFF25D366).withOpacity(0.15),
                 borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
               ),
-              child: const Icon(Icons.mail_outline_rounded, size: 18, color: AppColors.primary),
+              child: const Icon(Icons.chat_bubble_outline_rounded, size: 18, color: Color(0xFF25D366)),
             ),
             const SizedBox(width: 10),
             Text(
-              'Book a 1-on-1 Live Demo',
+              'Connect with GimXSoft',
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary(isDark),
               ),
             ),
@@ -111,10 +113,65 @@ class _LandingViewState extends ConsumerState<LandingView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Our engineering team provides tailored live walkthroughs for gym owners and franchise operators.',
+              'Reach out to our engineering team directly via WhatsApp for quick onboarding, live walkthroughs, and custom demos.',
               style: TextStyle(fontSize: 13, color: AppColors.textSecondary(isDark)),
             ),
             const SizedBox(height: 16),
+            // WhatsApp Direct Connect Box
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF25D366).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(DesignTokens.radiusMd),
+                border: Border.all(color: const Color(0xFF25D366).withOpacity(0.35)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.phone_android_rounded, size: 20, color: Color(0xFF25D366)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'WhatsApp Direct Line',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? const Color(0xFF86EFAC) : const Color(0xFF15803D),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        SelectableText(
+                          '+91 83743 86604',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                            color: AppColors.textPrimary(isDark),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.copy_rounded, size: 16),
+                    tooltip: 'Copy Number',
+                    onPressed: () {
+                      Clipboard.setData(const ClipboardData(text: '+91 83743 86604'));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('WhatsApp number copied: +91 83743 86604'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Email backup box
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -141,7 +198,7 @@ class _LandingViewState extends ConsumerState<LandingView> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Send us your gym name, location, and member count. We respond within 2 business hours.',
+              'Available on WhatsApp 7 days a week. We typically respond within minutes.',
               style: TextStyle(fontSize: 11, color: AppColors.textMuted(isDark)),
             ),
           ],
@@ -152,11 +209,15 @@ class _LandingViewState extends ConsumerState<LandingView> {
             child: Text('Close', style: TextStyle(color: AppColors.textSecondary(isDark))),
           ),
           AppButton(
-            text: 'Send Email Inquiry',
-            icon: Icons.send_rounded,
+            text: 'Open WhatsApp Chat',
+            icon: Icons.chat_bubble_rounded,
             size: ButtonSize.sm,
             variant: ButtonVariant.primary,
-            onPressed: () => Navigator.of(ctx).pop(),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              final uri = Uri.parse('https://wa.me/918374386604?text=Hi%2C+I%27m+interested+in+GimXSoft+for+my+gym');
+              launchUrl(uri, mode: LaunchMode.externalApplication);
+            },
           ),
         ],
       ),
@@ -517,6 +578,22 @@ class _LandingViewState extends ConsumerState<LandingView> {
                     ],
                   ),
                 ),
+              ),
+              const SizedBox(width: DesignTokens.space4),
+
+              // Quick WhatsApp Direct Connect Icon Button
+              IconButton(
+                tooltip: 'WhatsApp: +91 83743 86604',
+                icon: const Icon(
+                  Icons.chat_bubble_rounded,
+                  size: 16,
+                  color: Color(0xFF25D366),
+                ),
+                splashRadius: 16,
+                onPressed: () {
+                  final uri = Uri.parse('https://wa.me/918374386604?text=Hi%2C+I%27m+interested+in+GimXSoft+for+my+gym');
+                  launchUrl(uri, mode: LaunchMode.externalApplication);
+                },
               ),
               const SizedBox(width: DesignTokens.space8),
 
@@ -1666,6 +1743,16 @@ class _LandingViewState extends ConsumerState<LandingView> {
                       onPressed: () => _showTrialDialog(context, isDark),
                     ),
                     AppButton(
+                      text: 'WhatsApp: 8374386604',
+                      icon: Icons.chat_bubble_rounded,
+                      size: ButtonSize.md,
+                      variant: ButtonVariant.secondary,
+                      onPressed: () {
+                        final uri = Uri.parse('https://wa.me/918374386604?text=Hi%2C+I%27m+interested+in+GimXSoft+for+my+gym');
+                        launchUrl(uri, mode: LaunchMode.externalApplication);
+                      },
+                    ),
+                    AppButton(
                       text: 'Email Demo',
                       icon: Icons.mail_outline_rounded,
                       size: ButtonSize.md,
@@ -1721,9 +1808,14 @@ class _LandingViewState extends ConsumerState<LandingView> {
                   ),
                 ],
               ),
-              Text(
-                'Demo & Inquiries: ekametechnologie@gmail.com • Built for Gym Franchises & Modern Clubs',
-                style: TextStyle(fontSize: 11, color: AppColors.textMuted(isDark)),
+              const SizedBox(width: DesignTokens.space16),
+              Flexible(
+                child: Text(
+                  'WhatsApp: +91 83743 86604 • Demo & Inquiries: ekametechnologie@gmail.com • Built for Gym Franchises & Modern Clubs',
+                  style: TextStyle(fontSize: 11, color: AppColors.textMuted(isDark)),
+                  textAlign: TextAlign.end,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
