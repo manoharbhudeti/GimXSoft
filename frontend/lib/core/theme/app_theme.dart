@@ -15,34 +15,34 @@ class AppTheme {
     final textSecondary = palette.textSecondary(isDark);
     final textMuted = palette.textMuted(isDark);
 
-    // Build heading text styles with Heading Font
+    // Build heading text styles with Heading Font (Bolder weights for high visual punch)
     final displayLarge = fontCombo.headingStyleBuilder(
       fontSize: 32,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w900,
       color: textPrimary,
       letterSpacing: -0.5,
     );
     final headlineLarge = fontCombo.headingStyleBuilder(
       fontSize: 24,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w800,
       color: textPrimary,
       letterSpacing: -0.3,
     );
     final headlineMedium = fontCombo.headingStyleBuilder(
       fontSize: 20,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w800,
       color: textPrimary,
       letterSpacing: -0.2,
     );
     final titleLarge = fontCombo.headingStyleBuilder(
       fontSize: 16,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
       color: textPrimary,
       letterSpacing: 0,
     );
     final titleMedium = fontCombo.headingStyleBuilder(
       fontSize: 14,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
       color: textPrimary,
       letterSpacing: 0,
     );
@@ -114,7 +114,7 @@ class AppTheme {
       colorScheme: ColorScheme(
         brightness: isDark ? Brightness.dark : Brightness.light,
         primary: palette.primary,
-        onPrimary: Colors.white,
+        onPrimary: palette.id == ThemePaletteId.wineAndSand ? const Color(0xFF380811) : Colors.white,
         secondary: AppColors.secondary,
         onSecondary: Colors.white,
         surface: palette.surface(isDark),

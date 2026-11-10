@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/design_tokens.dart';
+import '../core/theme/theme_customization_models.dart';
 import '../core/theme/theme_provider.dart';
 import '../core/widgets/status_badge.dart';
 import '../features/auth/auth_models.dart';
@@ -240,7 +241,9 @@ class TopNavBar extends ConsumerWidget implements PreferredSizeWidget {
                     width: 22,
                     height: 22,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                          ? const Color(0xFFF7F4EE)
+                          : AppColors.primary,
                       borderRadius: BorderRadius.circular(DesignTokens.radiusXs),
                     ),
                     child: Center(
@@ -248,7 +251,13 @@ class TopNavBar extends ConsumerWidget implements PreferredSizeWidget {
                         authState.user?.fullName.isNotEmpty == true
                             ? authState.user!.fullName[0].toUpperCase()
                             : 'A',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                              ? const Color(0xFF380811)
+                              : Colors.white,
+                        ),
                       ),
                     ),
                   ),

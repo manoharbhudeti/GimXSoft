@@ -186,34 +186,34 @@ class AppThemePalette {
   static const wineAndSand = AppThemePalette(
     id: ThemePaletteId.wineAndSand,
     name: 'Wine Red + Light Sand',
-    description: 'Sophisticated wine burgundy accents grounded in warm mineral sand',
+    description: 'Rich velvet wine red canvas with high-contrast warm light sand typography and accents',
     primaryColorName: 'Wine Red',
     backgroundColorName: 'Light Sand',
-    primary: Color(0xFF881337),
-    primaryHover: Color(0xFF9F1239),
-    primaryLight: Color(0xFFFCE7F3),
-    primaryDark: Color(0xFF4C0519),
-    lightBackground: Color(0xFFF7F4EE),
-    darkBackground: Color(0xFF191114),
-    lightSurface: Color(0xFFFFFFFF),
-    darkSurface: Color(0xFF22161B),
-    lightCard: Color(0xFFFFFFFF),
-    darkCard: Color(0xFF26191F),
-    lightRaised: Color(0xFFEFE7DC),
-    darkRaised: Color(0xFF332028),
-    lightBorder: Color(0x1F881337),
-    darkBorder: Color(0x28FCE7F3),
-    lightTextPrimary: Color(0xFF2C1318),
-    darkTextPrimary: Color(0xFFFFF1F2),
-    lightTextSecondary: Color(0xFF6E5259),
-    darkTextSecondary: Color(0xFFD8B4BC),
-    lightTextMuted: Color(0xFF937B81),
-    darkTextMuted: Color(0xFFA58B93),
+    primary: Color(0xFFF7F4EE),
+    primaryHover: Color(0xFFEAD7BE),
+    primaryLight: Color(0xFF5E1322),
+    primaryDark: Color(0xFF2E060D),
+    lightBackground: Color(0xFF380811),
+    darkBackground: Color(0xFF32060F),
+    lightSurface: Color(0xFF3D0A14),
+    darkSurface: Color(0xFF2E060D),
+    lightCard: Color(0xFF4E101D),
+    darkCard: Color(0xFF450C18),
+    lightRaised: Color(0xFF631525),
+    darkRaised: Color(0xFF5A1220),
+    lightBorder: Color(0x33F7F4EE),
+    darkBorder: Color(0x2EF7F4EE),
+    lightTextPrimary: Color(0xFFF7F4EE),
+    darkTextPrimary: Color(0xFFF7F4EE),
+    lightTextSecondary: Color(0xFFE5DACB),
+    darkTextSecondary: Color(0xFFE5DACB),
+    lightTextMuted: Color(0xFFBFAF9E),
+    darkTextMuted: Color(0xFFBFAF9E),
     previewSwatches: [
-      Color(0xFF881337), // Wine Red
-      Color(0xFFF7F4EE), // Light Sand
-      Color(0xFFEFE7DC), // Raised Sand
-      Color(0xFF2C1318), // Deep Burgundy
+      Color(0xFF881337), // Wine Red Accent
+      Color(0xFF380811), // Wine Red Canvas
+      Color(0xFF4E101D), // Elevated Wine Card
+      Color(0xFFF7F4EE), // Crisp Light Sand Text
     ],
   );
 
@@ -401,7 +401,7 @@ class AppIndependentTheme {
   // 3. Wine Red + Light Sand
   static const wineAndSand = AppIndependentTheme(
     id: AppIndependentThemeId.wineAndSand,
-    isDark: false,
+    isDark: true,
     palette: AppThemePalette.wineAndSand,
   );
 

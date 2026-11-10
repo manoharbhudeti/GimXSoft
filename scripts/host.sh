@@ -66,3 +66,4 @@ echo "Press Ctrl+C to stop all services."
 echo ""
 
 node "$SCRIPT_DIR/serve-web.js"
+

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/design_tokens.dart';
+import '../../core/theme/theme_customization_models.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/metric_card.dart';
@@ -470,14 +471,18 @@ class DashboardView extends ConsumerWidget {
                         ? spots
                         : const [FlSpot(0, 8), FlSpot(1, 10), FlSpot(2, 14), FlSpot(3, 12), FlSpot(4, 18), FlSpot(5, 21)],
                     isCurved: false, // Honest straight athletic trend lines
-                    color: AppColors.primary,
+                    color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                        ? const Color(0xFFF7F4EE)
+                        : AppColors.primary,
                     barWidth: 2,
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                         radius: 3,
-                        color: AppColors.primary,
+                        color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                            ? const Color(0xFFF7F4EE)
+                            : AppColors.primary,
                         strokeWidth: 1.5,
                         strokeColor: isDark ? AppColors.darkCard : Colors.white,
                       ),
@@ -565,7 +570,11 @@ class DashboardView extends ConsumerWidget {
                     barRods: [
                       BarChartRodData(
                         toY: entry.value.checkIns.toDouble(),
-                        color: isPeak ? AppColors.primary : AppColors.raised(isDark),
+                        color: isPeak
+                            ? (AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                                ? const Color(0xFFF7F4EE)
+                                : AppColors.primary)
+                            : AppColors.raised(isDark),
                         width: 12,
                         borderRadius: BorderRadius.circular(DesignTokens.radiusXs),
                       ),

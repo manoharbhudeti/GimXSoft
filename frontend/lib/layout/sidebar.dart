@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/design_tokens.dart';
+import '../core/theme/theme_customization_models.dart';
 import '../features/auth/auth_provider.dart';
 import 'navigation_items.dart';
 
@@ -70,11 +71,19 @@ class AppSidebar extends ConsumerWidget {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                                ? const Color(0xFFF7F4EE)
+                                : AppColors.primary,
                             borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
                           ),
-                          child: const Center(
-                            child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 16),
+                          child: Center(
+                            child: Icon(
+                              Icons.fitness_center_rounded,
+                              color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                                  ? const Color(0xFF380811)
+                                  : Colors.white,
+                              size: 16,
+                            ),
                           ),
                         ),
                         const SizedBox(width: DesignTokens.space10),
@@ -129,11 +138,19 @@ class AppSidebar extends ConsumerWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                            ? const Color(0xFFF7F4EE)
+                            : AppColors.primary,
                         borderRadius: BorderRadius.circular(DesignTokens.radiusSm),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.fitness_center_rounded, color: Colors.white, size: 16),
+                      child: Center(
+                        child: Icon(
+                          Icons.fitness_center_rounded,
+                          color: AppColors.activePalette.id == ThemePaletteId.wineAndSand
+                              ? const Color(0xFF380811)
+                              : Colors.white,
+                          size: 16,
+                        ),
                       ),
                     ),
                   ),

@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # GimXSoft Localhost Orchestrator (Windows PowerShell)
 # ==============================================================================
 # Builds and launches both the ASP.NET Core 8 Web API (Port 5128) and
@@ -101,3 +101,4 @@ Write-Host "Press Ctrl+C to stop all services."
 Write-Host ""
 
 node (Join-Path $ScriptDir "serve-web.js")
+

@@ -40,9 +40,9 @@ void main() {
       expect(wine.name, equals('Wine Red + Light Sand'));
       expect(wine.primaryColorName, equals('Wine Red'));
       expect(wine.backgroundColorName, equals('Light Sand'));
-      expect(wine.isDark, isFalse);
-      expect(wine.palette.primary, equals(const Color(0xFF881337)));
-      expect(wine.palette.lightBackground, equals(const Color(0xFFF7F4EE)));
+      expect(wine.isDark, isTrue);
+      expect(wine.palette.primary, equals(const Color(0xFFF7F4EE)));
+      expect(wine.palette.darkBackground, equals(const Color(0xFF32060F)));
 
       // 4. Orange + Milk
       final orange = AppIndependentTheme.orangeAndMilk;
@@ -245,7 +245,7 @@ void main() {
       expect(find.text('Nofex + Inter'), findsOneWidget);
 
       // Verify Live Sandbox Preview
-      expect(find.text('Live Component Sandbox Preview'), findsOneWidget);
+      expect(find.text('Fonts Preview'), findsOneWidget);
       expect(find.text('Titan Performance Club'), findsOneWidget);
     });
 

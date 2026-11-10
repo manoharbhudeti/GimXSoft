@@ -161,8 +161,8 @@ class ThemeCustomizationSection extends ConsumerWidget {
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          'Typography & Font Combinations',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                          'Fonts',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.textPrimary(isDark)),
                         ),
                       ),
                     ],
@@ -182,7 +182,7 @@ class ThemeCustomizationSection extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Independent typography combinations. Heading fonts establish punchy branding while body fonts ensure maximum legibility.',
+                'Select typography pairing. Heading fonts establish punchy branding while body fonts ensure maximum legibility.',
                 style: TextStyle(fontSize: 12, color: AppColors.textMuted(isDark)),
               ),
               const SizedBox(height: 16),
@@ -214,7 +214,7 @@ class ThemeCustomizationSection extends ConsumerWidget {
         ),
         const SizedBox(height: DesignTokens.space20),
 
-        // 3. Live Component Sandbox Preview
+        // 3. Live Component Sandbox Preview (Renamed to Fonts Preview, excessive details removed)
         GlassCard(
           padding: const EdgeInsets.all(DesignTokens.space20),
           child: Column(
@@ -226,8 +226,8 @@ class ThemeCustomizationSection extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Live Component Sandbox Preview',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary(isDark)),
+                      'Fonts Preview',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.textPrimary(isDark)),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -235,10 +235,10 @@ class ThemeCustomizationSection extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Demonstrates how native buttons, cards, status pills, and fonts interact in your active configuration',
+                'Live preview of ${activeFontCombo.name} typography with ${activeTheme.name} styling.',
                 style: TextStyle(fontSize: 11, color: AppColors.textMuted(isDark)),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
 
               Container(
                 width: double.infinity,
@@ -257,7 +257,9 @@ class ThemeCustomizationSection extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             'Titan Performance Club',
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w900,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -265,14 +267,14 @@ class ThemeCustomizationSection extends ConsumerWidget {
                         const StatusBadge(status: 'Active'),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
-                      'Live telemetry streaming over WhatsApp Business Platform with ${activeFontCombo.bodyFontName} body styling and ${activeTheme.name} aesthetics.',
+                      'Live telemetry streaming with ${activeFontCombo.bodyFontName} styling and ${activeTheme.name} aesthetics.',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     Wrap(
-                      spacing: 10,
+                      spacing: 8,
                       runSpacing: 8,
                       children: [
                         AppButton(
@@ -283,16 +285,9 @@ class ThemeCustomizationSection extends ConsumerWidget {
                           onPressed: () {},
                         ),
                         AppButton(
-                          label: 'Secondary Button',
+                          label: 'Secondary Action',
                           icon: Icons.tune_rounded,
                           variant: AppButtonVariant.secondary,
-                          size: AppButtonSize.sm,
-                          onPressed: () {},
-                        ),
-                        AppButton(
-                          label: 'Outline Button',
-                          icon: Icons.download_rounded,
-                          variant: AppButtonVariant.outline,
                           size: AppButtonSize.sm,
                           onPressed: () {},
                         ),
@@ -549,7 +544,7 @@ class ThemeCustomizationSection extends ConsumerWidget {
                         fontCombo.name,
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w800,
                           color: AppColors.textPrimary(isDark),
                         ),
                       ),
@@ -592,55 +587,28 @@ class ThemeCustomizationSection extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
 
-            // Font Pair Names
+            // Live Typography Preview (Bolder heading, streamlined, zero excessive details)
             Padding(
               padding: const EdgeInsets.only(left: 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Heading: ${fontCombo.headingFontName}  •  Body: ${fontCombo.bodyFontName}',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: primaryAccent),
+                    'TITAN ATHLETICS CLUB',
+                    style: fontCombo.headingStyleBuilder(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary(isDark),
+                      letterSpacing: 0.3,
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    fontCombo.description,
-                    style: TextStyle(fontSize: 11, color: AppColors.textSecondary(isDark)),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // Live Typography Preview Container inside this row
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.card(isDark),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: AppColors.border(isDark)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'TITAN ATHLETICS CLUB 2026',
-                    style: fontCombo.headingStyleBuilder(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary(isDark),
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Automated check-ins, WhatsApp telemetry, heart rate metrics, and periodized training splits.',
+                    'Smart gym operations & workout tracking',
                     style: fontCombo.bodyStyleBuilder(
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textSecondary(isDark),
-                      height: 1.3,
                     ),
                   ),
                 ],

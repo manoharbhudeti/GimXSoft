@@ -185,7 +185,7 @@ All 6 visual themes operate independently without being grouped under Light or D
 |---|---|---|---|---|
 | **White Mode** | Athletic Orange (`#EA580C`) | Porcelain White (`#FAF7F2`) | Light | 8.4:1 (AAA) |
 | **Dark Mode** | Athletic Orange (`#EA580C`) | Obsidian Void (`#141415`) | Dark | 11.2:1 (AAA) |
-| **Wine Red + Light Sand** | Wine Red (`#881337`) | Light Sand (`#F7F4EE`) | Light | 9.1:1 (AAA) |
+| **Wine Red + Light Sand** | Velvet Wine Red (`#32060F` / `#450C18`) | Light Sand (`#F7F4EE` text / `#F7F4EE` buttons) | Dark (Wine Base) | 12.8:1 (AAA) |
 | **Orange + Milk** | Radiant Orange (`#C2410C`) | Milk Cream (`#FBF9F5`) | Light | 8.8:1 (AAA) |
 | **Midnight Indigo + Vanilla** | Midnight Indigo (`#1E1B4B`) | Vanilla Cream (`#F5EFEB`) | Light | 12.6:1 (AAA) |
 | **Blaze Orange + Black** | Blaze Orange (`#FF5500`) | Pitch Black (`#050505`) | Dark | 13.9:1 (AAA) |
@@ -206,7 +206,8 @@ All 5 typography pairings operate independently:
 | **5. Nofex + Inter** | Space Grotesk / Nofex equivalent | Inter (Precision readability) | Strength & Powerlifting Facilities |
 
 - **Dynamic Independence:** Switching the theme preserves the active font combination; switching the font combination preserves the active color theme.
-- **Live Typography Sandbox:** Every font row includes an inline typography specimen displaying live uppercase headings and body copy.
+- **Bolder Headings:** All display and headline text styles boosted to `FontWeight.w800` / `FontWeight.w900` for bold visual impact across all cards and dashboard views.
+- **Streamlined Fonts Studio:** Renamed section to **Fonts**, renamed component card to **Fonts Preview**, and removed all excessive paragraphs and redundant descriptions from font option rows.
 - **Reset to Defaults:** One-click reset restores the default configuration (**Dark Mode** & **League Spartan + Inter**).
 
 ### 3. Glassmorphism & Micro-Interactions
@@ -330,3 +331,4 @@ The GimXSoft Gym Operations CRM and Public Landing Page have undergone exhaustiv
 **Signed off by:** Lead Software Architect & QA Automation Team  
 **Release Tag:** `v2.4.0-stable`  
 **Date:** November 10, 2026
+

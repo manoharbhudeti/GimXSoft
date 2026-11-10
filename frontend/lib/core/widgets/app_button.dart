@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/design_tokens.dart';
+import '../theme/theme_customization_models.dart';
 
 enum ButtonVariant { primary, secondary, outline, ghost, danger }
 typedef AppButtonVariant = ButtonVariant;
@@ -76,7 +77,10 @@ class _AppButtonState extends State<AppButton> {
 
     switch (widget.variant) {
       case ButtonVariant.primary:
-        if (isDark) {
+        if (AppColors.activePalette.id == ThemePaletteId.wineAndSand) {
+          bgColor = _isHovered ? const Color(0xFFFAF7F2) : const Color(0xFFF7F4EE);
+          textColor = const Color(0xFF380811);
+        } else if (isDark) {
           // Off-white from the ramp with dark text (heydamir/unslop recommendation for dark themes)
           bgColor = _isHovered ? const Color(0xFFFFFFFF) : const Color(0xFFEDEDED);
           textColor = const Color(0xFF141415);
