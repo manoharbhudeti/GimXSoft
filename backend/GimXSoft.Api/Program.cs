@@ -1,5 +1,6 @@
 using System.Text;
 using GimXSoft.Api.Data;
+using GimXSoft.Api.Hubs;
 using GimXSoft.Api.Middleware;
 using GimXSoft.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -74,6 +75,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 // 2. Add Services
+builder.Services.AddSignalR();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<IWhatsAppCloudApiClient, WhatsAppCloudApiClient>();
@@ -208,5 +211,6 @@ app.UseMiddleware<TenantResolutionMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<WhatsAppHub>("/hubs/whatsapp");
 
 app.Run();

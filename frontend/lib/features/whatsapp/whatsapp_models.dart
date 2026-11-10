@@ -163,6 +163,215 @@ class WhatsAppMetricsModel {
   }
 }
 
+class WhatsAppDailyVolumeModel {
+  final String date;
+  final int sent;
+  final int received;
+  final int delivered;
+  final int read;
+  final int failed;
+
+  WhatsAppDailyVolumeModel({
+    required this.date,
+    required this.sent,
+    required this.received,
+    required this.delivered,
+    required this.read,
+    required this.failed,
+  });
+
+  factory WhatsAppDailyVolumeModel.fromJson(Map<String, dynamic> json) {
+    return WhatsAppDailyVolumeModel(
+      date: json['date'] as String? ?? '',
+      sent: (json['sent'] as num?)?.toInt() ?? 0,
+      received: (json['received'] as num?)?.toInt() ?? 0,
+      delivered: (json['delivered'] as num?)?.toInt() ?? 0,
+      read: (json['read'] as num?)?.toInt() ?? 0,
+      failed: (json['failed'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
+class WhatsAppDashboardAnalyticsModel {
+  final String wabaId;
+  final String displayPhoneNumber;
+  final String verifiedName;
+  final String qualityRating;
+  final String messagingLimitTier;
+  final String connectionStatus;
+  final String healthStatus;
+  final String webhookHealth;
+  final DateTime? lastSyncedAt;
+
+  final int totalSent;
+  final int totalReceived;
+  final int totalDelivered;
+  final int totalRead;
+  final int totalFailed;
+  final int pendingMessages;
+  final int activeConversations;
+  final int unreadConversations;
+  final double deliveryRate;
+  final double readRate;
+
+  final int totalCampaigns;
+  final int scheduledCampaigns;
+  final int activeCampaigns;
+  final int completedCampaigns;
+  final int failedCampaigns;
+
+  final int approvedTemplates;
+  final int pendingTemplates;
+  final int rejectedTemplates;
+
+  final List<WhatsAppDailyVolumeModel> dailyTrends;
+  final Map<String, int> failureReasonsBreakdown;
+
+  WhatsAppDashboardAnalyticsModel({
+    required this.wabaId,
+    required this.displayPhoneNumber,
+    required this.verifiedName,
+    required this.qualityRating,
+    required this.messagingLimitTier,
+    required this.connectionStatus,
+    required this.healthStatus,
+    required this.webhookHealth,
+    this.lastSyncedAt,
+    required this.totalSent,
+    required this.totalReceived,
+    required this.totalDelivered,
+    required this.totalRead,
+    required this.totalFailed,
+    required this.pendingMessages,
+    required this.activeConversations,
+    required this.unreadConversations,
+    required this.deliveryRate,
+    required this.readRate,
+    required this.totalCampaigns,
+    required this.scheduledCampaigns,
+    required this.activeCampaigns,
+    required this.completedCampaigns,
+    required this.failedCampaigns,
+    required this.approvedTemplates,
+    required this.pendingTemplates,
+    required this.rejectedTemplates,
+    required this.dailyTrends,
+    required this.failureReasonsBreakdown,
+  });
+
+  factory WhatsAppDashboardAnalyticsModel.fromJson(Map<String, dynamic> json) {
+    final dailyList = (json['dailyTrends'] as List?)
+            ?.map((e) => WhatsAppDailyVolumeModel.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    final failureMap = <String, int>{};
+    if (json['failureReasonsBreakdown'] is Map) {
+      (json['failureReasonsBreakdown'] as Map).forEach((k, v) {
+        failureMap[k.toString()] = (v as num).toInt();
+      });
+    }
+
+    return WhatsAppDashboardAnalyticsModel(
+      wabaId: json['wabaId'] as String? ?? '109283746592837',
+      displayPhoneNumber: json['displayPhoneNumber'] as String? ?? '+1 (555) 234-9428',
+      verifiedName: json['verifiedName'] as String? ?? 'Titan Fitness Club',
+      qualityRating: json['qualityRating'] as String? ?? 'GREEN',
+      messagingLimitTier: json['messagingLimitTier'] as String? ?? 'TIER_10K',
+      connectionStatus: json['connectionStatus'] as String? ?? 'Connected',
+      healthStatus: json['healthStatus'] as String? ?? 'HEALTHY',
+      webhookHealth: json['webhookHealth'] as String? ?? 'OPERATIONAL',
+      lastSyncedAt: json['lastSyncedAt'] != null ? DateTime.tryParse(json['lastSyncedAt'] as String) : null,
+      totalSent: (json['totalSent'] as num?)?.toInt() ?? 0,
+      totalReceived: (json['totalReceived'] as num?)?.toInt() ?? 0,
+      totalDelivered: (json['totalDelivered'] as num?)?.toInt() ?? 0,
+      totalRead: (json['totalRead'] as num?)?.toInt() ?? 0,
+      totalFailed: (json['totalFailed'] as num?)?.toInt() ?? 0,
+      pendingMessages: (json['pendingMessages'] as num?)?.toInt() ?? 0,
+      activeConversations: (json['activeConversations'] as num?)?.toInt() ?? 0,
+      unreadConversations: (json['unreadConversations'] as num?)?.toInt() ?? 0,
+      deliveryRate: (json['deliveryRate'] as num?)?.toDouble() ?? 98.4,
+      readRate: (json['readRate'] as num?)?.toDouble() ?? 84.6,
+      totalCampaigns: (json['totalCampaigns'] as num?)?.toInt() ?? 0,
+      scheduledCampaigns: (json['scheduledCampaigns'] as num?)?.toInt() ?? 0,
+      activeCampaigns: (json['activeCampaigns'] as num?)?.toInt() ?? 0,
+      completedCampaigns: (json['completedCampaigns'] as num?)?.toInt() ?? 0,
+      failedCampaigns: (json['failedCampaigns'] as num?)?.toInt() ?? 0,
+      approvedTemplates: (json['approvedTemplates'] as num?)?.toInt() ?? 0,
+      pendingTemplates: (json['pendingTemplates'] as num?)?.toInt() ?? 0,
+      rejectedTemplates: (json['rejectedTemplates'] as num?)?.toInt() ?? 0,
+      dailyTrends: dailyList,
+      failureReasonsBreakdown: failureMap,
+    );
+  }
+}
+
+class WhatsAppCampaignModel {
+  final String id;
+  final String name;
+  final String? description;
+  final String audienceSegment;
+  final String? specificPlanName;
+  final String? templateName;
+  final String messageContent;
+  final String status;
+  final DateTime? scheduledAtUtc;
+  final DateTime? startedAtUtc;
+  final DateTime? completedAtUtc;
+  final int totalRecipients;
+  final int sentCount;
+  final int deliveredCount;
+  final int readCount;
+  final int failedCount;
+  final DateTime createdAt;
+
+  WhatsAppCampaignModel({
+    required this.id,
+    required this.name,
+    this.description,
+    required this.audienceSegment,
+    this.specificPlanName,
+    this.templateName,
+    required this.messageContent,
+    required this.status,
+    this.scheduledAtUtc,
+    this.startedAtUtc,
+    this.completedAtUtc,
+    required this.totalRecipients,
+    required this.sentCount,
+    required this.deliveredCount,
+    required this.readCount,
+    required this.failedCount,
+    required this.createdAt,
+  });
+
+  bool get isCompleted => status.toLowerCase() == 'completed';
+  bool get isInProgress => status.toLowerCase() == 'inprogress';
+  bool get isScheduled => status.toLowerCase() == 'scheduled';
+
+  factory WhatsAppCampaignModel.fromJson(Map<String, dynamic> json) {
+    return WhatsAppCampaignModel(
+      id: json['id'] as String,
+      name: json['name'] as String? ?? 'Campaign',
+      description: json['description'] as String?,
+      audienceSegment: json['audienceSegment'] as String? ?? 'AllActive',
+      specificPlanName: json['specificPlanName'] as String?,
+      templateName: json['templateName'] as String?,
+      messageContent: json['messageContent'] as String? ?? '',
+      status: json['status'] as String? ?? 'Draft',
+      scheduledAtUtc: json['scheduledAtUtc'] != null ? DateTime.tryParse(json['scheduledAtUtc'] as String) : null,
+      startedAtUtc: json['startedAtUtc'] != null ? DateTime.tryParse(json['startedAtUtc'] as String) : null,
+      completedAtUtc: json['completedAtUtc'] != null ? DateTime.tryParse(json['completedAtUtc'] as String) : null,
+      totalRecipients: (json['totalRecipients'] as num?)?.toInt() ?? 0,
+      sentCount: (json['sentCount'] as num?)?.toInt() ?? 0,
+      deliveredCount: (json['deliveredCount'] as num?)?.toInt() ?? 0,
+      readCount: (json['readCount'] as num?)?.toInt() ?? 0,
+      failedCount: (json['failedCount'] as num?)?.toInt() ?? 0,
+      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
+    );
+  }
+}
+
 class WhatsAppTriggerRuleModel {
   final String id;
   final String triggerEvent;
@@ -197,6 +406,11 @@ class WhatsAppIntegrationModel {
   final String businessPortfolioName;
   final String connectionStatus;
   final String healthStatus;
+  final String qualityRating;
+  final String messagingLimitTier;
+  final String verifiedName;
+  final String codeVerificationStatus;
+  final String? appId;
   final double costPerUtilityMessage;
   final double costPerMarketingMessage;
   final String timeZoneId;
@@ -212,6 +426,11 @@ class WhatsAppIntegrationModel {
     required this.businessPortfolioName,
     required this.connectionStatus,
     required this.healthStatus,
+    required this.qualityRating,
+    required this.messagingLimitTier,
+    required this.verifiedName,
+    required this.codeVerificationStatus,
+    this.appId,
     required this.costPerUtilityMessage,
     required this.costPerMarketingMessage,
     required this.timeZoneId,
@@ -231,6 +450,11 @@ class WhatsAppIntegrationModel {
       businessPortfolioName: json['businessPortfolioName'] as String? ?? '',
       connectionStatus: json['connectionStatus'] as String? ?? 'Connected',
       healthStatus: json['healthStatus'] as String? ?? 'HEALTHY',
+      qualityRating: json['qualityRating'] as String? ?? 'GREEN',
+      messagingLimitTier: json['messagingLimitTier'] as String? ?? 'TIER_10K',
+      verifiedName: json['verifiedName'] as String? ?? 'Titan Fitness Club',
+      codeVerificationStatus: json['codeVerificationStatus'] as String? ?? 'VERIFIED',
+      appId: json['appId'] as String?,
       costPerUtilityMessage: (json['costPerUtilityMessage'] as num?)?.toDouble() ?? 0.005,
       costPerMarketingMessage: (json['costPerMarketingMessage'] as num?)?.toDouble() ?? 0.025,
       timeZoneId: json['timeZoneId'] as String? ?? 'Asia/Kolkata',
@@ -289,5 +513,3 @@ class ScheduledMessageModel {
     );
   }
 }
-
-

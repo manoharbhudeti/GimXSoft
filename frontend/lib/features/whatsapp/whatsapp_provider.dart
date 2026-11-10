@@ -9,6 +9,16 @@ final whatsAppMetricsProvider = FutureProvider<WhatsAppMetricsModel>((ref) async
   return WhatsAppMetricsModel.fromJson(response.data as Map<String, dynamic>);
 });
 
+final whatsAppDashboardAnalyticsProvider =
+    FutureProvider.family<WhatsAppDashboardAnalyticsModel, int>((ref, days) async {
+  final client = ref.read(apiClientProvider);
+  final response = await client.dio.get(
+    ApiConstants.whatsAppAnalytics,
+    queryParameters: {'days': days},
+  );
+  return WhatsAppDashboardAnalyticsModel.fromJson(response.data as Map<String, dynamic>);
+});
+
 final whatsAppConversationsProvider =
     FutureProvider<List<WhatsAppConversationSummaryModel>>((ref) async {
   final client = ref.read(apiClientProvider);
@@ -48,6 +58,16 @@ final whatsAppTemplatesProvider =
   final list = response.data as List;
   return list
       .map((item) => WhatsAppTemplateModel.fromJson(item as Map<String, dynamic>))
+      .toList();
+});
+
+final whatsAppCampaignsProvider =
+    FutureProvider<List<WhatsAppCampaignModel>>((ref) async {
+  final client = ref.read(apiClientProvider);
+  final response = await client.dio.get(ApiConstants.whatsAppCampaigns);
+  final list = response.data as List;
+  return list
+      .map((item) => WhatsAppCampaignModel.fromJson(item as Map<String, dynamic>))
       .toList();
 });
 
@@ -105,10 +125,45 @@ class WhatsAppActionService {
       ref.invalidate(whatsAppMessagesProvider(memberId));
       ref.invalidate(whatsAppConversationsProvider);
       ref.invalidate(whatsAppMetricsProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
 
       return WhatsAppMessageModel.fromJson(response.data as Map<String, dynamic>);
     } catch (_) {
       return null;
+    }
+  }
+
+  Future<bool> createCampaign({
+    required String name,
+    String? description,
+    required String audienceSegment,
+    String? specificPlanId,
+    String? templateName,
+    required String messageContent,
+    DateTime? scheduledAtUtc,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppCampaigns,
+        data: {
+          'name': name,
+          'description': description,
+          'audienceSegment': audienceSegment,
+          'specificPlanId': specificPlanId,
+          'templateName': templateName,
+          'messageContent': messageContent,
+          'scheduledAtUtc': scheduledAtUtc?.toIso8601String(),
+        },
+      );
+
+      ref.invalidate(whatsAppCampaignsProvider);
+      ref.invalidate(whatsAppConversationsProvider);
+      ref.invalidate(whatsAppMetricsProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -117,19 +172,165 @@ class WhatsAppActionService {
     required String message,
     String? templateName,
   }) async {
+    return createCampaign(
+      name: 'Broadcast_${DateTime.now().millisecondsSinceEpoch}',
+      audienceSegment: audienceFilter,
+      messageContent: message,
+      templateName: templateName,
+    );
+  }
+
+  Future<bool> createTemplate({
+    required String name,
+    required String category,
+    required String language,
+    String? headerText,
+    required String bodyText,
+    String? footerText,
+    List<String>? buttons,
+  }) async {
     try {
       final client = ref.read(apiClientProvider);
       await client.dio.post(
-        ApiConstants.whatsAppBroadcast,
+        ApiConstants.whatsAppTemplates,
         data: {
-          'audienceFilter': audienceFilter,
-          'message': message,
-          'templateName': templateName,
+          'name': name,
+          'category': category,
+          'language': language,
+          'headerText': headerText,
+          'bodyText': bodyText,
+          'footerText': footerText,
+          'buttons': buttons,
         },
       );
+      ref.invalidate(whatsAppTemplatesProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 
+  Future<bool> deleteTemplate(String id) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.delete('${ApiConstants.whatsAppTemplates}/$id');
+      ref.invalidate(whatsAppTemplatesProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> registerPhoneNumber(String pin) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppRegisterNumber,
+        data: {'pin': pin},
+      );
+      ref.invalidate(whatsAppConfigProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> shareWorkoutSplit({
+    required String memberId,
+    String? splitTitle,
+    List<String>? exercises,
+    String? trainerNotes,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppShareWorkout,
+        data: {
+          'memberId': memberId,
+          'splitTitle': splitTitle,
+          'exercises': exercises,
+          'trainerNotes': trainerNotes,
+        },
+      );
+      ref.invalidate(whatsAppMessagesProvider(memberId));
       ref.invalidate(whatsAppConversationsProvider);
-      ref.invalidate(whatsAppMetricsProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> sendBmiReport({
+    required String memberId,
+    required double weightKg,
+    required double heightCm,
+    required double bmi,
+    double? bodyFatPercentage,
+    String? assessmentSummary,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppSendBmi,
+        data: {
+          'memberId': memberId,
+          'weightKg': weightKg,
+          'heightCm': heightCm,
+          'bmi': bmi,
+          'bodyFatPercentage': bodyFatPercentage,
+          'assessmentSummary': assessmentSummary,
+        },
+      );
+      ref.invalidate(whatsAppMessagesProvider(memberId));
+      ref.invalidate(whatsAppConversationsProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> sendExpiryReminder({
+    required String memberId,
+    required int daysRemaining,
+    String? customMessage,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppSendExpiry,
+        data: {
+          'memberId': memberId,
+          'daysRemaining': daysRemaining,
+          'customMessage': customMessage,
+        },
+      );
+      ref.invalidate(whatsAppMessagesProvider(memberId));
+      ref.invalidate(whatsAppConversationsProvider);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> shareGymCatalog({
+    required String memberId,
+    required String catalogCategory,
+    String? customNote,
+  }) async {
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.dio.post(
+        ApiConstants.whatsAppShareCatalog,
+        data: {
+          'memberId': memberId,
+          'catalogCategory': catalogCategory,
+          'customNote': customNote,
+        },
+      );
+      ref.invalidate(whatsAppMessagesProvider(memberId));
+      ref.invalidate(whatsAppConversationsProvider);
       return true;
     } catch (_) {
       return false;
@@ -160,6 +361,8 @@ class WhatsAppActionService {
     required String businessPortfolioName,
     required String accessToken,
     required String timeZoneId,
+    String? appId,
+    String? appSecret,
   }) async {
     try {
       final client = ref.read(apiClientProvider);
@@ -172,10 +375,13 @@ class WhatsAppActionService {
           'businessPortfolioName': businessPortfolioName,
           'accessToken': accessToken,
           'timeZoneId': timeZoneId,
+          'appId': appId,
+          'appSecret': appSecret,
         },
       );
       ref.invalidate(whatsAppConfigProvider);
       ref.invalidate(whatsAppMetricsProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
       return true;
     } catch (_) {
       return false;
@@ -188,6 +394,7 @@ class WhatsAppActionService {
       await client.dio.post(ApiConstants.whatsAppDisconnect);
       ref.invalidate(whatsAppConfigProvider);
       ref.invalidate(whatsAppMetricsProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
       return true;
     } catch (_) {
       return false;
@@ -200,6 +407,7 @@ class WhatsAppActionService {
       await client.dio.post(ApiConstants.whatsAppSyncTemplates);
       ref.invalidate(whatsAppTemplatesProvider);
       ref.invalidate(whatsAppConfigProvider);
+      ref.invalidate(whatsAppDashboardAnalyticsProvider(7));
       return true;
     } catch (_) {
       return false;
@@ -221,4 +429,3 @@ class WhatsAppActionService {
 final whatsAppActionProvider = Provider<WhatsAppActionService>((ref) {
   return WhatsAppActionService(ref);
 });
-

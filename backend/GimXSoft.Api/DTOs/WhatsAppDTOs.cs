@@ -56,6 +56,16 @@ public record WhatsAppTemplateDto(
     string MetaStatus
 );
 
+public record CreateWhatsAppTemplateRequest(
+    string Name,
+    string Category,
+    string Language,
+    string? HeaderText,
+    string BodyText,
+    string? FooterText,
+    List<string>? Buttons
+);
+
 public record WhatsAppMetricsDto(
     int TotalSentToday,
     int TotalDeliveredToday,
@@ -65,6 +75,56 @@ public record WhatsAppMetricsDto(
     double ReadRate,
     int ActiveConversationsCount,
     bool IsMetaCloudApiConnected
+);
+
+public record WhatsAppDailyVolumeDto(
+    string Date,
+    int Sent,
+    int Received,
+    int Delivered,
+    int Read,
+    int Failed
+);
+
+public record WhatsAppDashboardAnalyticsDto(
+    // Account Overview
+    string WabaId,
+    string DisplayPhoneNumber,
+    string VerifiedName,
+    string QualityRating,
+    string MessagingLimitTier,
+    string ConnectionStatus,
+    string HealthStatus,
+    string WebhookHealth,
+    DateTime? LastSyncedAt,
+
+    // Messaging Overview
+    int TotalSent,
+    int TotalReceived,
+    int TotalDelivered,
+    int TotalRead,
+    int TotalFailed,
+    int PendingMessages,
+    int ActiveConversations,
+    int UnreadConversations,
+    double DeliveryRate,
+    double ReadRate,
+
+    // Campaign Overview
+    int TotalCampaigns,
+    int ScheduledCampaigns,
+    int ActiveCampaigns,
+    int CompletedCampaigns,
+    int FailedCampaigns,
+
+    // Template Overview
+    int ApprovedTemplates,
+    int PendingTemplates,
+    int RejectedTemplates,
+
+    // Trends & Diagnostics
+    List<WhatsAppDailyVolumeDto> DailyTrends,
+    Dictionary<string, int> FailureReasonsBreakdown
 );
 
 public record WhatsAppTriggerRuleDto(
@@ -106,6 +166,11 @@ public record WhatsAppIntegrationDto(
     string BusinessPortfolioName,
     string ConnectionStatus,
     string HealthStatus,
+    string QualityRating,
+    string MessagingLimitTier,
+    string VerifiedName,
+    string CodeVerificationStatus,
+    string? AppId,
     decimal CostPerUtilityMessage,
     decimal CostPerMarketingMessage,
     string TimeZoneId,
@@ -120,7 +185,13 @@ public record UpdateWhatsAppConfigRequest(
     string DisplayPhoneNumber,
     string BusinessPortfolioName,
     string AccessToken,
-    string TimeZoneId
+    string TimeZoneId,
+    string? AppId = null,
+    string? AppSecret = null
+);
+
+public record RegisterPhoneNumberRequest(
+    string Pin
 );
 
 public record WhatsAppConsentDto(
@@ -172,4 +243,82 @@ public record OptOutRequest(
     string? Reason
 );
 
+// Campaign Management DTOs
+public record WhatsAppCampaignDto(
+    Guid Id,
+    string Name,
+    string? Description,
+    string AudienceSegment,
+    string? SpecificPlanName,
+    string? TemplateName,
+    string MessageContent,
+    string Status,
+    DateTime? ScheduledAtUtc,
+    DateTime? StartedAtUtc,
+    DateTime? CompletedAtUtc,
+    int TotalRecipients,
+    int SentCount,
+    int DeliveredCount,
+    int ReadCount,
+    int FailedCount,
+    DateTime CreatedAt
+);
 
+public record CreateCampaignRequest(
+    string Name,
+    string? Description,
+    string AudienceSegment, // "AllActive", "ExpiringIn7Days", "ExpiredIn30Days", "NewMembersLast14Days", "SpecificPlan"
+    Guid? SpecificPlanId,
+    string? TemplateName,
+    string? TemplateLanguage,
+    string MessageContent,
+    DateTime? ScheduledAtUtc
+);
+
+public record WhatsAppCampaignRecipientDto(
+    Guid Id,
+    Guid? MemberId,
+    string RecipientName,
+    string RecipientPhone,
+    string Status,
+    string? WamId,
+    DateTime? SentAt,
+    DateTime? DeliveredAt,
+    DateTime? ReadAt,
+    string? FailureReason
+);
+
+public record AudiencePreviewDto(
+    string AudienceSegment,
+    int RecipientCount,
+    List<string> SampleRecipientNames
+);
+
+// Gym Specific Workflow DTOs
+public record ShareWorkoutSplitRequest(
+    Guid MemberId,
+    string? SplitTitle,
+    List<string>? Exercises,
+    string? TrainerNotes
+);
+
+public record SendBmiReportRequest(
+    Guid MemberId,
+    decimal WeightKg,
+    decimal HeightCm,
+    decimal Bmi,
+    decimal? BodyFatPercentage,
+    string? AssessmentSummary
+);
+
+public record SendMembershipExpiryReminderRequest(
+    Guid MemberId,
+    int DaysRemaining,
+    string? CustomMessage
+);
+
+public record ShareGymCatalogRequest(
+    Guid MemberId,
+    string CatalogCategory, // "Supplements", "PersonalTraining", "Memberships"
+    string? CustomNote
+);

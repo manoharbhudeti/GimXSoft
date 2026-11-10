@@ -654,7 +654,56 @@ To eliminate gaps between frontend capabilities and backend data persistence, an
 
 ---
 
-## 14. Future Roadmap & Operations Reference
+## 14. Phase 15 — Meta WhatsApp Business Platform Cloud API v21.0 & CRM Dashboard
+
+### 1. Architecture & Meta Cloud API Integration Overview
+In strict compliance with Meta's official WhatsApp Business Platform specifications, the application was upgraded from simple messaging placeholders into an enterprise, multi-tenant WhatsApp Business Platform integration:
+- **Meta Cloud API Client (`IWhatsAppCloudApiClient`)**: Built with ASP.NET Core `IHttpClientFactory` targeting Meta Graph API `v21.0` (`https://graph.facebook.com/v21.0/`). Supports real outbound requests with resilient sandbox fallback:
+  - Phone number registration & 2-factor PIN verification (`POST /{phone-number-id}/register`)
+  - Two-way 1-on-1 messaging (text, template, media, interactive messages)
+  - Pre-approved Meta Message Template synchronization, creation, and deletion (`GET/POST/DELETE /{waba-id}/message_templates`)
+  - Webhook HMAC-SHA256 signature verification (`X-Hub-Signature-256`) against App Secret with tenant isolation
+- **SignalR Real-Time Hub (`/hubs/whatsapp`)**: `WhatsAppHub` enables sub-second streaming of incoming WhatsApp messages, delivery receipts (sent, delivered, read, failed), campaign execution progress, and connection health status changes directly to active browser sessions without polling.
+- **Webhook Idempotency Engine**: Dedicated `WhatsAppWebhookLog` entity tracking Meta `EventId` with unique indexing to guarantee zero duplicate processing during network retries.
+
+### 2. Multi-Panel Conversation Inbox & Gym CRM Context
+- **3-Panel Responsive Layout (`whatsapp_inbox_tab.dart`)**:
+  - **Left Panel (Conversations)**: Search, live unread badges, timestamp formatting, and instant member selection.
+  - **Center Panel (Chat Window)**: Message bubbles formatted with WhatsApp green accents, real-time message delivery checkmarks, 24-hour customer service window indicator, quick response chips, template selector, and message composer.
+  - **Right Panel (Gym CRM Context)**: Directly tied to real gym member records, displaying current membership plan, expiry date, trainer assignment, live calculated BMI/biometrics, and 1-click CRM action buttons.
+
+### 3. Analytics Dashboard & Telemetry (`whatsapp_dashboard_tab.dart`)
+- **KPI Metrics**: Outbound dispatched, delivered SLA rate, read engagement percentage, and delivery failure diagnostics.
+- **Interactive Daily Trend Chart**: Visualizes outbound vs. inbound message volume across configurable date ranges (7, 14, 30 days).
+- **Account Health Card**: Displays verified business display name, Phone Number ID, WABA ID, quality rating pill (GREEN / YELLOW / RED), messaging limit tier (TIER_1K / TIER_10K / TIER_100K), and webhook health.
+- **Ecosystem Summaries**: Campaign status counts, approved vs. reviewing templates, and unread inquiries count.
+
+### 4. Broadcast Campaign Manager & Segmentation (`whatsapp_campaigns_tab.dart`)
+- **Audience Segmentation Engine**: Segments recipients dynamically from live CRM member data:
+  - `AllActive`: All active athletes
+  - `ExpiringIn7Days`: Targeted renewal reminder blasts with payment links
+  - `ExpiredIn30Days`: Win-back campaign offers
+  - `NewMembersLast14Days`: Welcome and gym onboarding flows
+- **Live Lifecycle Controls**: Real-time pause, resume, cancel, and recipient delivery breakdown.
+
+### 5. Meta Message Templates Manager (`whatsapp_templates_tab.dart`)
+- Category filtering (`UTILITY`, `MARKETING`, `AUTHENTICATION`).
+- Create Template modal with live WhatsApp phone client preview bubble and real-time variable replacement (`{{1}}`, `{{2}}`).
+- One-click template synchronization with Meta Graph API.
+
+### 6. Gym-Specific Workflows & Modal Dialogs (`whatsapp_gym_workflows_dialogs.dart`)
+- **Share Workout Split**: Select member, workout routine, training day, preview, and dispatch routine details via WhatsApp.
+- **Send BMI & Biometrics Report**: Live calculates BMI from member weight/height, generates coaching advice, and dispatches directly to member.
+- **Send Membership Expiry Notice**: Injects member plan, expiry date, days remaining, and UPI dynamic payment link.
+- **Share Gym Catalog**: Dispatches membership pricing, personal training packages, and amenities overview.
+
+### 7. Automated Test Verification
+- **ASP.NET Core xUnit Test Suite**: 20/20 tests passed (`dotnet test backend/GimXSoft.Tests`), including 5 new integration tests in `WhatsAppDashboardAndCampaignsTests.cs`.
+- **Flutter Widget Test Suite**: 49/49 tests passed (`flutter test`), including comprehensive UI widget tests in `whatsapp_dashboard_complete_test.dart` and `whatsapp_messaging_test.dart`.
+
+---
+
+## 15. Future Roadmap & Operations Reference
 
 ### Recommended Development Tasks:
 - **Phase 3: Real-Time WebSockets / SignalR**:

@@ -47,6 +47,24 @@ public class WhatsAppIntegration
 
     public string HealthStatus { get; set; } = "HEALTHY"; // HEALTHY, WARNING, DEGRADED
 
+    [MaxLength(50)]
+    public string QualityRating { get; set; } = "GREEN"; // GREEN, YELLOW, RED, UNKNOWN
+
+    [MaxLength(50)]
+    public string MessagingLimitTier { get; set; } = "TIER_1K"; // TIER_250, TIER_1K, TIER_10K, TIER_100K, UNLIMITED
+
+    [MaxLength(150)]
+    public string VerifiedName { get; set; } = "GimXSoft Fitness Club";
+
+    [MaxLength(50)]
+    public string CodeVerificationStatus { get; set; } = "VERIFIED"; // NOT_VERIFIED, VERIFIED
+
+    [MaxLength(100)]
+    public string? AppId { get; set; }
+
+    [MaxLength(250)]
+    public string? AppSecret { get; set; }
+
     [Column(TypeName = "decimal(18,4)")]
     public decimal CostPerUtilityMessage { get; set; } = 0.0050m;
 

@@ -35,6 +35,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<WhatsAppConsent> WhatsAppConsents => Set<WhatsAppConsent>();
     public DbSet<WhatsAppSuppression> WhatsAppSuppressions => Set<WhatsAppSuppression>();
     public DbSet<ScheduledMessage> ScheduledMessages => Set<ScheduledMessage>();
+    public DbSet<WhatsAppCampaign> WhatsAppCampaigns => Set<WhatsAppCampaign>();
+    public DbSet<WhatsAppCampaignRecipient> WhatsAppCampaignRecipients => Set<WhatsAppCampaignRecipient>();
+    public DbSet<WhatsAppWebhookLog> WhatsAppWebhookLogs => Set<WhatsAppWebhookLog>();
     public DbSet<Exercise> Exercises => Set<Exercise>();
     public DbSet<ExerciseCategory> ExerciseCategories => Set<ExerciseCategory>();
     public DbSet<WorkoutTemplate> WorkoutTemplates => Set<WorkoutTemplate>();
@@ -70,6 +73,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<WhatsAppConsent>().HasQueryFilter(wc => _tenantService == null || !_tenantService.TenantId.HasValue || wc.TenantId == _tenantService.TenantId);
         modelBuilder.Entity<WhatsAppSuppression>().HasQueryFilter(ws => _tenantService == null || !_tenantService.TenantId.HasValue || ws.TenantId == _tenantService.TenantId);
         modelBuilder.Entity<ScheduledMessage>().HasQueryFilter(sm => _tenantService == null || !_tenantService.TenantId.HasValue || sm.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppCampaign>().HasQueryFilter(wc => _tenantService == null || !_tenantService.TenantId.HasValue || wc.TenantId == _tenantService.TenantId);
+        modelBuilder.Entity<WhatsAppCampaignRecipient>().HasQueryFilter(wcr => _tenantService == null || !_tenantService.TenantId.HasValue || wcr.TenantId == _tenantService.TenantId);
         modelBuilder.Entity<Exercise>().HasQueryFilter(ex => _tenantService == null || !_tenantService.TenantId.HasValue || ex.TenantId == _tenantService.TenantId);
         modelBuilder.Entity<ExerciseCategory>().HasQueryFilter(ec => _tenantService == null || !_tenantService.TenantId.HasValue || ec.TenantId == _tenantService.TenantId);
         modelBuilder.Entity<WorkoutTemplate>().HasQueryFilter(wt => _tenantService == null || !_tenantService.TenantId.HasValue || wt.TenantId == _tenantService.TenantId);
@@ -95,6 +100,10 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<User>()
             .HasIndex(u => new { u.TenantId, u.Email })
+            .IsUnique();
+
+        modelBuilder.Entity<WhatsAppWebhookLog>()
+            .HasIndex(w => w.EventId)
             .IsUnique();
 
         // High Precision Financial Decimals

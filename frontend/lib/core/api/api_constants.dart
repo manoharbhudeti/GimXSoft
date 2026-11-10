@@ -29,19 +29,27 @@ class ApiConstants {
 
   // WhatsApp Messaging API
   static const String whatsAppMetrics = '/whatsapp/metrics';
+  static const String whatsAppAnalytics = '/whatsapp/analytics';
   static const String whatsAppConversations = '/whatsapp/conversations';
   static const String whatsAppHistory = '/whatsapp/history';
   static const String whatsAppSend = '/whatsapp/send';
   static const String whatsAppBroadcast = '/whatsapp/broadcast';
+  static const String whatsAppCampaigns = '/whatsapp/campaigns';
+  static const String whatsAppPreviewAudience = '/whatsapp/campaigns/preview-audience';
   static const String whatsAppTemplates = '/whatsapp/templates';
   static const String whatsAppTriggers = '/whatsapp/triggers';
   static const String whatsAppToggleTrigger = '/whatsapp/triggers/toggle';
   static const String whatsAppConfig = '/whatsapp/config';
   static const String whatsAppDisconnect = '/whatsapp/config/disconnect';
+  static const String whatsAppRegisterNumber = '/whatsapp/meta/register-number';
   static const String whatsAppSyncTemplates = '/whatsapp/templates/sync';
   static const String whatsAppConsent = '/whatsapp/consent';
   static const String whatsAppOptOut = '/whatsapp/opt-out';
   static const String whatsAppScheduled = '/whatsapp/scheduled';
+  static const String whatsAppShareWorkout = '/whatsapp/gym/share-workout';
+  static const String whatsAppSendBmi = '/whatsapp/gym/send-bmi-report';
+  static const String whatsAppSendExpiry = '/whatsapp/gym/send-expiry-reminder';
+  static const String whatsAppShareCatalog = '/whatsapp/gym/share-catalog';
 
   // Exercises & Workout Catalogue
   static const String exercises = '/exercises';
